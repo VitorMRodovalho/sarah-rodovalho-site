@@ -83,4 +83,44 @@ const awards = defineCollection({
   }),
 });
 
-export const collections = { publications, awards };
+/**
+ * `experience` — curated employment timeline.
+ *
+ * Source-of-truth: CV + LinkedIn (cross-validated). 5-7 highlighted
+ * projects per ADR-023 §D4.1 §Experience (deferred from initial PRs;
+ * shipped as PR-S07 once Sarah's MVP content was settled). Full
+ * 17-role chronology lives in LinkedIn for completeness.
+ *
+ * Schema design notes:
+ *  - `period` free text, same convention as `awards` collection
+ *  - `industry` enum supports visual badges + filtering at scale (only
+ *    one industry value per entry — pick the most representative)
+ *  - `highlights` = bulleted impact statements with quantitative
+ *    detail when public-disclosed (e.g., $279M change-orders is on
+ *    Sarah's public LinkedIn)
+ *  - `isCurrent` flips a "Current role" badge on the listing page
+ */
+const experience = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/experience" }),
+  schema: z.object({
+    role: z.string(),
+    organization: z.string(),
+    organizationUrl: z.url().optional(),
+    period: z.string(),
+    location: z.string(),
+    industry: z.enum([
+      "data-center",
+      "manufacturing",
+      "healthcare",
+      "retail-mall",
+      "transit",
+      "academia",
+    ]),
+    summary: z.string(),
+    highlights: z.array(z.string()).default([]),
+    isCurrent: z.boolean().default(false),
+    order: z.number().int().default(100),
+  }),
+});
+
+export const collections = { publications, awards, experience };
