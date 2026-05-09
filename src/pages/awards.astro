@@ -1,0 +1,151 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * /awards — recognition, honors, scholarships, leadership memberships.
+ *
+ * Source: Astro Content Collection `awards` (schema in `src/content.config.ts`).
+ * Items are grouped visually by `scope` field; the metadata
+ * `kazarianCriterion` is intentionally NOT displayed (it's internal mapping
+ * for EB-1A evidence work — leaking it would frame this page as immigration
+ * material rather than professional recognition, against ADR-023 §strategic
+ * frame).
+ *
+ * Per-item Schema.org JSON-LD uses `EducationalOccupationalCredential` for
+ * scholarships/honors and `Award` for the rest. Both are valid Schema types.
+ */
+
+const allAwards = await getCollection("awards");
+const awards = allAwards.sort((a, b) => a.data.order - b.data.order);
+
+const SCOPE_GROUPS: Array<{
+  scope: (typeof awards)[number]["data"]["scope"];
+  label: string;
+  intro: string;
+}> = [
+  {
+    scope: "international",
+    label: "International recognition",
+    intro:
+      "Recognition with international scope — UN-affiliated, multi-country employer programs.",
+  },
+  {
+    scope: "professional-leadership",
+    label: "Professional leadership & boards",
+    intro:
+      "Selected to leadership roles within professional organizations across architecture and construction.",
+  },
+  {
+    scope: "honor-society",
+    label: "Honor societies",
+    intro:
+      "Membership in selective honor societies for sustained academic and professional achievement.",
+  },
+  {
+    scope: "team-award",
+    label: "Industry & team awards",
+    intro:
+      "Recognition for collaborative delivery within industry employers.",
+  },
+  {
+    scope: "academic-honor",
+    label: "Academic honors",
+    intro:
+      "Merit-based recognition during graduate and undergraduate study.",
+  },
+  {
+    scope: "competitive-scholarship",
+    label: "Competitive scholarships",
+    intro:
+      "Scholarships awarded competitively by professional and academic organizations.",
+  },
+];
+
+const grouped = SCOPE_GROUPS.map((g) => ({
+  ...g,
+  items: awards.filter((a) => a.data.scope === g.scope),
+})).filter((g) => g.items.length > 0);
+
+const title = "Awards & Recognition · Sarah F. Rodovalho";
+const description =
+  "Awards, scholarships, honor societies, and professional leadership recognition received by Sarah F. Rodovalho across architecture, construction management, and sustainable design.";
+
+function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
+  const isScholarship =
+    a.data.scope === "competitive-scholarship" || a.data.scope === "academic-honor";
+  return {
+    "@context": "https://schema.org",
+    "@type": isScholarship ? "EducationalOccupationalCredential" : "Award",
+    name: a.data.title,
+    description: a.data.description,
+    awardingBody: { "@type": "Organization", name: a.data.organization },
+    ...(a.data.externalUrl ? { url: a.data.externalUrl } : {}),
+    ...(a.data.period ? { dateAwarded: a.data.period } : {}),
+  };
+}
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 px-4 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-12">
+      <header class="space-y-4">
+        <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          Recognition
+        </p>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
+          Awards, honors, and leadership
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Recognition received across architecture, construction management,
+          and sustainable design — from undergraduate honors at UEG (Brazil)
+          and a UN-affiliated mention, through graduate scholarships at Thomas
+          Jefferson University, to current leadership on the AIA Construction
+          Contract Administration Knowledge Community Board.
+        </p>
+      </header>
+
+      {
+        grouped.map((group) => (
+          <section class="space-y-6">
+            <div class="space-y-2">
+              <h2 class="text-2xl font-bold tracking-tight">{group.label}</h2>
+              <p class="text-sm text-muted-foreground">{group.intro}</p>
+            </div>
+            <ul class="space-y-6">
+              {group.items.map((a) => (
+                <li class="space-y-2 border-l-2 border-border/40 pl-6">
+                  <h3 class="text-lg font-semibold">{a.data.title}</h3>
+                  <p class="text-sm text-muted-foreground">
+                    {a.data.organization} · {a.data.period}
+                  </p>
+                  <p class="text-sm leading-relaxed">{a.data.description}</p>
+                  {a.data.externalUrl && (
+                    <p class="text-xs">
+                      <a
+                        href={a.data.externalUrl}
+                        class="underline hover:text-foreground text-muted-foreground"
+                        rel="noopener"
+                      >
+                        Awarding organization →
+                      </a>
+                    </p>
+                  )}
+                  <script
+                    is:inline
+                    type="application/ld+json"
+                    set:html={JSON.stringify(jsonLdForAward(a))}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+
+      <footer class="pt-8 text-xs text-muted-foreground/60 text-center">
+        <a href="/" class="underline hover:text-foreground">← Home</a>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>
