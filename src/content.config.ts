@@ -48,4 +48,39 @@ const publications = defineCollection({
   }),
 });
 
-export const collections = { publications };
+/**
+ * `awards` — recognition, honors, scholarships, judging-relevant memberships.
+ *
+ * Schema design notes:
+ *  - `period` is free text (exact when known: "2024", "2026-2030"; or
+ *    contextual when not: "During M.Sc. at TJU 2021-2023") to avoid
+ *    inventing year precision the source data doesn't carry.
+ *  - `scope` groups awards visually on the page; not all 6 buckets
+ *    will always be populated.
+ *  - `kazarianCriterion` is metadata for internal EB-1A mapping; NOT
+ *    displayed on the public site (avoids leaking immigration framing
+ *    into a professional context). Used at most by Vitor + counsel
+ *    when extracting evidence rows for case work.
+ */
+const awards = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/awards" }),
+  schema: z.object({
+    title: z.string(),
+    organization: z.string(),
+    period: z.string(),
+    scope: z.enum([
+      "international",
+      "professional-leadership",
+      "honor-society",
+      "team-award",
+      "academic-honor",
+      "competitive-scholarship",
+    ]),
+    kazarianCriterion: z.array(z.number().int().min(1).max(10)).optional(),
+    description: z.string(),
+    externalUrl: z.url().optional(),
+    order: z.number().int().default(100),
+  }),
+});
+
+export const collections = { publications, awards };
