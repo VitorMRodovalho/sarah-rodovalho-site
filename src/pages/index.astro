@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * Homepage — Hero placeholder.
+ *
+ * Real content drops in PR-S03 (Hero + About) and PR-S04
+ * (Research & Publications). This file ships the structure so
+ * Cloudflare Pages binding (PR-S05) can deploy a non-empty page.
+ */
+
+const title = "Sarah F. Rodovalho";
+const description =
+  "Sustainable design and construction management researcher · Harrisburg University · BIM and carbon-neutral construction.";
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 flex items-center justify-center px-4 py-16 md:py-24">
+    <div class="max-w-2xl space-y-6 text-center">
+      <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        Researcher
+      </p>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
+        Sarah F. Rodovalho
+      </h1>
+      <p class="text-base sm:text-lg text-muted-foreground leading-relaxed">
+        Sustainable design and construction management researcher. BIM, life cycle
+        assessment, and carbon-neutral construction at Harrisburg University.
+      </p>
+      <p class="text-xs text-muted-foreground/60 pt-8">
+        Site under construction · sections coming in PR-S03, S04, S06+.
+      </p>
+    </div>
+  </main>
+  <footer class="px-4 py-6 text-center text-xs text-muted-foreground/60 border-t border-border/40">
+    © {new Date().getFullYear()} Sarah F. Rodovalho · All rights reserved.
+  </footer>
+</BaseLayout>
