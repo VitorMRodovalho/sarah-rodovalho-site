@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/**
+ * Site-wide design tokens.
+ * Tailwind v4 CSS-first config — values exposed as CSS custom properties
+ * via `@theme` and consumed by Tailwind utilities.
+ *
+ * Palette: warm-stone neutrals + soft teal accent. Kept deliberately
+ * muted for an academic-research feel (not startup hype, not corporate
+ * cold). Mirrors the Orenu "soft-structuralism" tonal register.
+ */
+
+@theme {
+  --color-background: oklch(0.99 0.005 90);
+  --color-foreground: oklch(0.22 0.015 80);
+
+  --color-muted: oklch(0.94 0.01 85);
+  --color-muted-foreground: oklch(0.48 0.015 80);
+
+  --color-primary: oklch(0.55 0.09 175);
+  --color-primary-foreground: oklch(0.99 0.005 90);
+
+  --color-border: oklch(0.90 0.01 85);
+
+  --font-display: ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: oklch(0.18 0.015 80);
+    --color-foreground: oklch(0.95 0.01 85);
+
+    --color-muted: oklch(0.28 0.015 80);
+    --color-muted-foreground: oklch(0.68 0.015 80);
+
+    --color-primary: oklch(0.7 0.11 175);
+    --color-primary-foreground: oklch(0.18 0.015 80);
+
+    --color-border: oklch(0.3 0.015 80);
+  }
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}

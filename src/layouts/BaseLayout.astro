@@ -1,0 +1,72 @@
+---
+/**
+ * BaseLayout — site-wide HTML wrapper with metadata, fonts, and
+ * Schema.org Person markup hook. Each page passes title + description.
+ *
+ * Schema.org Person.alternateName includes "S Rodovalho" (Scholar
+ * byline) so search engines can cross-reference citation lookups.
+ */
+
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: "Sarah Faria Alcantara Macedo Rodovalho",
+        alternateName: ["Sarah F. Rodovalho", "S Rodovalho"],
+        url: "https://sarahrodovalho.com",
+        sameAs: ["https://scholar.google.com/citations?user=3s1M4TIAAAAJ"],
+        jobTitle: "Researcher",
+        affiliation: {
+          "@type": "CollegeOrUniversity",
+          name: "Harrisburg University of Science and Technology",
+          url: "https://www.harrisburgu.edu/",
+        },
+        knowsAbout: [
+          "Sustainable Design",
+          "Construction Management",
+          "BIM",
+          "Carbon-neutral construction",
+          "Life Cycle Assessment",
+        ],
+      })}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <slot />
+  </body>
+</html>
