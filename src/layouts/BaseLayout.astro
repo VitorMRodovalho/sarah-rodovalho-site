@@ -27,6 +27,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
 
+    <!-- Google Search Console — domain verification meta tag.
+         Lets us submit sitemap-index.xml + see indexing/coverage in GSC. -->
+    <meta
+      name="google-site-verification"
+      content="xepY5WmgZc-i-rDQ3z4I4r36U7MdnI2c72BEh5w5IFE"
+    />
+
     <title>{title}</title>
     <meta name="description" content={description} />
 
