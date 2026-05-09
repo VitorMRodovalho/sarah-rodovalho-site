@@ -2,39 +2,58 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
- * Homepage — Hero placeholder.
+ * Homepage — Hero with current role + research focus.
  *
- * Real content drops in PR-S03 (Hero + About) and PR-S04
- * (Research & Publications). This file ships the structure so
- * Cloudflare Pages binding (PR-S05) can deploy a non-empty page.
+ * Content sourced from Sarah's CV (Senior Project Manager / Aligned)
+ * + LinkedIn (Digital Infrastructure framing) + Scholar profile
+ * (publications + Harrisburg affiliation). All PII-whitelisted per
+ * ADR-023 §D8.
  */
 
 const title = "Sarah F. Rodovalho";
 const description =
-  "Sustainable design and construction management researcher · Harrisburg University · BIM and carbon-neutral construction.";
+  "Senior Project Manager and sustainable design researcher. Digital infrastructure and data center delivery at Aligned. Doctoral candidate in Information Systems Engineering & Management at Harrisburg University.";
 ---
 
 <BaseLayout title={title} description={description}>
   <main class="flex-1 flex items-center justify-center px-4 py-16 md:py-24">
     <div class="max-w-2xl space-y-6 text-center">
       <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-        Researcher
+        Senior Project Manager · Researcher
       </p>
       <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
         Sarah F. Rodovalho
       </h1>
       <p class="text-base sm:text-lg text-muted-foreground leading-relaxed">
-        Sustainable design and construction management researcher. BIM, life cycle
-        assessment, and carbon-neutral construction at Harrisburg University.
+        Digital infrastructure and data center delivery at Aligned. Doctoral
+        researcher in BIM, life cycle assessment, and AI-augmented infrastructure
+        delivery at Harrisburg University.
       </p>
-      <nav class="pt-4 flex justify-center gap-6 text-sm">
+      <p class="text-sm text-muted-foreground/80 leading-relaxed">
+        16+ years delivering hyperscale data centers, advanced manufacturing,
+        and healthcare facilities across the U.S. and Brazil — most recently
+        with Aligned Data Centers, Microsoft Cloud Operations + Innovation, and Tesla.
+      </p>
+      <nav class="pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+        <a href="/about" class="underline hover:text-foreground">About</a>
         <a href="/research" class="underline hover:text-foreground">
           Research & Publications
         </a>
+        <a
+          href="https://www.linkedin.com/in/sarahrodovalho"
+          class="underline hover:text-foreground"
+          rel="noopener"
+        >
+          LinkedIn
+        </a>
+        <a
+          href="https://scholar.google.com/citations?user=3s1M4TIAAAAJ"
+          class="underline hover:text-foreground"
+          rel="noopener"
+        >
+          Scholar
+        </a>
       </nav>
-      <p class="text-xs text-muted-foreground/60 pt-8">
-        Site under construction · About + Awards sections coming in PR-S03, S06+.
-      </p>
     </div>
   </main>
   <footer class="px-4 py-6 text-center text-xs text-muted-foreground/60 border-t border-border/40">

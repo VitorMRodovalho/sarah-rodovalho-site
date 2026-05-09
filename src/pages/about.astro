@@ -1,0 +1,209 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * /about — biographical narrative.
+ *
+ * Bridges practitioner identity (Senior PM, Aligned/Microsoft/Tesla) with
+ * researcher identity (Harrisburg PhD, sustainable construction
+ * publications). Content discipline: only verifiable facts (employer
+ * names, public roles, public certifications, public talks). PII-whitelisted
+ * per ADR-023 §D8 — no phone, no personal gmail, no salary, no address
+ * beyond city.
+ */
+
+const title = "About · Sarah F. Rodovalho";
+const description =
+  "Sarah F. Rodovalho — Senior Project Manager at Aligned Data Centers, doctoral researcher at Harrisburg University. 16+ years across hyperscale infrastructure, advanced manufacturing, and healthcare in the U.S. and Brazil.";
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 px-4 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-12">
+      <header class="space-y-4">
+        <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          About
+        </p>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
+          Building the infrastructure that powers AI and cloud computing — and researching how to do it more sustainably.
+        </h1>
+      </header>
+
+      <section class="space-y-6 text-base leading-relaxed">
+        <p>
+          I am a Senior Project Manager and architect with 16+ years delivering
+          complex capital programs across hyperscale data centers, industrial
+          manufacturing, healthcare, and commercial sectors in the U.S. and
+          Brazil. I currently work at Aligned Data Centers, leading project
+          management on a multi-building, 264MW campus.
+        </p>
+        <p>
+          My background spans architecture, construction, and capital project
+          delivery. I have worked on infrastructure programs with Tesla,
+          Microsoft Cloud Operations + Innovation, and Aligned Data Centers,
+          and I am pursuing a PhD researching how data analytics and AI can
+          improve infrastructure delivery — bridging field-tested operational
+          practice with academic rigor.
+        </p>
+        <p>
+          Trained as an architect (UEG, Brazil, 2009) and a sustainable-design
+          researcher (M.Sc., Thomas Jefferson University, 2023), I hold the
+          PMP, LEED Green Associate, OSHA 30, and AIA Associate credentials.
+          My research published in the International Journal of Architectural
+          Computing and Sustainability (MDPI) focuses on integrating BIM,
+          energy analysis, and life-cycle assessment to support carbon-neutral
+          construction decision-making.
+        </p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold tracking-tight">Now</h2>
+        <ul class="space-y-3 text-base leading-relaxed">
+          <li>
+            <strong>Senior Project Manager</strong> at <strong>Aligned Data Centers</strong> (Oct 2025 – present, VA &
+            MD). Leading project management functions across a ~264MW
+            multi-building campus.
+          </li>
+          <li>
+            <strong>PhD candidate</strong> in Information Systems Engineering &
+            Management at <strong>Harrisburg University of Science and Technology</strong>
+            (in progress, expected Dec 2030). Research focus: data analytics
+            and AI applied to infrastructure delivery.
+          </li>
+          <li>
+            <strong>Construction Contract Administration Knowledge Community
+            Leadership — Board Member</strong> at <strong>The American Institute of
+            Architects (AIA)</strong> (Jan 2026 – 2030).
+          </li>
+          <li>
+            <strong>Founder · Ambassador · Curator</strong> of <strong>The AI & PM Study and
+            Research Hub</strong>, a joint initiative of the PMI Brazilian Chapters
+            (Jan 2024 – present).
+          </li>
+        </ul>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold tracking-tight">Selected past roles</h2>
+        <ul class="space-y-3 text-base leading-relaxed">
+          <li>
+            <strong>Microsoft Cloud Operations + Innovation</strong> — Data Center
+            Construction Contracts (Project Manager focus), VA / NC / Brazil,
+            2024 – 2025. Directed change-order management across 8 concurrent
+            hyperscale builds (~1.1M+ sq ft, 182.5MW); implemented a
+            change-order management log adopted program-wide.
+          </li>
+          <li>
+            <strong>Tesla</strong> — Technical Project Manager (Industrial & Workplace
+            Projects), CA & NV, 2023 – 2024. Managed 20+ infrastructure,
+            workplace, and R&D facility projects across ~2.25M sq ft in
+            Fremont, Lathrop, and Nevada — supporting manufacturing and cell-
+            development programs.
+          </li>
+          <li>
+            <strong>Thomas Jefferson University</strong> — Teaching Assistant, Department
+            of Construction Management, Philadelphia, 2021 – 2023.
+          </li>
+          <li>
+            <strong>Array Architects</strong> — Architectural Designer (clinical planning
+            and healthcare design), Philadelphia, 2022.
+          </li>
+          <li>
+            <strong>Aliansce Sonae Shopping Centers</strong> — Design & Construction
+            Manager, Brazil, 2016 – 2021. Managed and delivered Passeio das
+            Águas, a $232M / 2M sq ft mall — one of Brazil's largest — from
+            ground-up construction through commissioning, on time and under
+            budget.
+          </li>
+        </ul>
+        <p class="text-sm text-muted-foreground">
+          Full chronology on{" "}
+          <a
+            href="https://www.linkedin.com/in/sarahrodovalho"
+            class="underline hover:text-foreground"
+            rel="noopener"
+          >
+            LinkedIn
+          </a>
+          .
+        </p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold tracking-tight">Education</h2>
+        <ul class="space-y-2 text-base leading-relaxed">
+          <li>
+            <strong>PhD in Information Systems Engineering & Management</strong> ·
+            Harrisburg University of Science and Technology, PA · 2026 – 2030 (in progress)
+          </li>
+          <li>
+            <strong>M.Sc. in Sustainable Design & Construction Management</strong> ·
+            Thomas Jefferson University, PA · 2021 – 2023
+          </li>
+          <li>
+            <strong>MBA in Real Estate & Construction Business Management</strong> ·
+            Fundação Getulio Vargas (FGV), Brazil · 2012 – 2016
+          </li>
+          <li>
+            <strong>Bachelor of Architecture and Urban Planning</strong> ·
+            Universidade Estadual de Goiás, Brazil · 2004 – 2009
+          </li>
+        </ul>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold tracking-tight">Certifications & affiliations</h2>
+        <ul class="space-y-2 text-base leading-relaxed">
+          <li>PMP — Project Management Professional</li>
+          <li>LEED Green Associate (LEED GA)</li>
+          <li>OSHA 30</li>
+          <li>AIA Associate</li>
+          <li>Brazilian Architecture License (CAU)</li>
+          <li>Member, Sigma Lambda Chi Honor Society (International Construction Management)</li>
+          <li>Pursuing NCARB licensure</li>
+        </ul>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold tracking-tight">Languages</h2>
+        <p class="text-base leading-relaxed">
+          Portuguese (native or bilingual) · English (full professional)
+        </p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold tracking-tight">Contact</h2>
+        <ul class="space-y-2 text-base leading-relaxed">
+          <li>
+            Email: <a href="mailto:sarah@sarahrodovalho.com" class="underline hover:text-foreground">sarah@sarahrodovalho.com</a>
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com/in/sarahrodovalho"
+              class="underline hover:text-foreground"
+              rel="noopener"
+            >
+              LinkedIn / sarahrodovalho
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://scholar.google.com/citations?user=3s1M4TIAAAAJ"
+              class="underline hover:text-foreground"
+              rel="noopener"
+            >
+              Google Scholar profile
+            </a>
+          </li>
+        </ul>
+        <p class="text-sm text-muted-foreground/80">
+          Based in Leesburg, VA · Washington DC – Baltimore region.
+        </p>
+      </section>
+
+      <footer class="pt-8 text-xs text-muted-foreground/60 text-center">
+        <a href="/" class="underline hover:text-foreground">← Home</a>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>
