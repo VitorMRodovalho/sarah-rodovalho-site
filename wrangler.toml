@@ -1,0 +1,28 @@
+# Cloudflare Workers config — Workers Static Assets mode.
+#
+# This Worker is asset-only: no server script (no `main` field). Cloudflare
+# uploads the contents of `[assets].directory` to its global CDN and serves
+# them directly. Equivalent to legacy "Cloudflare Pages" but under the
+# unified Workers product (the post-2024 consolidated CF model).
+#
+# Deploy command (set in Cloudflare dashboard's connected build config):
+#   `npx wrangler deploy`
+#
+# Build command (also dashboard-configured):
+#   `pnpm install && pnpm build`  → produces ./dist
+#
+# Custom domain `sarahrodovalho.com` is configured via the dashboard
+# (Workers & Pages → sarah-rodovalho-site → Settings → Triggers →
+# Custom Domains), NOT here.
+
+name = "sarah-rodovalho-site"
+compatibility_date = "2026-05-09"
+workers_dev = false
+
+[assets]
+directory = "./dist"
+
+# 404 handling: serve the custom 404.html (built by Astro from
+# src/pages/404.astro). Alternative is "single-page-application"
+# for SPA routing — not what we want here.
+not_found_handling = "404-page"
