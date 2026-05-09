@@ -1,0 +1,152 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * /research — listing of Sarah's publications.
+ *
+ * Source: Astro Content Collection `publications` (schema in
+ * `src/content.config.ts`). Per-paper Schema.org JSON-LD generated
+ * from frontmatter (ScholarlyArticle for journal-article; PresentationDigitalDocument
+ * for conference-panel since Schema.org has no formal "ConferencePresentation"
+ * type — using the closest match).
+ */
+
+const allPubs = await getCollection("publications");
+const pubs = allPubs.sort((a, b) => a.data.order - b.data.order);
+
+const title = "Research & Publications · Sarah F. Rodovalho";
+const description =
+  "Peer-reviewed publications and conference work on sustainable design, BIM, and carbon-neutral construction by Sarah F. Rodovalho.";
+
+function jsonLdForPub(p: (typeof pubs)[number]): Record<string, unknown> {
+  const isJournal = p.data.kind === "journal-article";
+  return {
+    "@context": "https://schema.org",
+    "@type": isJournal ? "ScholarlyArticle" : "PresentationDigitalDocument",
+    headline: p.data.title,
+    name: p.data.title,
+    author: p.data.coAuthors.map((n) => ({ "@type": "Person", name: n })),
+    datePublished: String(p.data.year),
+    isPartOf: {
+      "@type": isJournal ? "Periodical" : "Event",
+      name: p.data.venue,
+      ...(p.data.publisher ? { publisher: p.data.publisher } : {}),
+    },
+    ...(p.data.doi ? { sameAs: `https://doi.org/${p.data.doi}` } : {}),
+    ...(p.data.paperUrl ? { url: p.data.paperUrl } : {}),
+    abstract: p.data.abstract,
+  };
+}
+
+function citationFor(p: (typeof pubs)[number]): string {
+  const authors = p.data.coAuthors.join(", ");
+  if (p.data.kind === "journal-article") {
+    const issue = p.data.issue ? `, ${p.data.volume}(${p.data.issue})` : "";
+    const pages = p.data.pages ? `, ${p.data.pages}` : p.data.article ? `, art. ${p.data.article}` : "";
+    return `${authors}. (${p.data.year}). "${p.data.title}." ${p.data.venue}${issue}${pages}.`;
+  }
+  return `${authors}. (${p.data.year}). "${p.data.title}." ${p.data.venue}.`;
+}
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 px-4 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-12">
+      <header class="space-y-4">
+        <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          Research
+        </p>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
+          Publications & Conference Work
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Peer-reviewed publications and conference work on sustainable design,
+          BIM, and carbon-neutral construction. Co-authored with{" "}
+          <a
+            href="https://scholar.google.com/citations?user=3s1M4TIAAAAJ"
+            class="underline hover:text-foreground"
+            rel="noopener"
+          >
+            Gulbin Ozcan-Deniz
+          </a>{" "}
+          (Jefferson University) where indicated.
+        </p>
+        <p class="text-xs text-muted-foreground/70">
+          Full list also on{" "}
+          <a
+            href="https://scholar.google.com/citations?user=3s1M4TIAAAAJ"
+            class="underline hover:text-foreground"
+            rel="noopener"
+          >
+            Google Scholar
+          </a>
+          .
+        </p>
+      </header>
+
+      <section class="space-y-8">
+        {
+          pubs.map((p) => (
+            <article class="space-y-3 border-b border-border/40 pb-8 last:border-b-0">
+              <p class="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">
+                {p.data.kind === "journal-article" ? "Journal article" : "Conference panel"} · {p.data.venueShort ?? p.data.venue} · {p.data.year}
+              </p>
+              <h2 class="text-2xl font-bold tracking-tight">{p.data.title}</h2>
+              <p class="text-sm text-muted-foreground leading-relaxed">
+                {p.data.abstract}
+              </p>
+              <p class="text-xs text-muted-foreground/80">
+                <span class="font-mono">{citationFor(p)}</span>
+              </p>
+              <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                {p.data.doi && (
+                  <a
+                    href={`https://doi.org/${p.data.doi}`}
+                    class="underline hover:text-foreground"
+                    rel="noopener"
+                  >
+                    DOI: {p.data.doi}
+                  </a>
+                )}
+                {p.data.paperUrl && (
+                  <a
+                    href={p.data.paperUrl}
+                    class="underline hover:text-foreground"
+                    rel="noopener"
+                  >
+                    Read paper
+                  </a>
+                )}
+                {p.data.venueUrl && !p.data.paperUrl && (
+                  <a
+                    href={p.data.venueUrl}
+                    class="underline hover:text-foreground"
+                    rel="noopener"
+                  >
+                    Venue
+                  </a>
+                )}
+                {p.data.citationsAt && (
+                  <span class="text-muted-foreground">
+                    Cited by {p.data.citationsAt.count} (as of{" "}
+                    {p.data.citationsAt.observedOn})
+                  </span>
+                )}
+              </div>
+              <script
+                is:inline
+                type="application/ld+json"
+                set:html={JSON.stringify(jsonLdForPub(p))}
+              />
+            </article>
+          ))
+        }
+      </section>
+
+      <footer class="pt-8 text-xs text-muted-foreground/60 text-center">
+        <a href="/" class="underline hover:text-foreground">← Home</a>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>
