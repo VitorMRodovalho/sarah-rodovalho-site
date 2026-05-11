@@ -82,20 +82,25 @@ function jsonLdForEngagement(
         </p>
       </header>
 
-      <section class="space-y-12">
+      <section class="space-y-8">
         {
-          engagements.map((e) => (
-            <article class="space-y-4 border-b border-border/40 pb-12 last:border-b-0">
-              <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
-                  {KIND_LABEL[e.data.kind]}
+          engagements.map((e, i) => (
+            <article class="space-y-4 border border-border/60 rounded-md p-6 sm:p-7 hover:border-accent/50 hover:bg-accent-soft/15 transition-colors">
+              <div class="flex items-baseline gap-4">
+                <span class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]">
+                  {String(i + 1).padStart(2, "0")}
                 </span>
-                <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
-                  {e.data.event}
-                </span>
-                <span class="text-[10px] text-muted-foreground/80">
-                  · {e.data.date}
-                </span>
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
+                    {KIND_LABEL[e.data.kind]}
+                  </span>
+                  <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+                    {e.data.event}
+                  </span>
+                  <span class="text-[10px] text-muted-foreground/80">
+                    · {e.data.date}
+                  </span>
+                </div>
               </div>
               <h2 class="font-display text-2xl sm:text-3xl tracking-tight leading-[1.1]">
                 {e.data.title}

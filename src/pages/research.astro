@@ -83,13 +83,18 @@ function citationFor(p: (typeof pubs)[number]): string {
         </p>
       </header>
 
-      <section class="space-y-8">
+      <section class="space-y-6">
         {
-          pubs.map((p) => (
-            <article class="space-y-3 border-b border-border/40 pb-8 last:border-b-0">
-              <p class="eyebrow">
-                {p.data.kind === "journal-article" ? "Journal article" : "Conference panel"} · {p.data.venueShort ?? p.data.venue} · {p.data.year}
-              </p>
+          pubs.map((p, i) => (
+            <article class="space-y-3 border border-border/60 rounded-md p-6 sm:p-7 hover:border-accent/50 hover:bg-accent-soft/15 transition-colors">
+              <div class="flex items-baseline gap-4">
+                <span class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p class="eyebrow !text-[10px]">
+                  {p.data.kind === "journal-article" ? "Journal article" : "Conference panel"} · {p.data.venueShort ?? p.data.venue} · {p.data.year}
+                </p>
+              </div>
               <h2 class="font-display text-2xl sm:text-3xl tracking-tight">{p.data.title}</h2>
               <p class="text-sm text-muted-foreground leading-relaxed">
                 {p.data.abstract}

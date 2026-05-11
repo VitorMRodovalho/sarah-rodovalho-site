@@ -88,13 +88,13 @@ function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
 
 <BaseLayout title={title} description={description}>
   <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-    <div class="max-w-3xl mx-auto space-y-14">
+    <div class="max-w-4xl mx-auto space-y-16">
       <header class="space-y-5">
         <p class="eyebrow"><span class="accent-rule"></span>Recognition</p>
         <h1 class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]">
           Awards, honors, and <span class="italic text-accent">leadership.</span>
         </h1>
-        <p class="text-base text-muted-foreground leading-relaxed">
+        <p class="text-base text-muted-foreground leading-relaxed max-w-3xl">
           Recognition received across architecture, construction management,
           and sustainable design — from undergraduate honors at UEG (Brazil)
           and a UN-affiliated mention, through graduate scholarships at Thomas
@@ -104,22 +104,30 @@ function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
       </header>
 
       {
-        grouped.map((group) => (
-          <section class="space-y-6">
-            <div class="space-y-2">
-              <h2 class="font-display text-2xl sm:text-3xl tracking-tight">{group.label}</h2>
+        grouped.map((group, gIdx) => (
+          <section class="space-y-7">
+            <header class="space-y-2 max-w-3xl">
+              <p class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]">
+                {String(gIdx + 1).padStart(2, "0")} ·{" "}
+                <span class="uppercase">{group.label}</span>
+              </p>
+              <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+                {group.label}
+              </h2>
               <p class="text-sm text-muted-foreground">{group.intro}</p>
-            </div>
-            <ul class="space-y-6">
+            </header>
+            <ul class="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {group.items.map((a) => (
-                <li class="space-y-2 border-l-2 border-border/60 pl-6">
-                  <h3 class="font-display text-lg sm:text-xl tracking-tight">{a.data.title}</h3>
-                  <p class="text-sm text-muted-foreground">
+                <li class="space-y-2 border border-border/60 rounded-md p-5 hover:border-accent/50 hover:bg-accent-soft/15 transition-colors">
+                  <h3 class="font-display text-lg sm:text-xl tracking-tight">
+                    {a.data.title}
+                  </h3>
+                  <p class="text-xs text-muted-foreground uppercase tracking-[0.12em]">
                     {a.data.organization} · {a.data.period}
                   </p>
                   <p class="text-sm leading-relaxed">{a.data.description}</p>
                   {a.data.externalUrl && (
-                    <p class="text-xs">
+                    <p class="text-xs pt-1">
                       <a
                         href={a.data.externalUrl}
                         class="underline hover:text-foreground text-muted-foreground"
@@ -140,7 +148,6 @@ function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
           </section>
         ))
       }
-
     </div>
   </main>
 </BaseLayout>
