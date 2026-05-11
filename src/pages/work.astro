@@ -75,24 +75,26 @@ const description =
               >
                 <div
                   class:list={[
-                    "md:col-span-7 space-y-5",
+                    "md:col-span-7 space-y-6",
                     reversed && "md:col-start-6 md:col-end-13 md:order-2",
                   ]}
                 >
-                  <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <span class="text-[10px] font-medium tabular-nums text-accent">
+                  <div class="flex items-baseline gap-5">
+                    <span class="font-display text-5xl sm:text-6xl tabular-nums tracking-[-0.02em] text-accent leading-none">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                      {CATEGORY_LABEL[p.data.category]}
-                    </span>
-                    {p.data.isCurrent && (
-                      <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
-                        · Current
+                    <div class="flex flex-col gap-1 pt-2">
+                      <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                        {CATEGORY_LABEL[p.data.category]}
                       </span>
-                    )}
+                      {p.data.isCurrent && (
+                        <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
+                          Current engagement
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <h2 class="font-display text-3xl sm:text-4xl tracking-tight leading-[1.1]">
+                  <h2 class="font-display text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.05]">
                     {p.data.title}
                   </h2>
                   <p class="text-sm font-medium">
@@ -125,13 +127,13 @@ const description =
                   ]}
                   aria-label={`${p.data.title} scope`}
                 >
-                  <dl class="grid grid-cols-2 gap-x-4 gap-y-6 border-t border-border-strong/40 pt-6">
+                  <dl class="grid grid-cols-2 gap-x-6 gap-y-8">
                     {p.data.scope.map((s) => (
-                      <div class="space-y-1">
-                        <dt class="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                      <div class="space-y-2 border-t-2 border-foreground/80 pt-4">
+                        <dt class="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                           {s.label}
                         </dt>
-                        <dd class="font-display text-xl sm:text-2xl tracking-tight tabular-nums">
+                        <dd class="font-display text-3xl sm:text-4xl tracking-[-0.02em] tabular-nums leading-[0.95]">
                           {s.value}
                         </dd>
                       </div>
