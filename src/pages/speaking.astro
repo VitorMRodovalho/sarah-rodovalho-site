@@ -1,8 +1,10 @@
 ---
 import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
+import eventBannerImg from "../assets/speaking/24-hours-women-construction-event-banner.png";
 import aiComputeImg from "../assets/speaking/ai-compute-demand-growth.png";
 import anatomyImg from "../assets/speaking/anatomy-of-a-data-center.png";
+import careerTimelineImg from "../assets/speaking/how-i-ended-up-in-data-centers-timeline.png";
 import physicalBackboneImg from "../assets/speaking/physical-backbone-digital-world.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -36,11 +38,29 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 const allEng = await getCollection("engagements");
 const engagements = allEng.sort((a, b) => a.data.order - b.data.order);
 
+/* Hero banner — full-width above abstract, branded for the event. */
+const HERO_IMAGES: Record<
+  string,
+  { src: typeof eventBannerImg; alt: string }
+> = {
+  "pmi-women-construction-follow-the-sun-2026": {
+    src: eventBannerImg,
+    alt: "24 Hours of Women in Construction Leadership — event banner with three construction workers, PMI Project Management Institute branding and PMI-CP certification badge",
+  },
+};
+
+/* Gallery — chart/diagram thumbnails below abstract. */
 const DECK_IMAGES: Record<
   string,
   Array<{ src: typeof aiComputeImg; alt: string; caption: string }>
 > = {
   "pmi-women-construction-follow-the-sun-2026": [
+    {
+      src: careerTimelineImg,
+      alt: "How I Ended Up in Data Centers — a career timeline graphic with five icons representing Brazil, Architecture, Construction, Technology, and Data Centers, connected by a horizontal line",
+      caption:
+        'How I Ended Up in Data Centers · "a career built across industries, countries, and disciplines."',
+    },
     {
       src: aiComputeImg,
       alt: "AI Compute Demand Growth — projection through 2030, exponential curve from 2018 early AI training clusters to 2030 inference-dominant compute",
@@ -141,6 +161,19 @@ function jsonLdForEngagement(
                   </span>
                 </div>
               </div>
+              {HERO_IMAGES[e.id.replace(/\.mdx$/, "")] && (
+                <Picture
+                  src={HERO_IMAGES[e.id.replace(/\.mdx$/, "")].src}
+                  alt={HERO_IMAGES[e.id.replace(/\.mdx$/, "")].alt}
+                  widths={[500, 800, 1100]}
+                  sizes="(min-width: 640px) 600px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+              )}
               <h2 class="font-display text-2xl sm:text-3xl tracking-tight leading-[1.1]">
                 {e.data.title}
               </h2>
@@ -158,7 +191,7 @@ function jsonLdForEngagement(
               {DECK_IMAGES[e.id.replace(/\.mdx$/, "")] && (
                 <div class="pt-3 space-y-4">
                   <p class="eyebrow !text-[10px]">From the talk deck</p>
-                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {DECK_IMAGES[e.id.replace(/\.mdx$/, "")].map((img) => (
                       <figure class="space-y-2">
                         <Picture
