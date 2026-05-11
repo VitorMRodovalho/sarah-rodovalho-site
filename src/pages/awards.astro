@@ -87,14 +87,12 @@ function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 px-4 py-16 md:py-24">
-    <div class="max-w-3xl mx-auto space-y-12">
-      <header class="space-y-4">
-        <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Recognition
-        </p>
-        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
-          Awards, honors, and leadership
+  <main class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-14">
+      <header class="space-y-5">
+        <p class="eyebrow"><span class="accent-rule"></span>Recognition</p>
+        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]">
+          Awards, honors, and <span class="italic text-accent">leadership.</span>
         </h1>
         <p class="text-base text-muted-foreground leading-relaxed">
           Recognition received across architecture, construction management,
@@ -109,13 +107,13 @@ function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
         grouped.map((group) => (
           <section class="space-y-6">
             <div class="space-y-2">
-              <h2 class="text-2xl font-bold tracking-tight">{group.label}</h2>
+              <h2 class="font-display text-2xl sm:text-3xl tracking-tight">{group.label}</h2>
               <p class="text-sm text-muted-foreground">{group.intro}</p>
             </div>
             <ul class="space-y-6">
               {group.items.map((a) => (
-                <li class="space-y-2 border-l-2 border-border/40 pl-6">
-                  <h3 class="text-lg font-semibold">{a.data.title}</h3>
+                <li class="space-y-2 border-l-2 border-border/60 pl-6">
+                  <h3 class="font-display text-lg sm:text-xl tracking-tight">{a.data.title}</h3>
                   <p class="text-sm text-muted-foreground">
                     {a.data.organization} · {a.data.period}
                   </p>
@@ -143,9 +141,6 @@ function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
         ))
       }
 
-      <footer class="pt-8 text-xs text-muted-foreground/60 text-center">
-        <a href="/" class="underline hover:text-foreground">← Home</a>
-      </footer>
     </div>
   </main>
 </BaseLayout>

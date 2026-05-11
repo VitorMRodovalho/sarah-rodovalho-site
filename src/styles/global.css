@@ -1,43 +1,69 @@
 @import "tailwindcss";
 
+@import "@fontsource/newsreader/400.css";
+@import "@fontsource/newsreader/500.css";
+@import "@fontsource/newsreader/600.css";
+@import "@fontsource/newsreader/400-italic.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+
 /**
- * Site-wide design tokens.
- * Tailwind v4 CSS-first config — values exposed as CSS custom properties
- * via `@theme` and consumed by Tailwind utilities.
+ * Site-wide design tokens (Wave 2 — PR-S09 brand foundation).
  *
- * Palette: warm-stone neutrals + soft teal accent. Kept deliberately
- * muted for an academic-research feel (not startup hype, not corporate
- * cold). Mirrors the Orenu "soft-structuralism" tonal register.
+ * Palette: stone neutrals + single warm-bronze accent. Bridges Sarah's
+ * architecture-craft heritage with executive presence in mission-critical
+ * infrastructure delivery. Neutral-dominant per Marina Mogilko reference
+ * pattern (whitespace > color); accent reserved for emphasis (current-role
+ * pill, link hover, primary CTA).
+ *
+ * Type pairing: Newsreader (editorial serif display, David Jonathan Ross)
+ * + Inter (body sans). Serif = scholar authority; sans = practitioner
+ * clarity. Bundled via @fontsource so no Google Fonts CDN call.
+ *
+ * All colors in oklch for perceptual uniformity across light/dark modes.
  */
 
 @theme {
-  --color-background: oklch(0.99 0.005 90);
-  --color-foreground: oklch(0.22 0.015 80);
+  --color-background: oklch(0.985 0.005 80);
+  --color-foreground: oklch(0.20 0.012 60);
 
-  --color-muted: oklch(0.94 0.01 85);
-  --color-muted-foreground: oklch(0.48 0.015 80);
+  --color-surface: oklch(0.97 0.006 80);
+  --color-surface-elevated: oklch(0.995 0.003 80);
 
-  --color-primary: oklch(0.55 0.09 175);
-  --color-primary-foreground: oklch(0.99 0.005 90);
+  --color-muted: oklch(0.94 0.008 75);
+  --color-muted-foreground: oklch(0.48 0.015 60);
 
-  --color-border: oklch(0.90 0.01 85);
+  --color-accent: oklch(0.58 0.10 50);
+  --color-accent-foreground: oklch(0.985 0.005 80);
+  --color-accent-soft: oklch(0.92 0.04 55);
 
-  --font-display: ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --color-border: oklch(0.88 0.01 70);
+  --color-border-strong: oklch(0.78 0.012 65);
+
+  --font-display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: oklch(0.18 0.015 80);
-    --color-foreground: oklch(0.95 0.01 85);
+    --color-background: oklch(0.16 0.012 60);
+    --color-foreground: oklch(0.95 0.008 75);
 
-    --color-muted: oklch(0.28 0.015 80);
-    --color-muted-foreground: oklch(0.68 0.015 80);
+    --color-surface: oklch(0.20 0.012 60);
+    --color-surface-elevated: oklch(0.22 0.012 60);
 
-    --color-primary: oklch(0.7 0.11 175);
-    --color-primary-foreground: oklch(0.18 0.015 80);
+    --color-muted: oklch(0.26 0.012 60);
+    --color-muted-foreground: oklch(0.68 0.012 70);
 
-    --color-border: oklch(0.3 0.015 80);
+    --color-accent: oklch(0.72 0.11 55);
+    --color-accent-foreground: oklch(0.16 0.012 60);
+    --color-accent-soft: oklch(0.32 0.06 55);
+
+    --color-border: oklch(0.30 0.012 60);
+    --color-border-strong: oklch(0.42 0.012 60);
   }
 }
 
@@ -45,12 +71,47 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1,
 h2,
-h3 {
+h3,
+.font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
+  font-weight: 500;
+}
+
+h1 {
+  font-weight: 500;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+.accent-rule {
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  background: var(--color-accent);
+  vertical-align: middle;
+  margin-right: 0.75rem;
+}
+
+a {
+  transition: color 200ms var(--ease-soft);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-foreground);
 }

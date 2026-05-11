@@ -2,70 +2,250 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
- * Homepage — Hero with current role + research focus.
+ * Homepage — 2-column Hero (text + portrait) at md+, stacked on mobile.
  *
- * Content sourced from Sarah's CV (Senior Project Manager / Aligned)
- * + LinkedIn (Digital Infrastructure framing) + Scholar profile
- * (publications + Harrisburg affiliation). All PII-whitelisted per
- * ADR-023 §D8.
+ * Brand foundation per S09: stone neutrals + warm bronze accent, Newsreader
+ * display, Inter body. Real Sony ILCE-1 professional headshot anchors brand
+ * identity. Below-fold: 3-up "Capabilities" grid + signature-numbers band
+ * + selected-mentions strip, terminating in a contact CTA.
+ *
+ * Content discipline: all employer + project facts trace to CV / LinkedIn
+ * / Scholar (PII-whitelisted per ADR-023 §D8).
  */
 
-const title = "Sarah F. Rodovalho";
+const title = "Sarah F. Rodovalho — Senior Project Manager & Researcher";
 const description =
-  "Senior Project Manager and sustainable design researcher. Digital infrastructure and data center delivery at Aligned. Doctoral candidate in Information Systems Engineering & Management at Harrisburg University.";
+  "Sarah F. Rodovalho — Senior Project Manager at Aligned Data Centers and doctoral researcher at Harrisburg University. Hyperscale digital infrastructure, advanced manufacturing, and sustainable construction across the U.S. and Brazil.";
+
+const CAPABILITIES = [
+  {
+    title: "Hyperscale delivery",
+    body: "Multi-megawatt campuses, long-lead procurement, OFE strategy, scope alignment across owner / GC / vendor partners.",
+  },
+  {
+    title: "Capital program governance",
+    body: "Change-order management, program controls, schedule risk mitigation, vendor and stakeholder coordination across concurrent builds.",
+  },
+  {
+    title: "Sustainable design research",
+    body: "BIM-integrated life-cycle assessment, carbon-neutral construction decision support, AI-augmented infrastructure delivery.",
+  },
+] as const;
+
+const STATS = [
+  { value: "16+", label: "years in delivery", caption: "U.S. + Brazil" },
+  { value: "264 MW", label: "current campus scope", caption: "Aligned · VA/MD" },
+  { value: "$279 M+", label: "change orders directed", caption: "Microsoft CO+I" },
+  { value: "3", label: "peer-reviewed papers", caption: "IJAC · Sustainability · ARCC" },
+] as const;
+
+const MENTIONS = [
+  "Aligned Data Centers",
+  "Microsoft Cloud Operations + Innovation",
+  "Tesla",
+  "Aliansce Sonae",
+  "Array Architects",
+  "Harrisburg University",
+  "Thomas Jefferson University",
+  "AIA Knowledge Community Board",
+] as const;
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 flex items-center justify-center px-4 py-16 md:py-24">
-    <div class="max-w-2xl space-y-6 text-center">
-      <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-        Senior Project Manager · Researcher
-      </p>
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-        Sarah F. Rodovalho
-      </h1>
-      <p class="text-base sm:text-lg text-muted-foreground leading-relaxed">
-        Digital infrastructure and data center delivery at Aligned. Doctoral
-        researcher in BIM, life cycle assessment, and AI-augmented infrastructure
-        delivery at Harrisburg University.
-      </p>
-      <p class="text-sm text-muted-foreground/80 leading-relaxed">
-        16+ years delivering hyperscale data centers, advanced manufacturing,
-        and healthcare facilities across the U.S. and Brazil — most recently
-        with Aligned Data Centers, Microsoft Cloud Operations + Innovation, and Tesla.
-      </p>
-      <nav class="pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
-        <a href="/about" class="underline hover:text-foreground">About</a>
-        <a href="/experience" class="underline hover:text-foreground">
-          Experience
-        </a>
-        <a href="/research" class="underline hover:text-foreground">
-          Research & Publications
-        </a>
-        <a href="/awards" class="underline hover:text-foreground">
-          Awards & Recognition
-        </a>
-        <a
-          href="https://www.linkedin.com/in/sarahrodovalho"
-          class="underline hover:text-foreground"
-          rel="noopener"
+  <main class="flex-1">
+    <!-- HERO ─────────────────────────────────────────────────────── -->
+    <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-12 md:pt-20 pb-16 md:pb-24">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-center">
+        <div class="md:col-span-7 space-y-7">
+          <p class="eyebrow">
+            <span class="accent-rule"></span>Senior Project Manager · Researcher
+          </p>
+          <h1 class="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.02] tracking-tight">
+            Building the
+            <span class="italic font-display text-accent">digital infrastructure</span>
+            that powers AI &amp; cloud — and researching how to do it more sustainably.
+          </h1>
+          <p class="text-lg leading-relaxed text-muted-foreground max-w-2xl">
+            I am <strong class="text-foreground font-medium">Sarah F. Rodovalho</strong> —
+            a senior project manager and architect with 16+ years delivering capital
+            programs in hyperscale data centers, advanced manufacturing, healthcare,
+            and large-scale retail across the U.S. and Brazil. Currently at
+            <strong class="text-foreground font-medium">Aligned Data Centers</strong>,
+            leading a multi-building 264&nbsp;MW campus, while pursuing a PhD on
+            BIM, life-cycle assessment, and AI-augmented delivery at
+            <strong class="text-foreground font-medium">Harrisburg University</strong>.
+          </p>
+          <div class="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+            <a
+              href="/experience"
+              class="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition"
+            >
+              Selected experience
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+            <a
+              href="/research"
+              class="text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
+              Research &amp; publications →
+            </a>
+          </div>
+        </div>
+
+        <div class="md:col-span-5">
+          <figure class="relative">
+            <div
+              class="absolute -inset-3 -z-10 rounded-[2rem] bg-accent-soft/40 blur-2xl"
+              aria-hidden="true"
+            >
+            </div>
+            <img
+              src="/images/sarah-headshot.jpg"
+              alt="Sarah F. Rodovalho — portrait"
+              width="1493"
+              height="1506"
+              fetchpriority="high"
+              decoding="async"
+              class="w-full max-w-md md:max-w-none mx-auto rounded-2xl shadow-[0_30px_60px_-30px_oklch(0.20_0.012_60/0.35)] ring-1 ring-border/60"
+            />
+            <figcaption
+              class="absolute -bottom-3 right-3 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground bg-background/80 backdrop-blur px-2.5 py-1 rounded-full ring-1 ring-border"
+            >
+              Leesburg, VA
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPABILITIES ─────────────────────────────────────────────── -->
+    <section class="border-t border-border/60 bg-surface/60">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+        <header class="space-y-3 mb-12">
+          <p class="eyebrow">What I do</p>
+          <h2 class="font-display text-3xl sm:text-4xl tracking-tight max-w-2xl">
+            Field-tested governance meeting academic rigor.
+          </h2>
+        </header>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {
+            CAPABILITIES.map((cap, i) => (
+              <article class="space-y-3">
+                <p class="text-xs font-medium tabular-nums text-accent">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 class="font-display text-xl tracking-tight">{cap.title}</h3>
+                <p class="text-sm leading-relaxed text-muted-foreground">
+                  {cap.body}
+                </p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE NUMBERS ────────────────────────────────────────── -->
+    <section class="border-t border-border/60">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+        <header class="space-y-3 mb-12">
+          <p class="eyebrow">By the numbers</p>
+          <h2 class="font-display text-3xl sm:text-4xl tracking-tight max-w-2xl">
+            Scale, scope, and a research record.
+          </h2>
+        </header>
+        <dl class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+          {
+            STATS.map((stat) => (
+              <div class="space-y-1 border-t border-border/60 pt-4">
+                <dt class="text-xs uppercase tracking-[0.15em] text-muted-foreground">
+                  {stat.label}
+                </dt>
+                <dd class="font-display text-3xl sm:text-4xl tracking-tight tabular-nums">
+                  {stat.value}
+                </dd>
+                <p class="text-xs text-muted-foreground/80">{stat.caption}</p>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <!-- SELECTED MENTIONS ────────────────────────────────────────── -->
+    <section class="border-t border-border/60 bg-surface/60">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-14">
+        <p class="eyebrow mb-6">Selected affiliations &amp; engagements</p>
+        <ul
+          class="flex flex-wrap gap-x-8 gap-y-3 font-display text-base sm:text-lg text-muted-foreground"
         >
-          LinkedIn
-        </a>
-        <a
-          href="https://scholar.google.com/citations?user=3s1M4TIAAAAJ"
-          class="underline hover:text-foreground"
-          rel="noopener"
-        >
-          Scholar
-        </a>
-      </nav>
-    </div>
+          {
+            MENTIONS.map((m, i) => (
+              <li class="flex items-center gap-8">
+                <span>{m}</span>
+                {i < MENTIONS.length - 1 && (
+                  <span class="text-border-strong" aria-hidden="true">
+                    ·
+                  </span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- CONTACT CTA ─────────────────────────────────────────────── -->
+    <section class="border-t border-border/60">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
+          <div class="md:col-span-8 space-y-4">
+            <p class="eyebrow">Get in touch</p>
+            <h2 class="font-display text-4xl sm:text-5xl tracking-tight leading-[1.05]">
+              Open to conversations about delivery, research,
+              <span class="italic text-accent">and the AI-infrastructure frontier.</span>
+            </h2>
+          </div>
+          <div class="md:col-span-4 md:text-right space-y-3">
+            <a
+              href="mailto:sarah@sarahrodovalho.com"
+              class="inline-flex items-center gap-2 text-base font-medium text-foreground hover:text-accent"
+            >
+              sarah@sarahrodovalho.com
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </a>
+            <p class="text-sm text-muted-foreground">
+              Based in Leesburg, VA · DC-Baltimore region
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
-  <footer class="px-4 py-6 text-center text-xs text-muted-foreground/60 border-t border-border/40 space-y-1">
-    <p>© {new Date().getFullYear()} Sarah F. Rodovalho · All rights reserved.</p>
-    <p>
-      Site by <a href="https://vitormr.dev" rel="noopener" class="underline hover:text-foreground">Vitor M. Rodovalho</a>.
-    </p>
-  </footer>
 </BaseLayout>

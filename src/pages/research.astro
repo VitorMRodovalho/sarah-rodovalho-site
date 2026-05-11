@@ -51,14 +51,12 @@ function citationFor(p: (typeof pubs)[number]): string {
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 px-4 py-16 md:py-24">
-    <div class="max-w-3xl mx-auto space-y-12">
-      <header class="space-y-4">
-        <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Research
-        </p>
-        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
-          Publications & Conference Work
+  <main class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-14">
+      <header class="space-y-5">
+        <p class="eyebrow"><span class="accent-rule"></span>Research</p>
+        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]">
+          Publications &amp; <span class="italic text-accent">conference work.</span>
         </h1>
         <p class="text-base text-muted-foreground leading-relaxed">
           Peer-reviewed publications and conference work on sustainable design,
@@ -89,10 +87,10 @@ function citationFor(p: (typeof pubs)[number]): string {
         {
           pubs.map((p) => (
             <article class="space-y-3 border-b border-border/40 pb-8 last:border-b-0">
-              <p class="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">
+              <p class="eyebrow">
                 {p.data.kind === "journal-article" ? "Journal article" : "Conference panel"} · {p.data.venueShort ?? p.data.venue} · {p.data.year}
               </p>
-              <h2 class="text-2xl font-bold tracking-tight">{p.data.title}</h2>
+              <h2 class="font-display text-2xl sm:text-3xl tracking-tight">{p.data.title}</h2>
               <p class="text-sm text-muted-foreground leading-relaxed">
                 {p.data.abstract}
               </p>
@@ -144,9 +142,6 @@ function citationFor(p: (typeof pubs)[number]): string {
         }
       </section>
 
-      <footer class="pt-8 text-xs text-muted-foreground/60 text-center">
-        <a href="/" class="underline hover:text-foreground">← Home</a>
-      </footer>
     </div>
   </main>
 </BaseLayout>
