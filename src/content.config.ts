@@ -123,4 +123,53 @@ const experience = defineCollection({
   }),
 });
 
-export const collections = { publications, awards, experience };
+/**
+ * `projects` — featured case studies (selected work).
+ *
+ * Curated subset of Sarah's portfolio, surfaced on /work with scope
+ * numbers + project narrative in the foreground. Distinct from
+ * `experience` (which is the broader career-timeline view): a project
+ * here is a single body of work with quantitative scope, not a role.
+ *
+ * Schema design notes:
+ *  - `scope` is an ordered list of {label, value} pairs rendered as a
+ *    stat strip on the card and the detail page. Cap visually at 4
+ *    on cards; detail pages may show more.
+ *  - `category` controls a small tonal accent + badge label, not a
+ *    full filter UI (kept simple while the catalog is < 10 items).
+ *  - All fact sources MUST be public (CV / LinkedIn / Scholar / public
+ *    press) — see `feedback_role_title_verify_against_offer_letter.md`
+ *    + ADR-023 §D8.
+ *  - `hasDetailPage` toggles whether `/work/[slug]` is rendered; the
+ *    card always links to `#anchor` on /work otherwise.
+ */
+const projects = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/projects" }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string(),
+    role: z.string(),
+    employer: z.string(),
+    employerUrl: z.url().optional(),
+    period: z.string(),
+    yearStart: z.number().int(),
+    yearEnd: z.number().int().nullable().default(null),
+    isCurrent: z.boolean().default(false),
+    location: z.string(),
+    category: z.enum([
+      "data-center",
+      "retail-mall",
+      "transit",
+      "healthcare",
+      "manufacturing",
+      "academia",
+      "hospitality",
+    ]),
+    abstract: z.string(),
+    scope: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+    order: z.number().int().default(100),
+    hasDetailPage: z.boolean().default(false),
+  }),
+});
+
+export const collections = { publications, awards, experience, projects };
