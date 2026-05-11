@@ -85,14 +85,18 @@ const ogImage = new URL("/images/sarah-headshot.jpg", Astro.site).toString();
         "@context": "https://schema.org",
         "@type": "Person",
         name: "Sarah Faria Alcantara Macedo Rodovalho",
-        alternateName: ["Sarah F. Rodovalho", "S Rodovalho"],
+        alternateName: [
+          "Sarah F. A. M. Rodovalho",
+          "Sarah F. Rodovalho",
+          "S Rodovalho",
+        ],
         url: "https://sarahrodovalho.com",
         image: "https://sarahrodovalho.com/images/sarah-headshot.jpg",
         sameAs: [
           "https://scholar.google.com/citations?user=3s1M4TIAAAAJ",
           "https://www.linkedin.com/in/sarahrodovalho",
         ],
-        jobTitle: "Senior Project Manager, Doctoral Researcher",
+        jobTitle: "Integrated Design Manager, Doctoral Researcher",
         worksFor: {
           "@type": "Organization",
           name: "Aligned Data Centers",
@@ -121,6 +125,7 @@ const ogImage = new URL("/images/sarah-headshot.jpg", Astro.site).toString();
     />
   </head>
   <body class="min-h-screen flex flex-col antialiased">
+    <a href="#main" class="skip-to-content">Skip to content</a>
     {!noChrome && <SiteHeader />}
     <slot />
     <SiteFooter />

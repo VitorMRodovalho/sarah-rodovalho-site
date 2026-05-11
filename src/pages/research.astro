@@ -15,9 +15,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 const allPubs = await getCollection("publications");
 const pubs = allPubs.sort((a, b) => a.data.order - b.data.order);
 
-const title = "Research & Publications · Sarah F. Rodovalho";
+const title = "Research & Publications · Sarah Rodovalho";
 const description =
-  "Peer-reviewed publications and conference work on sustainable design, BIM, and carbon-neutral construction by Sarah F. Rodovalho.";
+  "Peer-reviewed publications and conference work on sustainable design, BIM, and carbon-neutral construction by Sarah Rodovalho.";
 
 function jsonLdForPub(p: (typeof pubs)[number]): Record<string, unknown> {
   const isJournal = p.data.kind === "journal-article";
@@ -51,7 +51,7 @@ function citationFor(p: (typeof pubs)[number]): string {
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
     <div class="max-w-3xl mx-auto space-y-14">
       <header class="space-y-5">
         <p class="eyebrow"><span class="accent-rule"></span>Research</p>

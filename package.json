@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Sarah F. Rodovalho — sustainable design + construction management researcher · Harrisburg University",
+  "description": "Sarah Rodovalho — Integrated Design Manager + sustainable-design researcher · Harrisburg University",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -29,9 +29,10 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "@biomejs/biome": "^2.4.14",
+    "@biomejs/biome": "^2.4.15",
     "@types/node": "^25.6.2",
     "husky": "^9.1.7",
+    "sharp": "^0.34.5",
     "typescript": "^6.0.3",
     "wrangler": "^4.90.0"
   },

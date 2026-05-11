@@ -1,12 +1,25 @@
 @import "tailwindcss";
 
-@import "@fontsource/newsreader/400.css";
-@import "@fontsource/newsreader/500.css";
-@import "@fontsource/newsreader/600.css";
-@import "@fontsource/newsreader/400-italic.css";
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
+/* Font subsets — latin + latin-ext only (S12 perf). Latin-ext covers
+   the diacritics needed for Portuguese names (ã, í, ç, õ, á) used
+   throughout Sarah's biography (Faria Alcantara Macedo, Goiânia,
+   Passeio das Águas, Aliansce). Stripping cyrillic / greek /
+   vietnamese subsets eliminates ~70% of shipped font weight; browsers
+   still pick the right subset via unicode-range. */
+@import "@fontsource/newsreader/latin-400.css";
+@import "@fontsource/newsreader/latin-ext-400.css";
+@import "@fontsource/newsreader/latin-500.css";
+@import "@fontsource/newsreader/latin-ext-500.css";
+@import "@fontsource/newsreader/latin-600.css";
+@import "@fontsource/newsreader/latin-ext-600.css";
+@import "@fontsource/newsreader/latin-400-italic.css";
+@import "@fontsource/newsreader/latin-ext-400-italic.css";
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-ext-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-ext-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-ext-600.css";
 
 /**
  * Site-wide design tokens (S09 brand foundation + S11 theme system).
@@ -132,4 +145,35 @@ a {
 ::selection {
   background: var(--color-accent-soft);
   color: var(--color-foreground);
+}
+
+/* Skip-to-content link — visible only on keyboard focus (S12 a11y). */
+.skip-to-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.5rem 1rem;
+  background: var(--color-foreground);
+  color: var(--color-background);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0 0 0.25rem 0;
+  transform: translateY(-200%);
+  transition: transform 200ms var(--ease-soft);
+  z-index: 100;
+}
+.skip-to-content:focus {
+  transform: translateY(0);
+}
+
+/* Honor prefers-reduced-motion across all sites (S12 a11y). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

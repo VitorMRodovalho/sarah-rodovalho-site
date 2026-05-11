@@ -4,3 +4,22 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Astro emits hashed asset filenames into /_astro/*. The hash makes the
+# URL unique per build, so the response is safe to cache forever.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static images: long cache OK; bust by renaming if needed.
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Favicon: medium cache.
+/favicon.svg
+  Cache-Control: public, max-age=604800
+
+# Sitemap + robots: short cache (must refresh after content updates).
+/sitemap*.xml
+  Cache-Control: public, max-age=300
+/robots.txt
+  Cache-Control: public, max-age=300
