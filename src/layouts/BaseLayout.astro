@@ -1,11 +1,16 @@
 ---
 /**
  * BaseLayout — site-wide HTML wrapper with metadata, fonts, Schema.org
- * Person markup, and shared SiteHeader/SiteFooter chrome (S09).
+ * Person markup, and shared SiteHeader/SiteFooter chrome.
  *
  * Each page passes title + description. `noChrome` lets the homepage
  * suppress the sticky header on full-bleed hero treatments (currently
  * unused — keeping the API for future Tweaks-panel variant).
+ *
+ * S15c: dedicated 1200×630 og-default.jpg (Facebook-recommended OG
+ * size — Twitter + LinkedIn render it correctly without center-crop
+ * disasters). Per-page BreadcrumbList JSON-LD for richer SERP nav
+ * snippets.
  */
 
 import SiteFooter from "../components/SiteFooter.astro";
@@ -20,7 +25,43 @@ interface Props {
 
 const { title, description, noChrome = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const ogImage = new URL("/images/sarah-headshot.jpg", Astro.site).toString();
+const ogImage = new URL("/images/og-default.jpg", Astro.site).toString();
+
+// BreadcrumbList — assembled from URL segments. Top-level pages render
+// "Home > X"; the homepage renders just "Home".
+const PATH_LABEL: Record<string, string> = {
+  about: "About",
+  work: "Selected work",
+  experience: "Experience",
+  research: "Research & Publications",
+  speaking: "Speaking",
+  credentials: "Credentials",
+  awards: "Awards & Recognition",
+  "press-kit": "Press kit",
+};
+const segments = Astro.url.pathname
+  .split("/")
+  .filter(Boolean)
+  .filter((s) => PATH_LABEL[s]);
+const breadcrumbItems: Array<{
+  "@type": "ListItem";
+  position: number;
+  name: string;
+  item: string;
+}> = [
+  {
+    "@type": "ListItem",
+    position: 1,
+    name: "Home",
+    item: "https://sarahrodovalho.com/",
+  },
+  ...segments.map((seg, i) => ({
+    "@type": "ListItem" as const,
+    position: i + 2,
+    name: PATH_LABEL[seg],
+    item: `https://sarahrodovalho.com/${seg}/`,
+  })),
+];
 ---
 
 <!doctype html>
@@ -67,16 +108,27 @@ const ogImage = new URL("/images/sarah-headshot.jpg", Astro.site).toString();
     <meta name="description" content={description} />
 
     <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="Sarah Rodovalho" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Sarah Rodovalho — professional portrait"
+    />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta
+      name="twitter:image:alt"
+      content="Sarah Rodovalho — professional portrait"
+    />
 
     <script
       is:inline
@@ -91,7 +143,7 @@ const ogImage = new URL("/images/sarah-headshot.jpg", Astro.site).toString();
           "S Rodovalho",
         ],
         url: "https://sarahrodovalho.com",
-        image: "https://sarahrodovalho.com/images/sarah-headshot.jpg",
+        image: "https://sarahrodovalho.com/images/og-default.jpg",
         sameAs: [
           "https://scholar.google.com/citations?user=3s1M4TIAAAAJ",
           "https://www.linkedin.com/in/sarahrodovalho",
@@ -121,6 +173,16 @@ const ogImage = new URL("/images/sarah-headshot.jpg", Astro.site).toString();
           addressRegion: "VA",
           addressCountry: "US",
         },
+      })}
+    />
+
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbItems,
       })}
     />
   </head>
