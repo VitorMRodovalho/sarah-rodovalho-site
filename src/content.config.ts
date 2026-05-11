@@ -215,10 +215,47 @@ const credentials = defineCollection({
   }),
 });
 
+/**
+ * `engagements` — invited talks, panels, workshops, and interviews.
+ *
+ * Distinct from `publications` (peer-reviewed text output) — an
+ * engagement is oratory + slide content delivered at an event, not
+ * necessarily citation-producing. ARCC 2025 lives in /research as a
+ * conference panel (citation track); PMI Women In Construction 2026
+ * "Follow the Sun" lives here as an invited talk (industry track).
+ *
+ * Schema design notes:
+ *  - `kind` discriminates talk / panel / workshop / keynote / interview.
+ *  - `eventUrl` should link to the event's public page when stable.
+ *  - `deckUrl` is the public slide-share URL when available; if the
+ *    deck is private (e.g., PMI internal members-only), keep this
+ *    blank and rely on the abstract.
+ *  - `videoUrl` is the recording link when available.
+ *  - `audience` describes who the talk was for (helps a recruiter or
+ *    booking agent calibrate fit).
+ */
+const engagements = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/engagements" }),
+  schema: z.object({
+    title: z.string(),
+    event: z.string(),
+    eventUrl: z.url().optional(),
+    venue: z.string().optional(),
+    date: z.string(),
+    kind: z.enum(["talk", "panel", "workshop", "keynote", "interview"]),
+    audience: z.string().optional(),
+    abstract: z.string(),
+    deckUrl: z.url().optional(),
+    videoUrl: z.url().optional(),
+    order: z.number().int().default(100),
+  }),
+});
+
 export const collections = {
   publications,
   awards,
   experience,
   projects,
   credentials,
+  engagements,
 };
