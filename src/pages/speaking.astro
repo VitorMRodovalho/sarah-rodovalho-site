@@ -1,5 +1,9 @@
 ---
+import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
+import aiComputeImg from "../assets/speaking/ai-compute-demand-growth.png";
+import anatomyImg from "../assets/speaking/anatomy-of-a-data-center.png";
+import physicalBackboneImg from "../assets/speaking/physical-backbone-digital-world.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
@@ -18,10 +22,45 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * Per-item Schema.org JSON-LD uses `Event` with the talk as a
  * `subEvent` workPerformed — the closest canonical mapping for an
  * invited-talk-at-event pattern.
+ *
+ * S15b: integrated 3 chart/diagram images from the PMI Women In
+ * Construction 2026 deck (image40 AI Compute Demand Growth · image39
+ * Anatomy of a Data Center · image32 Physical Backbone). Looked up
+ * by engagement id; rendered as a gallery below abstract via Astro
+ * Picture (AVIF/WebP/JPG fallback). Project photos (Passeio das
+ * Águas + BRT under construction) intentionally skipped — potential
+ * overlap with the confidential EB-1 deck. Vitor + Sarah to confirm
+ * license OK for the 3 included diagrams when reviewing.
  */
 
 const allEng = await getCollection("engagements");
 const engagements = allEng.sort((a, b) => a.data.order - b.data.order);
+
+const DECK_IMAGES: Record<
+  string,
+  Array<{ src: typeof aiComputeImg; alt: string; caption: string }>
+> = {
+  "pmi-women-construction-follow-the-sun-2026": [
+    {
+      src: aiComputeImg,
+      alt: "AI Compute Demand Growth — projection through 2030, exponential curve from 2018 early AI training clusters to 2030 inference-dominant compute",
+      caption:
+        "AI Compute Demand Growth · compute capacity (ExaFLOPS) doubling every ~7 months · $6.7T global data center investment needed by 2030.",
+    },
+    {
+      src: physicalBackboneImg,
+      alt: "The Physical Backbone of the Digital World — diagram connecting user devices, fiber/Wi-Fi, data centers, and cloud services with streaming, AI, online banking, cloud platforms as use cases",
+      caption:
+        "The Physical Backbone of the Digital World — every digital service relies on physical infrastructure (devices → fiber → data centers → cloud).",
+    },
+    {
+      src: anatomyImg,
+      alt: "Anatomy of a Data Center — schematic showing substation, power distribution, cooling plant, network and fiber, IT infrastructure, building systems, facility support",
+      caption:
+        "Anatomy of a Data Center · from substation to racks — power · cooling · network · IT infrastructure · facility support.",
+    },
+  ],
+};
 
 const KIND_LABEL: Record<(typeof engagements)[number]["data"]["kind"], string> = {
   talk: "Talk",
@@ -116,6 +155,31 @@ function jsonLdForEngagement(
               <p class="text-base leading-relaxed text-foreground/85">
                 {e.data.abstract}
               </p>
+              {DECK_IMAGES[e.id.replace(/\.mdx$/, "")] && (
+                <div class="pt-3 space-y-4">
+                  <p class="eyebrow !text-[10px]">From the talk deck</p>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {DECK_IMAGES[e.id.replace(/\.mdx$/, "")].map((img) => (
+                      <figure class="space-y-2">
+                        <Picture
+                          src={img.src}
+                          alt={img.alt}
+                          widths={[300, 500, 700]}
+                          sizes="(min-width: 640px) 30vw, 90vw"
+                          formats={["avif", "webp"]}
+                          fallbackFormat="jpg"
+                          loading="lazy"
+                          decoding="async"
+                          class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                        />
+                        <figcaption class="text-[11px] text-muted-foreground leading-snug">
+                          {img.caption}
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div class="flex flex-wrap gap-x-5 gap-y-1 text-xs pt-1">
                 {e.data.eventUrl && (
                   <a
