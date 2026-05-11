@@ -172,4 +172,53 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { publications, awards, experience, projects };
+/**
+ * `credentials` — professional licenses, certifications, designations
+ * + memberships requiring competence-based admission.
+ *
+ * Distinct from `awards` (recognition received for past achievement)
+ * and `experience` (employment timeline). A credential is a verifiable
+ * permission-to-practice or knowledge-attestation issued by a
+ * governing body — what a recruiter or attorney would call
+ * "qualifications" rather than "accomplishments".
+ *
+ * Schema design notes:
+ *  - `kind` discriminates license (legal permission to practice) vs
+ *    certification (knowledge attestation) vs designation (industry
+ *    title) vs membership (competence-required association).
+ *  - `status` covers active / in-progress / expired; in-progress
+ *    entries surface a "pursuing" badge.
+ *  - `credentialId` is public-verifiable (e.g., LEED GA ID, NCARB
+ *    Record number, CAU registry number). Per ADR-023 §D8 these are
+ *    not PII because they are designed to be looked up against the
+ *    governing body's registry.
+ *  - `verifyUrl` should link to a public verification endpoint
+ *    (Credly profile, USGBC search, etc.) — the single trustworthy
+ *    proof-of-claim path.
+ *  - Renders Schema.org `EducationalOccupationalCredential` JSON-LD
+ *    per item.
+ */
+const credentials = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/credentials" }),
+  schema: z.object({
+    title: z.string(),
+    organization: z.string(),
+    organizationUrl: z.url().optional(),
+    kind: z.enum(["license", "certification", "designation", "membership"]),
+    status: z.enum(["active", "in-progress", "expired"]).default("active"),
+    credentialId: z.string().optional(),
+    issuedDate: z.string().optional(),
+    validThrough: z.string().optional(),
+    verifyUrl: z.url().optional(),
+    description: z.string(),
+    order: z.number().int().default(100),
+  }),
+});
+
+export const collections = {
+  publications,
+  awards,
+  experience,
+  projects,
+  credentials,
+};
