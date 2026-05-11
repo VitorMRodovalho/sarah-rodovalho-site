@@ -1,14 +1,23 @@
 ---
+import { Picture } from "astro:assets";
+import fullBody from "../assets/sarah-full-body.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
  * /about — biographical narrative.
  *
- * Bridges practitioner identity (Senior PM, Aligned/Microsoft/Tesla) with
- * researcher identity (Harrisburg PhD, sustainable construction
- * publications). Content discipline: only verifiable facts (employer
- * names, public roles, public certifications, public talks). PII-whitelisted
- * per ADR-023 §D8 — no phone, no personal gmail, no salary, no address
+ * Bridges practitioner identity (Integrated Design Manager, Aligned /
+ * ex-Microsoft / ex-Tesla) with researcher identity (Harrisburg PhD,
+ * sustainable construction publications).
+ *
+ * Layout (S14c): top header full-width; bio narrative is 2-col with
+ * full-body portrait on lg+ (max-w-6xl rail); subsequent sections
+ * (Now / Past roles / Education / Certifications / Languages) remain
+ * single-col max-w-3xl for readability.
+ *
+ * Content discipline: only verifiable facts (employer names, public
+ * roles, public certifications, public talks). PII-whitelisted per
+ * ADR-023 §D8 — no phone, no personal gmail, no salary, no address
  * beyond city.
  */
 
@@ -18,60 +27,104 @@ const description =
 ---
 
 <BaseLayout title={title} description={description}>
-  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-    <div class="max-w-3xl mx-auto space-y-14">
-      <header class="space-y-5">
-        <p class="eyebrow"><span class="accent-rule"></span>About</p>
-        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]">
-          Building the infrastructure that powers AI &amp; cloud — and researching
-          how to do it <span class="italic text-accent">more sustainably.</span>
-        </h1>
-      </header>
+  <main id="main" class="flex-1 py-16 md:py-24">
+    <!-- HEADER ──────────────────────────────────────────────────── -->
+    <header
+      class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5 mb-14 md:mb-20"
+    >
+      <p class="eyebrow"><span class="accent-rule"></span>About</p>
+      <h1
+        class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+      >
+        Building the infrastructure that powers AI &amp; cloud — and researching
+        how to do it <span class="italic text-accent">more sustainably.</span>
+      </h1>
+    </header>
 
-      <section class="space-y-6 text-base leading-relaxed">
-        <p>
-          I am a senior project leader and architect with 16+ years delivering
-          complex capital programs across hyperscale data centers, industrial
-          manufacturing, healthcare, and commercial sectors in the U.S. and
-          Brazil. I currently work at Aligned Data Centers as Integrated Design
-          Manager on a multi-building, ~264 MW campus.
-        </p>
-        <p>
-          My background spans architecture, construction, and capital project
-          delivery. I have worked on infrastructure programs with Tesla,
-          Microsoft Cloud Operations + Innovation, and Aligned Data Centers,
-          and I am pursuing a PhD researching how data analytics and AI can
-          improve infrastructure delivery — bridging field-tested operational
-          practice with academic rigor.
-        </p>
-        <p>
-          Trained as an architect (UEG, Brazil, 2009) and a sustainable-design
-          researcher (M.Sc., Thomas Jefferson University, 2023), I hold the
-          PMP, LEED Green Associate, OSHA 30, and AIA Associate credentials.
-          My research published in the International Journal of Architectural
-          Computing and Sustainability (MDPI) focuses on integrating BIM,
-          energy analysis, and life-cycle assessment to support carbon-neutral
-          construction decision-making.
-        </p>
-      </section>
+    <!-- BIO + PORTRAIT 2-COL ────────────────────────────────────── -->
+    <section
+      class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 md:mb-28"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <div class="lg:col-span-7 space-y-6 text-base leading-relaxed">
+          <p>
+            I am a senior design and project leader and architect with 16+ years
+            delivering complex capital programs across hyperscale data centers,
+            industrial manufacturing, healthcare, and commercial sectors in the
+            U.S. and Brazil. I currently work at Aligned Data Centers as
+            Integrated Design Manager on a multi-building, ~264&nbsp;MW campus.
+          </p>
+          <p>
+            My background spans architecture, construction, and capital project
+            delivery. I have worked on infrastructure programs with Tesla,
+            Microsoft Cloud Operations + Innovation, and Aligned Data Centers,
+            and I am pursuing a PhD researching how data analytics and AI can
+            improve infrastructure delivery — bridging field-tested operational
+            practice with academic rigor.
+          </p>
+          <p>
+            Trained as an architect (UEG, Brazil, 2009) and a sustainable-design
+            researcher (M.Sc., Thomas Jefferson University, 2023), I hold the
+            PMP, LEED Green Associate, OSHA 30, and AIA Associate credentials.
+            My research published in the International Journal of Architectural
+            Computing and Sustainability (MDPI) focuses on integrating BIM,
+            energy analysis, and life-cycle assessment to support carbon-neutral
+            construction decision-making.
+          </p>
+          <p class="text-sm text-muted-foreground pt-2">
+            See also{" "}
+            <a href="/work" class="underline hover:text-foreground"
+              >selected work</a
+            >,{" "}
+            <a href="/credentials" class="underline hover:text-foreground"
+              >verifiable credentials</a
+            >, and{" "}
+            <a href="/research" class="underline hover:text-foreground"
+              >published research</a
+            >.
+          </p>
+        </div>
 
+        <aside class="lg:col-span-5 lg:sticky lg:top-24">
+          <figure class="relative max-w-md mx-auto lg:mx-0">
+            <Picture
+              src={fullBody}
+              alt="Sarah Rodovalho — full-length portrait"
+              widths={[400, 600, 800, 1000]}
+              sizes="(min-width: 1024px) 41.6vw, 90vw"
+              formats={["avif", "webp"]}
+              fallbackFormat="jpg"
+              loading="lazy"
+              decoding="async"
+              class="w-full rounded-2xl ring-1 ring-border/60 shadow-[0_30px_60px_-30px_oklch(0.20_0.012_60/0.30)]"
+            />
+          </figure>
+        </aside>
+      </div>
+    </section>
+
+    <!-- REMAINING SECTIONS (single-col) ─────────────────────────── -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
       <section class="space-y-4">
         <h2 class="font-display text-2xl sm:text-3xl tracking-tight">Now</h2>
         <ul class="space-y-3 text-base leading-relaxed">
           <li>
-            <strong>Integrated Design Manager</strong> at <strong>Aligned Data Centers</strong> (Oct 2025 – present, VA &
-            MD). Leading integrated design management across a ~264MW
-            multi-building campus.
+            <strong>Integrated Design Manager</strong> at <strong
+              >Aligned Data Centers</strong
+            > (Oct 2025 – present, VA &amp; MD). Leading integrated design
+            management across a ~264&nbsp;MW multi-building campus.
           </li>
           <li>
-            <strong>PhD candidate</strong> in Information Systems Engineering &
+            <strong>PhD candidate</strong> in Information Systems Engineering &amp;
             Management at <strong>Harrisburg University of Science and Technology</strong>
-            (in progress, expected Dec 2030). Research focus: data analytics
-            and AI applied to infrastructure delivery.
+            (in progress, expected Dec 2030). Research focus: data analytics and
+            AI applied to infrastructure delivery.
           </li>
           <li>
-            <strong>Construction Contract Administration Knowledge Community
-            Leadership — Board Member</strong> at{" "}
+            <strong
+              >Construction Contract Administration Knowledge Community
+              Leadership — Board Member</strong
+            > at{" "}
             <a
               href="https://communityhub.aia.org/communities/community-home?CommunityKey=7f559f04-304e-4451-be28-808158489e42"
               class="underline hover:text-foreground"
@@ -97,36 +150,38 @@ const description =
       </section>
 
       <section class="space-y-4">
-        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">Selected past roles</h2>
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Selected past roles
+        </h2>
         <ul class="space-y-3 text-base leading-relaxed">
           <li>
-            <strong>Microsoft Cloud Operations + Innovation</strong> — Data Center
-            Construction Contracts (Project Manager focus), VA / NC / Brazil,
-            2024 – 2025. Directed change-order management across 8 concurrent
-            hyperscale builds (~1.1M+ sq ft, 182.5MW); implemented a
+            <strong>Microsoft Cloud Operations + Innovation</strong> — Data
+            Center Construction Contracts (Project Manager focus), VA / NC /
+            Brazil, 2024 – 2025. Directed change-order management across 8
+            concurrent hyperscale builds (~1.1M+ sq ft, 182.5MW); implemented a
             change-order management log adopted program-wide.
           </li>
           <li>
-            <strong>Tesla</strong> — Technical Project Manager (Industrial & Workplace
-            Projects), CA & NV, 2023 – 2024. Managed 20+ infrastructure,
-            workplace, and R&D facility projects across ~2.25M sq ft in
-            Fremont, Lathrop, and Nevada — supporting manufacturing and cell-
-            development programs.
+            <strong>Tesla</strong> — Technical Project Manager (Industrial &amp;
+            Workplace Projects), CA &amp; NV, 2023 – 2024. Managed 20+
+            infrastructure, workplace, and R&amp;D facility projects across
+            ~2.25M sq ft in Fremont, Lathrop, and Nevada — supporting
+            manufacturing and cell-development programs.
           </li>
           <li>
-            <strong>Thomas Jefferson University</strong> — Teaching Assistant, Department
-            of Construction Management, Philadelphia, 2021 – 2023.
+            <strong>Thomas Jefferson University</strong> — Teaching Assistant,
+            Department of Construction Management, Philadelphia, 2021 – 2023.
           </li>
           <li>
-            <strong>Array Architects</strong> — Architectural Designer (clinical planning
-            and healthcare design), Philadelphia, 2022.
+            <strong>Array Architects</strong> — Architectural Designer (clinical
+            planning and healthcare design), Philadelphia, 2022.
           </li>
           <li>
-            <strong>Aliansce Sonae Shopping Centers</strong> — Design & Construction
-            Manager, Brazil, 2016 – 2021. Managed and delivered Passeio das
-            Águas, a $232M / 2M sq ft mall — one of Brazil's largest — from
-            ground-up construction through commissioning, on time and under
-            budget.
+            <strong>Aliansce Sonae Shopping Centers</strong> — Design &amp;
+            Construction Manager, Brazil, 2016 – 2021. Managed and delivered
+            Passeio das Águas, a $232M / 2M sq ft mall — one of Brazil's largest
+            — from ground-up construction through commissioning, on time and
+            under budget.
           </li>
         </ul>
         <p class="text-sm text-muted-foreground">
@@ -138,24 +193,30 @@ const description =
           >
             LinkedIn
           </a>
+          ; deeper case studies on{" "}
+          <a href="/work" class="underline hover:text-foreground">selected work</a
+          >
           .
         </p>
       </section>
 
       <section class="space-y-4">
-        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">Education</h2>
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Education
+        </h2>
         <ul class="space-y-2 text-base leading-relaxed">
           <li>
-            <strong>PhD in Information Systems Engineering & Management</strong> ·
-            Harrisburg University of Science and Technology, PA · 2026 – 2030 (in progress)
+            <strong>PhD in Information Systems Engineering &amp; Management</strong
+            > · Harrisburg University of Science and Technology, PA · 2026 –
+            2030 (in progress)
           </li>
           <li>
-            <strong>M.Sc. in Sustainable Design & Construction Management</strong> ·
-            Thomas Jefferson University, PA · 2021 – 2023
+            <strong>M.Sc. in Sustainable Design &amp; Construction Management</strong
+            > · Thomas Jefferson University, PA · 2021 – 2023
           </li>
           <li>
-            <strong>MBA in Real Estate & Construction Business Management</strong> ·
-            Fundação Getulio Vargas (FGV), Brazil · 2012 – 2016
+            <strong>MBA in Real Estate &amp; Construction Business Management</strong
+            > · Fundação Getulio Vargas (FGV), Brazil · 2012 – 2016
           </li>
           <li>
             <strong>Bachelor of Architecture and Urban Planning</strong> ·
@@ -165,20 +226,20 @@ const description =
       </section>
 
       <section class="space-y-4">
-        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">Certifications &amp; affiliations</h2>
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Certifications &amp; affiliations
+        </h2>
+        <p class="text-sm text-muted-foreground">
+          Verifiable credentials with IDs and verification links on the{" "}
+          <a href="/credentials" class="underline hover:text-foreground"
+            >credentials page</a
+          >.
+        </p>
         <ul class="space-y-2 text-base leading-relaxed">
           <li>PMP — Project Management Professional</li>
           <li>
             LEED Green Associate — USGBC / GBCI · credential ID{" "}
-            <span class="font-mono text-xs">11653980-GREEN-ASSOCIATE</span> ·
-            issued Feb 2025 (valid through Feb 2027) ·{" "}
-            <a
-              href="https://www.credly.com/users/sarah-rodovalho.f51a4883"
-              class="underline hover:text-foreground"
-              rel="noopener"
-            >
-              verify on Credly
-            </a>
+            <span class="font-mono text-xs">11653980-GREEN-ASSOCIATE</span>
           </li>
           <li>OSHA 30</li>
           <li>
@@ -211,7 +272,9 @@ const description =
       </section>
 
       <section class="space-y-4">
-        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">Languages</h2>
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Languages
+        </h2>
         <p class="text-base leading-relaxed">
           Portuguese (native or bilingual) · English (full professional)
         </p>
