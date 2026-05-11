@@ -40,14 +40,27 @@ const STATS = [
 ] as const;
 
 const MENTIONS = [
-  "Aligned Data Centers",
-  "Microsoft Cloud Operations + Innovation",
-  "Tesla",
-  "Aliansce Sonae",
-  "Array Architects",
-  "Harrisburg University",
-  "Thomas Jefferson University",
-  "AIA Knowledge Community Board",
+  { label: "Aligned Data Centers", href: "https://www.aligneddc.com/" },
+  {
+    label: "Microsoft Cloud Operations + Innovation",
+    href: "https://www.microsoft.com/en-us/microsoft-cloud-operations",
+  },
+  { label: "Tesla", href: "https://www.tesla.com/" },
+  { label: "Aliansce Sonae", href: "https://www.alianscesonae.com.br/" },
+  { label: "Array Architects", href: "https://array-architects.com/" },
+  { label: "Harrisburg University", href: "https://www.harrisburgu.edu/" },
+  {
+    label: "Thomas Jefferson University",
+    href: "https://www.jefferson.edu/",
+  },
+  {
+    label: "AIA Knowledge Community Board",
+    href: "https://communityhub.aia.org/communities/community-home?CommunityKey=7f559f04-304e-4451-be28-808158489e42",
+  },
+  {
+    label: "AI & PM Research Hub",
+    href: "https://nucleoia.vitormr.dev/",
+  },
 ] as const;
 ---
 
@@ -195,7 +208,13 @@ const MENTIONS = [
           {
             MENTIONS.map((m, i) => (
               <li class="flex items-center gap-8">
-                <span>{m}</span>
+                <a
+                  href={m.href}
+                  rel="noopener"
+                  class="hover:text-accent transition-colors"
+                >
+                  {m.label}
+                </a>
                 {i < MENTIONS.length - 1 && (
                   <span class="text-border-strong" aria-hidden="true">
                     ·

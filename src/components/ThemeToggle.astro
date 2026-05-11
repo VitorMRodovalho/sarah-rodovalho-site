@@ -1,0 +1,169 @@
+---
+/**
+ * ThemeToggle — segmented Light / Dark / System pill for SiteHeader.
+ *
+ * Pattern mirrors vitormr.dev V06b. The pre-paint bootstrap script in
+ * BaseLayout resolves localStorage.theme → data-theme on <html> before
+ * first paint, preventing FOUC. This island is the WRITE side: clicking
+ * a button persists the choice and re-applies the resolved theme
+ * without a reload.
+ *
+ * On mobile (<md) the pill is hidden — to surface theme switching
+ * there, the existing details/summary mobile menu in SiteHeader gets
+ * the same three buttons inline.
+ *
+ * "System" mode listens to matchMedia changes so a live OS toggle is
+ * picked up on the open page.
+ */
+---
+
+<div class="theme-toggle hidden md:inline-flex" role="group" aria-label="Theme">
+  <button type="button" data-theme-set="light" aria-label="Light theme">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+    </svg>
+  </button>
+  <button type="button" data-theme-set="dark" aria-label="Dark theme">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </button>
+  <button type="button" data-theme-set="system" aria-label="System theme">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="2" y="4" width="20" height="14" rx="2"></rect>
+      <path d="M8 20h8M12 18v2"></path>
+    </svg>
+  </button>
+</div>
+
+<script>
+  type ThemeChoice = "light" | "dark" | "system";
+
+  function resolveTheme(choice: ThemeChoice): "light" | "dark" {
+    if (choice === "system") {
+      return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    return choice;
+  }
+
+  function readChoice(): ThemeChoice {
+    try {
+      const saved = localStorage.getItem("theme");
+      if (saved === "light" || saved === "dark" || saved === "system") return saved;
+    } catch {
+      /* localStorage blocked — fall through */
+    }
+    return "light";
+  }
+
+  function syncToggleState() {
+    const choice = readChoice();
+    document.querySelectorAll<HTMLButtonElement>("[data-theme-set]").forEach((btn) => {
+      const value = btn.getAttribute("data-theme-set");
+      btn.setAttribute("aria-pressed", value === choice ? "true" : "false");
+    });
+  }
+
+  function applyChoice(choice: ThemeChoice) {
+    document.documentElement.dataset.theme = resolveTheme(choice);
+  }
+
+  document.querySelectorAll<HTMLButtonElement>("[data-theme-set]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const value = btn.getAttribute("data-theme-set") as ThemeChoice | null;
+      if (value !== "light" && value !== "dark" && value !== "system") return;
+      try {
+        localStorage.setItem("theme", value);
+      } catch {
+        /* best effort */
+      }
+      applyChoice(value);
+      syncToggleState();
+    });
+  });
+
+  syncToggleState();
+
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    if (readChoice() === "system") applyChoice("system");
+  });
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    gap: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 2px;
+    margin-left: 0.5rem;
+  }
+
+  .theme-toggle button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    color: var(--color-muted-foreground);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    border-radius: 999px;
+    transition:
+      background-color 200ms var(--ease-soft),
+      color 200ms var(--ease-soft);
+  }
+
+  .theme-toggle button:hover {
+    color: var(--color-foreground);
+  }
+
+  .theme-toggle button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .theme-toggle button[aria-pressed="true"] {
+    background: var(--color-foreground);
+    color: var(--color-background);
+  }
+
+  @media print {
+    .theme-toggle {
+      display: none !important;
+    }
+  }
+</style>

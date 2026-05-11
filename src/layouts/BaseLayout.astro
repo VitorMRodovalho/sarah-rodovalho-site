@@ -33,6 +33,31 @@ const ogImage = new URL("/images/sarah-headshot.jpg", Astro.site).toString();
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
 
+    <!-- Theme bootstrap (S11): blocking inline script resolves
+         localStorage.theme into an explicit data-theme attr on <html>
+         BEFORE first paint. Prevents FOUC. CSS keys off
+         [data-theme="dark"] (no @media branch); legacy
+         prefers-color-scheme fallback retained in global.css for
+         users without JS. -->
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem("theme");
+          let resolved = "light";
+          if (saved === "dark" || saved === "light") {
+            resolved = saved;
+          } else if (saved === "system") {
+            resolved = matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.dataset.theme = resolved;
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+
     <meta
       name="google-site-verification"
       content="xepY5WmgZc-i-rDQ3z4I4r36U7MdnI2c72BEh5w5IFE"

@@ -9,19 +9,22 @@
 @import "@fontsource/inter/600.css";
 
 /**
- * Site-wide design tokens (Wave 2 — PR-S09 brand foundation).
+ * Site-wide design tokens (S09 brand foundation + S11 theme system).
  *
  * Palette: stone neutrals + single warm-bronze accent. Bridges Sarah's
  * architecture-craft heritage with executive presence in mission-critical
  * infrastructure delivery. Neutral-dominant per Marina Mogilko reference
- * pattern (whitespace > color); accent reserved for emphasis (current-role
- * pill, link hover, primary CTA).
+ * pattern; accent reserved for emphasis.
  *
  * Type pairing: Newsreader (editorial serif display, David Jonathan Ross)
- * + Inter (body sans). Serif = scholar authority; sans = practitioner
- * clarity. Bundled via @fontsource so no Google Fonts CDN call.
+ * + Inter (body sans). Bundled via @fontsource so no Google Fonts CDN call.
  *
- * All colors in oklch for perceptual uniformity across light/dark modes.
+ * Theme system (S11): Light default, explicit User toggle for Light /
+ * Dark / System. CSS uses `[data-theme="dark"]` attribute selector
+ * (NOT `prefers-color-scheme` media query) — single source of truth
+ * resolved at first paint by the inline bootstrap script in BaseLayout.
+ * Falls back to legacy media query so users without JS still get OS
+ * dark mode honored.
  */
 
 @theme {
@@ -47,21 +50,36 @@
   --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+:root[data-theme="dark"] {
+  --color-background: oklch(0.16 0.012 60);
+  --color-foreground: oklch(0.95 0.008 75);
+
+  --color-surface: oklch(0.20 0.012 60);
+  --color-surface-elevated: oklch(0.22 0.012 60);
+
+  --color-muted: oklch(0.26 0.012 60);
+  --color-muted-foreground: oklch(0.68 0.012 70);
+
+  --color-accent: oklch(0.72 0.11 55);
+  --color-accent-foreground: oklch(0.16 0.012 60);
+  --color-accent-soft: oklch(0.32 0.06 55);
+
+  --color-border: oklch(0.30 0.012 60);
+  --color-border-strong: oklch(0.42 0.012 60);
+}
+
+/* Legacy fallback for users without JS — honor OS preference. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --color-background: oklch(0.16 0.012 60);
     --color-foreground: oklch(0.95 0.008 75);
-
     --color-surface: oklch(0.20 0.012 60);
     --color-surface-elevated: oklch(0.22 0.012 60);
-
     --color-muted: oklch(0.26 0.012 60);
     --color-muted-foreground: oklch(0.68 0.012 70);
-
     --color-accent: oklch(0.72 0.11 55);
     --color-accent-foreground: oklch(0.16 0.012 60);
     --color-accent-soft: oklch(0.32 0.06 55);
-
     --color-border: oklch(0.30 0.012 60);
     --color-border-strong: oklch(0.42 0.012 60);
   }

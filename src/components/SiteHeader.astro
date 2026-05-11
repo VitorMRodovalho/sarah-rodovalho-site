@@ -3,9 +3,12 @@
  * SiteHeader — sticky top navigation, shared across all pages.
  *
  * Marina Mogilko-inspired pattern: serif logotype left · anchor nav center
- * · social icon row right. Scroll-blur via backdrop-filter when not at top.
- * Mobile: hamburger toggles a stacked sheet (no JS framework, vanilla details).
+ * · social icon row + theme toggle right. Scroll-blur via backdrop-filter
+ * when not at top. Mobile: hamburger toggles a stacked sheet (no JS
+ * framework, vanilla details).
  */
+
+import ThemeToggle from "./ThemeToggle.astro";
 
 const { pathname } = Astro.url;
 const isActive = (href: string) =>
@@ -92,6 +95,28 @@ const NAV = [
           </svg>
         </a>
         <a
+          href="https://www.credly.com/users/sarah-rodovalho.f51a4883"
+          rel="noopener"
+          aria-label="Credly verified credentials"
+          class="text-muted-foreground hover:text-accent"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 15a4 4 0 100-8 4 4 0 000 8z"></path>
+            <path d="M8.5 14L7 22l5-3 5 3-1.5-8"></path>
+          </svg>
+        </a>
+        <a
           href="mailto:sarah@sarahrodovalho.com"
           aria-label="Email"
           class="text-muted-foreground hover:text-accent"
@@ -112,6 +137,8 @@ const NAV = [
             <path d="M22 7l-10 7L2 7"></path>
           </svg>
         </a>
+
+        <ThemeToggle />
 
         <details class="md:hidden relative">
           <summary
