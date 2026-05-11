@@ -19,6 +19,7 @@ const NAV = [
   { href: "/work", label: "Work" },
   { href: "/experience", label: "Experience" },
   { href: "/research", label: "Research" },
+  { href: "/speaking", label: "Speaking" },
   { href: "/credentials", label: "Credentials" },
   { href: "/awards", label: "Awards" },
 ] as const;
@@ -37,7 +38,7 @@ const NAV = [
         Sarah <span class="text-muted-foreground/80">F. A. M.</span> Rodovalho
       </a>
 
-      <nav class="hidden md:flex items-center gap-5 lg:gap-7" aria-label="Primary">
+      <nav class="hidden md:flex items-center gap-4 lg:gap-6 xl:gap-7" aria-label="Primary">
         {
           NAV.map((item) => (
             <a

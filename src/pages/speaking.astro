@@ -1,0 +1,168 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * /speaking — invited talks, panels, and workshops.
+ *
+ * Distinct from /research (peer-reviewed text output). A research
+ * panel like ARCC 2025 lives on /research because it produces a
+ * citable conference contribution; an industry talk like PMI Women
+ * In Construction 2026 "Follow the Sun" lives here because it's
+ * oratory + slides without a peer-reviewed paper.
+ *
+ * Both surfaces cross-link in their intros so a recruiter or event
+ * organizer can find Sarah's full speaking record without missing
+ * either side.
+ *
+ * Per-item Schema.org JSON-LD uses `Event` with the talk as a
+ * `subEvent` workPerformed — the closest canonical mapping for an
+ * invited-talk-at-event pattern.
+ */
+
+const allEng = await getCollection("engagements");
+const engagements = allEng.sort((a, b) => a.data.order - b.data.order);
+
+const KIND_LABEL: Record<(typeof engagements)[number]["data"]["kind"], string> = {
+  talk: "Talk",
+  panel: "Panel",
+  workshop: "Workshop",
+  keynote: "Keynote",
+  interview: "Interview",
+};
+
+const title = "Speaking · Sarah Rodovalho";
+const description =
+  "Invited talks, panels, and workshops by Sarah Rodovalho — bridging architectural practice, hyperscale data center delivery, and infrastructure systems research.";
+
+function jsonLdForEngagement(
+  e: (typeof engagements)[number],
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: e.data.event,
+    ...(e.data.eventUrl ? { url: e.data.eventUrl } : {}),
+    startDate: e.data.date,
+    ...(e.data.venue ? { location: { "@type": "Place", name: e.data.venue } } : {}),
+    workPerformed: {
+      "@type": "CreativeWork",
+      name: e.data.title,
+      abstract: e.data.abstract,
+      ...(e.data.audience ? { audience: e.data.audience } : {}),
+    },
+    performer: {
+      "@type": "Person",
+      name: "Sarah Faria Alcantara Macedo Rodovalho",
+      alternateName: "Sarah Rodovalho",
+      url: "https://sarahrodovalho.com",
+    },
+  };
+}
+---
+
+<BaseLayout title={title} description={description}>
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-14">
+      <header class="space-y-5">
+        <p class="eyebrow"><span class="accent-rule"></span>Speaking</p>
+        <h1
+          class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+        >
+          Invited talks, panels, and{" "}
+          <span class="italic text-accent">conversations on the field.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Speaking engagements bridging architectural practice, hyperscale
+          data center delivery, and infrastructure systems research. Conference
+          panels with peer-reviewed proceedings are listed on{" "}
+          <a href="/research" class="underline hover:text-foreground"
+            >research &amp; publications</a
+          >; this page covers the industry-talk track.
+        </p>
+      </header>
+
+      <section class="space-y-12">
+        {
+          engagements.map((e) => (
+            <article class="space-y-4 border-b border-border/40 pb-12 last:border-b-0">
+              <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
+                  {KIND_LABEL[e.data.kind]}
+                </span>
+                <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+                  {e.data.event}
+                </span>
+                <span class="text-[10px] text-muted-foreground/80">
+                  · {e.data.date}
+                </span>
+              </div>
+              <h2 class="font-display text-2xl sm:text-3xl tracking-tight leading-[1.1]">
+                {e.data.title}
+              </h2>
+              {e.data.venue && (
+                <p class="text-xs text-muted-foreground/80">{e.data.venue}</p>
+              )}
+              {e.data.audience && (
+                <p class="text-sm text-muted-foreground italic">
+                  For: {e.data.audience}
+                </p>
+              )}
+              <p class="text-base leading-relaxed text-foreground/85">
+                {e.data.abstract}
+              </p>
+              <div class="flex flex-wrap gap-x-5 gap-y-1 text-xs pt-1">
+                {e.data.eventUrl && (
+                  <a
+                    href={e.data.eventUrl}
+                    class="underline hover:text-foreground text-muted-foreground"
+                    rel="noopener"
+                  >
+                    Event page →
+                  </a>
+                )}
+                {e.data.deckUrl && (
+                  <a
+                    href={e.data.deckUrl}
+                    class="underline hover:text-foreground text-muted-foreground"
+                    rel="noopener"
+                  >
+                    Slides →
+                  </a>
+                )}
+                {e.data.videoUrl && (
+                  <a
+                    href={e.data.videoUrl}
+                    class="underline hover:text-foreground text-muted-foreground"
+                    rel="noopener"
+                  >
+                    Recording →
+                  </a>
+                )}
+              </div>
+              <script
+                is:inline
+                type="application/ld+json"
+                set:html={JSON.stringify(jsonLdForEngagement(e))}
+              />
+            </article>
+          ))
+        }
+      </section>
+
+      <footer class="border-t border-border/60 pt-8 space-y-3 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          Booking inquiries:{" "}
+          <a
+            href="mailto:sarah@sarahrodovalho.com"
+            class="underline hover:text-foreground"
+            >sarah@sarahrodovalho.com</a
+          >. For conference panels with peer-reviewed proceedings, see{" "}
+          <a href="/research" class="underline hover:text-foreground"
+            >research &amp; publications</a
+          >.
+        </p>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>
