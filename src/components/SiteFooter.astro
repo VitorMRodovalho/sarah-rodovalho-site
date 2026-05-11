@@ -1,0 +1,108 @@
+---
+/**
+ * SiteFooter — shared across all pages.
+ *
+ * Three columns at md+: navigation · contact · meta (built-by + copyright).
+ * Stacks on mobile. Cross-ref to Vitor's site per ADR-023 §D6.
+ */
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border/60 mt-24">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8">
+      <div class="space-y-3">
+        <p class="eyebrow">Navigate</p>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href="/about" class="text-muted-foreground hover:text-foreground"
+              >About</a
+            >
+          </li>
+          <li>
+            <a href="/work" class="text-muted-foreground hover:text-foreground"
+              >Selected work</a
+            >
+          </li>
+          <li>
+            <a
+              href="/experience"
+              class="text-muted-foreground hover:text-foreground">Experience</a
+            >
+          </li>
+          <li>
+            <a
+              href="/research"
+              class="text-muted-foreground hover:text-foreground"
+              >Research &amp; Publications</a
+            >
+          </li>
+          <li>
+            <a href="/awards" class="text-muted-foreground hover:text-foreground"
+              >Awards &amp; Recognition</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="space-y-3">
+        <p class="eyebrow">Connect</p>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a
+              href="mailto:sarah@sarahrodovalho.com"
+              class="text-muted-foreground hover:text-foreground"
+              >sarah@sarahrodovalho.com</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com/in/sarahrodovalho"
+              rel="noopener"
+              class="text-muted-foreground hover:text-foreground">LinkedIn</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://scholar.google.com/citations?user=3s1M4TIAAAAJ"
+              rel="noopener"
+              class="text-muted-foreground hover:text-foreground"
+              >Google Scholar</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.credly.com/users/sarah-rodovalho.f51a4883"
+              rel="noopener"
+              class="text-muted-foreground hover:text-foreground"
+              >Credly verified credentials</a
+            >
+          </li>
+          <li class="text-muted-foreground pt-1 text-xs">
+            Based in Leesburg, VA · Washington DC – Baltimore region
+          </li>
+        </ul>
+      </div>
+
+      <div class="space-y-3 sm:text-right">
+        <p class="eyebrow">Colophon</p>
+        <p class="text-xs text-muted-foreground leading-relaxed">
+          Set in <span class="font-display italic">Newsreader</span> and
+          <span class="font-medium">Inter</span>. Built with Astro + Tailwind,
+          deployed on Cloudflare Workers.
+        </p>
+        <p class="text-xs text-muted-foreground/80">
+          Site by <a
+            href="https://vitormr.dev"
+            rel="noopener"
+            class="underline hover:text-foreground">Vitor M. Rodovalho</a
+          >.
+        </p>
+        <p class="text-xs text-muted-foreground/60">
+          © {year} Sarah F. Rodovalho. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -34,14 +34,13 @@ const description =
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 px-4 py-16 md:py-24">
-    <div class="max-w-3xl mx-auto space-y-12">
-      <header class="space-y-4">
-        <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Experience
-        </p>
-        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
-          Selected projects across infrastructure, manufacturing, and the built environment
+  <main class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-14">
+      <header class="space-y-5">
+        <p class="eyebrow"><span class="accent-rule"></span>Experience</p>
+        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]">
+          Selected projects across <span class="italic text-accent">infrastructure</span>,
+          manufacturing, and the built environment.
         </h1>
         <p class="text-base text-muted-foreground leading-relaxed">
           Highlights from 16+ years of capital-program delivery in the U.S. and
@@ -76,7 +75,7 @@ const description =
                 <span class="text-xs text-muted-foreground/60">·</span>
                 <span class="text-xs text-muted-foreground/80">{e.data.location}</span>
               </div>
-              <h2 class="text-2xl font-bold tracking-tight">{e.data.role}</h2>
+              <h2 class="font-display text-2xl sm:text-3xl tracking-tight">{e.data.role}</h2>
               <p class="text-sm font-medium">
                 {e.data.organizationUrl ? (
                   <a
@@ -103,16 +102,6 @@ const description =
         }
       </section>
 
-      <footer class="pt-8 text-xs text-muted-foreground/60 text-center space-x-4">
-        <a href="/" class="underline hover:text-foreground">← Home</a>
-        <a href="/about" class="underline hover:text-foreground">About</a>
-        <a href="/research" class="underline hover:text-foreground">
-          Research
-        </a>
-        <a href="/awards" class="underline hover:text-foreground">
-          Awards
-        </a>
-      </footer>
     </div>
   </main>
 </BaseLayout>

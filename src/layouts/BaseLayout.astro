@@ -1,21 +1,26 @@
 ---
 /**
- * BaseLayout — site-wide HTML wrapper with metadata, fonts, and
- * Schema.org Person markup hook. Each page passes title + description.
+ * BaseLayout — site-wide HTML wrapper with metadata, fonts, Schema.org
+ * Person markup, and shared SiteHeader/SiteFooter chrome (S09).
  *
- * Schema.org Person.alternateName includes "S Rodovalho" (Scholar
- * byline) so search engines can cross-reference citation lookups.
+ * Each page passes title + description. `noChrome` lets the homepage
+ * suppress the sticky header on full-bleed hero treatments (currently
+ * unused — keeping the API for future Tweaks-panel variant).
  */
 
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
 
 interface Props {
   title: string;
   description: string;
+  noChrome?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, noChrome = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImage = new URL("/images/sarah-headshot.jpg", Astro.site).toString();
 ---
 
 <!doctype html>
@@ -24,11 +29,35 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#fafaf6" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
 
-    <!-- Google Search Console — domain verification meta tag.
-         Lets us submit sitemap-index.xml + see indexing/coverage in GSC. -->
+    <!-- Theme bootstrap (S11): blocking inline script resolves
+         localStorage.theme into an explicit data-theme attr on <html>
+         BEFORE first paint. Prevents FOUC. CSS keys off
+         [data-theme="dark"] (no @media branch); legacy
+         prefers-color-scheme fallback retained in global.css for
+         users without JS. -->
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem("theme");
+          let resolved = "light";
+          if (saved === "dark" || saved === "light") {
+            resolved = saved;
+          } else if (saved === "system") {
+            resolved = matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.dataset.theme = resolved;
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+
     <meta
       name="google-site-verification"
       content="xepY5WmgZc-i-rDQ3z4I4r36U7MdnI2c72BEh5w5IFE"
@@ -42,10 +71,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={ogImage} />
 
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <script
       is:inline
@@ -56,24 +87,42 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
         name: "Sarah Faria Alcantara Macedo Rodovalho",
         alternateName: ["Sarah F. Rodovalho", "S Rodovalho"],
         url: "https://sarahrodovalho.com",
-        sameAs: ["https://scholar.google.com/citations?user=3s1M4TIAAAAJ"],
-        jobTitle: "Researcher",
+        image: "https://sarahrodovalho.com/images/sarah-headshot.jpg",
+        sameAs: [
+          "https://scholar.google.com/citations?user=3s1M4TIAAAAJ",
+          "https://www.linkedin.com/in/sarahrodovalho",
+        ],
+        jobTitle: "Senior Project Manager, Doctoral Researcher",
+        worksFor: {
+          "@type": "Organization",
+          name: "Aligned Data Centers",
+        },
         affiliation: {
           "@type": "CollegeOrUniversity",
           name: "Harrisburg University of Science and Technology",
           url: "https://www.harrisburgu.edu/",
         },
         knowsAbout: [
+          "Mission-critical infrastructure",
+          "Hyperscale data center delivery",
           "Sustainable Design",
           "Construction Management",
           "BIM",
           "Carbon-neutral construction",
           "Life Cycle Assessment",
         ],
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Leesburg",
+          addressRegion: "VA",
+          addressCountry: "US",
+        },
       })}
     />
   </head>
-  <body class="min-h-screen flex flex-col">
+  <body class="min-h-screen flex flex-col antialiased">
+    {!noChrome && <SiteHeader />}
     <slot />
+    <SiteFooter />
   </body>
 </html>
