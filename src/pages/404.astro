@@ -7,12 +7,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * generic Cloudflare error page.
  */
 
-const title = "Page not found · Sarah F. Rodovalho";
+const title = "Page not found · Sarah Rodovalho";
 const description = "The page you were looking for could not be found.";
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 flex items-center justify-center px-4 py-24 md:py-32">
+  <main id="main" class="flex-1 flex items-center justify-center px-4 py-24 md:py-32">
     <div class="max-w-md space-y-6 text-center">
       <p class="eyebrow">Error 404</p>
       <h1 class="font-display text-5xl sm:text-6xl tracking-tight leading-[1.05]">

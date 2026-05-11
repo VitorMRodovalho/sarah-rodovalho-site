@@ -1,4 +1,6 @@
 ---
+import { Picture } from "astro:assets";
+import portrait from "../assets/sarah-headshot.jpg";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
@@ -6,16 +8,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  *
  * Brand foundation per S09: stone neutrals + warm bronze accent, Newsreader
  * display, Inter body. Real Sony ILCE-1 professional headshot anchors brand
- * identity. Below-fold: 3-up "Capabilities" grid + signature-numbers band
- * + selected-mentions strip, terminating in a contact CTA.
+ * identity, served as AVIF + WebP via Astro Image (S12 perf).
  *
  * Content discipline: all employer + project facts trace to CV / LinkedIn
- * / Scholar (PII-whitelisted per ADR-023 §D8).
+ * / Scholar (PII-whitelisted per ADR-023 §D8). Location badge intentionally
+ * removed from hero per S12 — Leesburg appears only in /about Contact, in
+ * the footer, and in Schema.org PostalAddress (sufficient for SEO without
+ * pinning a geo marker over the portrait).
  */
 
-const title = "Sarah F. Rodovalho — Senior Project Manager & Researcher";
+const title = "Sarah Rodovalho — Integrated Design Manager & Researcher";
 const description =
-  "Sarah F. Rodovalho — Senior Project Manager at Aligned Data Centers and doctoral researcher at Harrisburg University. Hyperscale digital infrastructure, advanced manufacturing, and sustainable construction across the U.S. and Brazil.";
+  "Sarah Rodovalho — Integrated Design Manager at Aligned Data Centers and doctoral researcher at Harrisburg University. Hyperscale digital infrastructure, advanced manufacturing, and sustainable construction across the U.S. and Brazil.";
 
 const CAPABILITIES = [
   {
@@ -65,13 +69,13 @@ const MENTIONS = [
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1">
+  <main id="main" class="flex-1">
     <!-- HERO ─────────────────────────────────────────────────────── -->
     <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-12 md:pt-20 pb-16 md:pb-24">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-center">
         <div class="md:col-span-7 space-y-7">
           <p class="eyebrow">
-            <span class="accent-rule"></span>Senior Project Manager · Researcher
+            <span class="accent-rule"></span>Integrated Design Manager · Researcher
           </p>
           <h1 class="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.02] tracking-tight">
             Building the
@@ -79,12 +83,14 @@ const MENTIONS = [
             that powers AI &amp; cloud — and researching how to do it more sustainably.
           </h1>
           <p class="text-lg leading-relaxed text-muted-foreground max-w-2xl">
-            I am <strong class="text-foreground font-medium">Sarah F. Rodovalho</strong> —
-            a senior project manager and architect with 16+ years delivering capital
-            programs in hyperscale data centers, advanced manufacturing, healthcare,
-            and large-scale retail across the U.S. and Brazil. Currently at
-            <strong class="text-foreground font-medium">Aligned Data Centers</strong>,
-            leading a multi-building 264&nbsp;MW campus, while pursuing a PhD on
+            I am <strong class="text-foreground font-medium">Sarah Rodovalho</strong> —
+            a senior design and project leader, architect by training, with
+            16+ years delivering capital programs across hyperscale data
+            centers, advanced manufacturing, healthcare, and large-scale retail
+            in the U.S. and Brazil. Currently
+            <strong class="text-foreground font-medium">Integrated Design Manager</strong>
+            at <strong class="text-foreground font-medium">Aligned Data Centers</strong>
+            on a multi-building ~264&nbsp;MW campus, while pursuing a PhD on
             BIM, life-cycle assessment, and AI-augmented delivery at
             <strong class="text-foreground font-medium">Harrisburg University</strong>.
           </p>
@@ -125,20 +131,17 @@ const MENTIONS = [
               aria-hidden="true"
             >
             </div>
-            <img
-              src="/images/sarah-headshot.jpg"
-              alt="Sarah F. Rodovalho — portrait"
-              width="1493"
-              height="1506"
-              fetchpriority="high"
+            <Picture
+              src={portrait}
+              alt="Sarah Rodovalho — portrait"
+              widths={[400, 600, 900, 1200]}
+              sizes="(min-width: 768px) 41.6vw, 90vw"
+              formats={["avif", "webp"]}
+              fallbackFormat="jpg"
+              loading="eager"
               decoding="async"
               class="w-full max-w-md md:max-w-none mx-auto rounded-2xl shadow-[0_30px_60px_-30px_oklch(0.20_0.012_60/0.35)] ring-1 ring-border/60"
             />
-            <figcaption
-              class="absolute -bottom-3 right-3 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground bg-background/80 backdrop-blur px-2.5 py-1 rounded-full ring-1 ring-border"
-            >
-              Leesburg, VA
-            </figcaption>
           </figure>
         </div>
       </div>

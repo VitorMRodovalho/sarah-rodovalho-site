@@ -31,7 +31,7 @@ const NAV = [
       <a
         href="/"
         class="font-display text-base tracking-tight text-foreground hover:text-accent"
-        aria-label="Sarah F. Rodovalho — home"
+        aria-label="Sarah Rodovalho — home"
       >
         Sarah <span class="text-muted-foreground/80">F.</span> Rodovalho
       </a>
@@ -163,7 +163,7 @@ const NAV = [
             </svg>
           </summary>
           <nav
-            class="absolute right-0 top-full mt-2 w-44 rounded-md border border-border bg-surface-elevated shadow-sm py-2"
+            class="absolute right-0 top-full mt-2 w-52 rounded-md border border-border bg-surface-elevated shadow-sm py-2"
             aria-label="Mobile"
           >
             {
@@ -181,6 +181,39 @@ const NAV = [
                 </a>
               ))
             }
+            <div
+              class="mt-1 border-t border-border/60 px-4 py-2 flex items-center justify-between gap-2"
+            >
+              <span class="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                Theme
+              </span>
+              <div class="flex gap-1" role="group" aria-label="Theme (mobile)">
+                <button
+                  type="button"
+                  data-theme-set="light"
+                  aria-label="Light theme"
+                  class="px-2 py-1 text-[10px] uppercase tracking-[0.15em] rounded text-muted-foreground hover:text-foreground aria-pressed:bg-foreground aria-pressed:text-background"
+                >
+                  Light
+                </button>
+                <button
+                  type="button"
+                  data-theme-set="dark"
+                  aria-label="Dark theme"
+                  class="px-2 py-1 text-[10px] uppercase tracking-[0.15em] rounded text-muted-foreground hover:text-foreground aria-pressed:bg-foreground aria-pressed:text-background"
+                >
+                  Dark
+                </button>
+                <button
+                  type="button"
+                  data-theme-set="system"
+                  aria-label="System theme"
+                  class="px-2 py-1 text-[10px] uppercase tracking-[0.15em] rounded text-muted-foreground hover:text-foreground aria-pressed:bg-foreground aria-pressed:text-background"
+                >
+                  Auto
+                </button>
+              </div>
+            </div>
           </nav>
         </details>
       </div>

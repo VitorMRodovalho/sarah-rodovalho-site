@@ -67,9 +67,9 @@ const grouped = SCOPE_GROUPS.map((g) => ({
   items: awards.filter((a) => a.data.scope === g.scope),
 })).filter((g) => g.items.length > 0);
 
-const title = "Awards & Recognition · Sarah F. Rodovalho";
+const title = "Awards & Recognition · Sarah Rodovalho";
 const description =
-  "Awards, scholarships, honor societies, and professional leadership recognition received by Sarah F. Rodovalho across architecture, construction management, and sustainable design.";
+  "Awards, scholarships, honor societies, and professional leadership recognition received by Sarah Rodovalho across architecture, construction management, and sustainable design.";
 
 function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
   const isScholarship =
@@ -87,7 +87,7 @@ function jsonLdForAward(a: (typeof awards)[number]): Record<string, unknown> {
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
     <div class="max-w-3xl mx-auto space-y-14">
       <header class="space-y-5">
         <p class="eyebrow"><span class="accent-rule"></span>Recognition</p>
