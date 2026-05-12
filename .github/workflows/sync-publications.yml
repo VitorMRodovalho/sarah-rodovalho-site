@@ -82,11 +82,14 @@ jobs:
         env:
           ORENU_DATABASE_URL: ${{ secrets.ORENU_DATABASE_URL }}
         run: |
-          # Capture stdout + exit code; tee to a log file we'll attach in
-          # the PR body. Non-zero exit codes (drift / stubs / orphans) are
-          # NOT fatal — they should surface in the PR for review.
+          # Capture stdout + exit code; tee to /tmp/ (NOT the repo
+          # workspace — files in $GITHUB_WORKSPACE get picked up by
+          # `git status --porcelain` and spuriously trigger the
+          # peter-evans create-PR step). Non-zero exit codes (drift /
+          # stubs / orphans) are NOT fatal; they should surface in the
+          # workflow log + artifact only.
           set +e
-          python scripts/sync_publications.py --apply 2>&1 | tee sync-publications-output.txt
+          python scripts/sync_publications.py --apply 2>&1 | tee /tmp/sync-publications-output.txt
           exit_code=${PIPESTATUS[0]}
           set -e
           echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
@@ -97,7 +100,7 @@ jobs:
           ORENU_DATABASE_URL: ${{ secrets.ORENU_DATABASE_URL }}
         run: |
           set +e
-          python scripts/sync_engagements.py 2>&1 | tee sync-engagements-output.txt
+          python scripts/sync_engagements.py 2>&1 | tee /tmp/sync-engagements-output.txt
           exit_code=${PIPESTATUS[0]}
           set -e
           echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
@@ -105,7 +108,7 @@ jobs:
       - name: Warning annotation on non-zero exit
         if: steps.sync_pubs.outputs.exit_code != '0' || steps.sync_engs.outputs.exit_code != '0'
         run: |
-          echo "::warning ::Orenu sync emitted drift / stub / orphan warnings (pubs exit=${{ steps.sync_pubs.outputs.exit_code }}, engs exit=${{ steps.sync_engs.outputs.exit_code }}). See workflow run log + sync-*-output.txt artifacts for details."
+          echo "::warning ::Orenu sync emitted drift / stub / orphan warnings (pubs exit=${{ steps.sync_pubs.outputs.exit_code }}, engs exit=${{ steps.sync_engs.outputs.exit_code }}). See workflow run log + sync-output artifact for details."
 
       - name: Detect file changes
         id: diff
@@ -162,8 +165,8 @@ jobs:
         with:
           name: sync-output
           path: |
-            sync-publications-output.txt
-            sync-engagements-output.txt
+            /tmp/sync-publications-output.txt
+            /tmp/sync-engagements-output.txt
           if-no-files-found: warn
 
       - name: Summary when no changes
