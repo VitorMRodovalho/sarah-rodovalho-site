@@ -148,3 +148,10 @@ vite.config.ts.timestamp-*
 # Cloudflare Workers / Pages dev state
 .wrangler/
 .dev.vars
+
+# Python (added for scripts/sync_publications.py per ADR-024 Phase 1a)
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
