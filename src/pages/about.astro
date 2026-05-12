@@ -1,5 +1,6 @@
 ---
 import { Picture } from "astro:assets";
+import commencementImg from "../assets/about/mssd-tju-commencement-2023.jpg";
 import nucleoIaYtThumb from "../assets/about/nucleo-ia-youtube-curadoria-thumbnail.jpg";
 import thesisDefenseImg from "../assets/about/mssd-thesis-defense-2023.jpg";
 import fullBody from "../assets/sarah-full-body.png";
@@ -133,7 +134,7 @@ const description =
               Leadership — Board Member</strong
             > at{" "}
             <a
-              href="https://communityhub.aia.org/communities/community-home?CommunityKey=7f559f04-304e-4451-be28-808158489e42"
+              href="https://communityhub.aia.org/kc-leadership/kcname395"
               class="underline hover:text-foreground"
               rel="noopener"
             >
@@ -262,28 +263,47 @@ const description =
           <li>
             <strong>M.Sc. in Sustainable Design &amp; Construction Management</strong
             > · Thomas Jefferson University, PA · 2021 – 2023
-            <figure class="mt-3 max-w-sm">
-              <Picture
-                src={thesisDefenseImg}
-                alt="Sarah Rodovalho standing next to an interactive whiteboard displaying her M.Sc. thesis title slide: 'The Design of a Holistic Community Chemotherapy Infusion Center in Philadelphia · Thesis in Master of Science in Sustainable Design · Sarah Rodovalho · Advisor: Robert Fryer · Thomas Jefferson University · Spring 2023'."
-                widths={[300, 500, 700]}
-                sizes="(min-width: 768px) 380px, 90vw"
-                formats={["avif", "webp"]}
-                fallbackFormat="jpg"
-                loading="lazy"
-                decoding="async"
-                class="w-full rounded-md ring-1 ring-border/60 bg-surface"
-              />
-              <figcaption class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">
-                Thesis defense at Thomas Jefferson University, Spring 2023 —
-                the same research subsequently presented as a peer-reviewed
-                conference panel at ARCC 2025 (see{" "}
-                <a href="/research" class="underline hover:text-foreground">
-                  research
-                </a>
-                ).
-              </figcaption>
-            </figure>
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+              <figure>
+                <Picture
+                  src={thesisDefenseImg}
+                  alt="Sarah Rodovalho standing next to an interactive whiteboard displaying her M.Sc. thesis title slide: 'The Design of a Holistic Community Chemotherapy Infusion Center in Philadelphia · Thesis in Master of Science in Sustainable Design · Sarah Rodovalho · Advisor: Robert Fryer · Thomas Jefferson University · Spring 2023'."
+                  widths={[300, 500, 700]}
+                  sizes="(min-width: 640px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+                <figcaption class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">
+                  Thesis defense, Spring 2023 — same research presented at ARCC
+                  2025 (see{" "}
+                  <a href="/research" class="underline hover:text-foreground">
+                    research
+                  </a>
+                  ).
+                </figcaption>
+              </figure>
+              <figure>
+                <Picture
+                  src={commencementImg}
+                  alt="Sarah Rodovalho in cap and gown walking on stage at the Thomas Jefferson University commencement ceremony, between two academic officials in regalia; the podium displays 'Jefferson · Thomas Jefferson University · Home of Sidney Kimmel Medical College' and an American flag stands behind the stage."
+                  widths={[300, 500, 700]}
+                  sizes="(min-width: 640px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+                <figcaption class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">
+                  Thomas Jefferson University commencement, Spring 2023 — dual
+                  M.Sc. in Construction Management and Sustainable Design
+                  conferred.
+                </figcaption>
+              </figure>
+            </div>
           </li>
           <li>
             <strong>MBA in Real Estate &amp; Construction Business Management</strong
