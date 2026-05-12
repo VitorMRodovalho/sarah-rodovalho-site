@@ -1,4 +1,5 @@
 ---
+import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -11,10 +12,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * work with quantitative scope in the foreground.
  *
  * Layout: editorial 2-column at md+. Even-index entries get
- * text-left/stat-right; odd-index entries reverse. Provides reading
- * rhythm without needing images (which we don't reproduce from
- * Sarah's confidential EB-1 deck — facts cited are CV / LinkedIn /
- * public press only per ADR-023 §D8).
+ * text-left/stat-right; odd-index entries reverse.
+ *
+ * S26: optional `heroImage` per entry renders full-width above the
+ * 2-column grid. Photos curated from Sarah's personal archive only —
+ * all fact sourcing per ADR-023 §D8 (CV / LinkedIn / public press).
  */
 
 const allProjects = await getCollection("projects");
@@ -71,8 +73,39 @@ const description =
             return (
               <li
                 id={p.id.replace(/\.mdx$/, "")}
-                class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start scroll-mt-24"
+                class="space-y-8 md:space-y-10 scroll-mt-24"
               >
+                {p.data.heroImage && p.data.heroImageAlt && (
+                  <figure class="space-y-2">
+                    <Picture
+                      src={p.data.heroImage}
+                      alt={p.data.heroImageAlt}
+                      widths={[600, 900, 1200, 1600]}
+                      sizes="(min-width: 1024px) 1100px, 95vw"
+                      formats={["avif", "webp"]}
+                      fallbackFormat="jpg"
+                      loading="lazy"
+                      decoding="async"
+                      class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                    />
+                    {(p.data.heroImageCaption || p.data.heroImageSource) && (
+                      <figcaption class="text-[11px] text-muted-foreground/80 leading-snug">
+                        {p.data.heroImageCaption}
+                        {p.data.heroImageCaption && p.data.heroImageSource && " · "}
+                        {p.data.heroImageSource && (
+                          <a
+                            href={p.data.heroImageSource}
+                            class="underline hover:text-foreground"
+                            rel="noopener"
+                          >
+                            Source ↗
+                          </a>
+                        )}
+                      </figcaption>
+                    )}
+                  </figure>
+                )}
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
                 <div
                   class:list={[
                     "md:col-span-7 space-y-6",
@@ -140,6 +173,7 @@ const description =
                     ))}
                   </dl>
                 </aside>
+                </div>
               </li>
             );
           })
