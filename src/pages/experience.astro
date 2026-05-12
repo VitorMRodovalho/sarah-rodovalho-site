@@ -16,11 +16,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * (BaseLayout) already declares Sarah's identity + affiliation;
  * Google connects employers via the linked `organizationUrl` text.
  *
- * S19: optional per-entry `heroImage` lifts the wall-of-text into a
- * visual timeline. Photos are attributed via `heroImageSource` (link
- * back to the original LinkedIn post) — re-hosting is only used when
- * the post owner is Sarah, her direct collaborators, or her employer's
- * official channel, with attribution preserved.
+ * Optional per-entry `heroImage` lifts the wall-of-text into a visual
+ * timeline. Photos are attributed via `heroImageSource` (link back to
+ * the original LinkedIn post) — re-hosting is only used when the post
+ * owner is Sarah, her direct collaborators, or her employer's official
+ * channel, with attribution preserved.
  */
 
 const allExperience = await getCollection("experience");

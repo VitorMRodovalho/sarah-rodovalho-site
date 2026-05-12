@@ -15,20 +15,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * ex-Microsoft / ex-Tesla) with researcher identity (Harrisburg PhD,
  * sustainable construction publications).
  *
- * Layout (S14c): top header full-width; bio narrative is 2-col with
+ * Layout: top header full-width; bio narrative is 2-col with
  * full-body portrait on lg+ (max-w-6xl rail); subsequent sections
  * (Now / Past roles / Education / Certifications / Languages) remain
  * single-col max-w-3xl for readability.
  *
  * Content discipline: only verifiable facts (employer names, public
- * roles, public certifications, public talks). PII-whitelisted per
- * ADR-023 §D8 — no phone, no personal gmail, no salary, no address
- * beyond city.
+ * roles, public certifications, public talks). PII boundary — no phone,
+ * no personal gmail, no salary, no address beyond city.
  *
- * S20: enrichment pack — Núcleo IA YouTube thumbnail facade (no iframe
- * to keep the page JS-light per web.dev "thumbnail facade" pattern);
- * MSSD thesis defense photo inline next to the M.Sc. Education bullet;
- * Arquitinas Cohort 10 mentee mention added to the Now list.
+ * Núcleo IA YouTube thumbnail facade (no iframe to keep the page
+ * JS-light per web.dev "thumbnail facade" pattern); MSSD thesis defense
+ * photo inline next to the M.Sc. Education bullet.
  */
 
 const title = "About · Sarah Rodovalho";

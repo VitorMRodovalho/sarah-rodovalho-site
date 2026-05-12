@@ -14,9 +14,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * Layout: editorial 2-column at md+. Even-index entries get
  * text-left/stat-right; odd-index entries reverse.
  *
- * S26: optional `heroImage` per entry renders full-width above the
- * 2-column grid. Photos curated from Sarah's personal archive only —
- * all fact sourcing per ADR-023 §D8 (CV / LinkedIn / public press).
+ * Optional `heroImage` per entry renders full-width above the
+ * 2-column grid. Photos curated from Sarah's personal archive only;
+ * all fact sourcing from CV / LinkedIn / public press.
  */
 
 const allProjects = await getCollection("projects");
