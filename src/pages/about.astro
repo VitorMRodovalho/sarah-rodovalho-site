@@ -4,6 +4,7 @@ import commencementImg from "../assets/about/mssd-tju-commencement-2023.jpg";
 import nucleoIaYtThumb from "../assets/about/nucleo-ia-youtube-curadoria-thumbnail.jpg";
 import thesisDefenseImg from "../assets/about/mssd-thesis-defense-2023.jpg";
 import uegCbaImg from "../assets/about/ueg-cba-2006-organizing-team.jpg";
+import uegFormaturaImg from "../assets/about/ueg-class-formatura-2009.jpg";
 import fullBody from "../assets/sarah-full-body.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -313,24 +314,42 @@ const description =
           <li>
             <strong>Bachelor of Architecture and Urban Planning</strong> ·
             Universidade Estadual de Goiás, Brazil · 2004 – 2009
-            <figure class="mt-3 max-w-sm">
-              <Picture
-                src={uegCbaImg}
-                alt="Stage group portrait of about seventeen members of the XVIII Brazilian Architects Congress organizing support team, taken on stage with a red curtain backdrop on 2006-10-14. The team wears matching orange organizing t-shirts; Sarah Rodovalho, then an undergraduate architecture student at UEG, kneels at the center front in a white t-shirt."
-                widths={[400, 600, 900]}
-                sizes="(min-width: 768px) 380px, 90vw"
-                formats={["avif", "webp"]}
-                fallbackFormat="jpg"
-                loading="lazy"
-                decoding="async"
-                class="w-full rounded-md ring-1 ring-border/60 bg-surface"
-              />
-              <figcaption class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">
-                XVIII Congresso Brasileiro de Arquitetos, 2006 — organizing
-                support team during undergraduate at UEG. Sarah at center, white
-                t-shirt.
-              </figcaption>
-            </figure>
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+              <figure>
+                <Picture
+                  src={uegCbaImg}
+                  alt="Stage group portrait of about seventeen members of the XVIII Brazilian Architects Congress organizing support team, taken on stage with a red curtain backdrop on 2006-10-14. The team wears matching orange organizing t-shirts; Sarah Rodovalho, then an undergraduate architecture student at UEG, kneels at the center front in a white t-shirt."
+                  widths={[300, 500, 700]}
+                  sizes="(min-width: 640px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+                <figcaption class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">
+                  XVIII Congresso Brasileiro de Arquitetos, 2006 — organizing
+                  support team during undergrad. Sarah at center, white t-shirt.
+                </figcaption>
+              </figure>
+              <figure>
+                <Picture
+                  src={uegFormaturaImg}
+                  alt="Studio class portrait of Sarah Rodovalho's UEG Architecture and Urban Planning graduating cohort — about twenty graduates coordinated in black tops and jeans against a white seamless backdrop, posed with arms raised, peace signs, and casual smiles in the Brazilian 'foto da turma' graduating-class tradition."
+                  widths={[300, 500, 700]}
+                  sizes="(min-width: 640px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+                <figcaption class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">
+                  Graduating-class portrait — UEG Architecture &amp; Urban
+                  Planning cohort, 2009.
+                </figcaption>
+              </figure>
+            </div>
           </li>
         </ul>
       </section>
