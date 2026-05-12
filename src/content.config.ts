@@ -64,23 +64,33 @@ const publications = defineCollection({
  */
 const awards = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/awards" }),
-  schema: z.object({
-    title: z.string(),
-    organization: z.string(),
-    period: z.string(),
-    scope: z.enum([
-      "international",
-      "professional-leadership",
-      "honor-society",
-      "team-award",
-      "academic-honor",
-      "competitive-scholarship",
-    ]),
-    kazarianCriterion: z.array(z.number().int().min(1).max(10)).optional(),
-    description: z.string(),
-    externalUrl: z.url().optional(),
-    order: z.number().int().default(100),
-  }),
+  schema: ({ image }) =>
+    z
+      .object({
+        title: z.string(),
+        organization: z.string(),
+        period: z.string(),
+        scope: z.enum([
+          "international",
+          "professional-leadership",
+          "honor-society",
+          "team-award",
+          "academic-honor",
+          "competitive-scholarship",
+        ]),
+        kazarianCriterion: z.array(z.number().int().min(1).max(10)).optional(),
+        description: z.string(),
+        externalUrl: z.url().optional(),
+        heroImage: image().optional(),
+        heroImageAlt: z.string().optional(),
+        heroImageCaption: z.string().optional(),
+        heroImageSource: z.url().optional(),
+        order: z.number().int().default(100),
+      })
+      .refine((data) => !data.heroImage || data.heroImageAlt, {
+        message: "heroImageAlt is required when heroImage is set",
+        path: ["heroImageAlt"],
+      }),
 });
 
 /**
@@ -102,25 +112,35 @@ const awards = defineCollection({
  */
 const experience = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/experience" }),
-  schema: z.object({
-    role: z.string(),
-    organization: z.string(),
-    organizationUrl: z.url().optional(),
-    period: z.string(),
-    location: z.string(),
-    industry: z.enum([
-      "data-center",
-      "manufacturing",
-      "healthcare",
-      "retail-mall",
-      "transit",
-      "academia",
-    ]),
-    summary: z.string(),
-    highlights: z.array(z.string()).default([]),
-    isCurrent: z.boolean().default(false),
-    order: z.number().int().default(100),
-  }),
+  schema: ({ image }) =>
+    z
+      .object({
+        role: z.string(),
+        organization: z.string(),
+        organizationUrl: z.url().optional(),
+        period: z.string(),
+        location: z.string(),
+        industry: z.enum([
+          "data-center",
+          "manufacturing",
+          "healthcare",
+          "retail-mall",
+          "transit",
+          "academia",
+        ]),
+        summary: z.string(),
+        highlights: z.array(z.string()).default([]),
+        isCurrent: z.boolean().default(false),
+        heroImage: image().optional(),
+        heroImageAlt: z.string().optional(),
+        heroImageCaption: z.string().optional(),
+        heroImageSource: z.url().optional(),
+        order: z.number().int().default(100),
+      })
+      .refine((data) => !data.heroImage || data.heroImageAlt, {
+        message: "heroImageAlt is required when heroImage is set",
+        path: ["heroImageAlt"],
+      }),
 });
 
 /**

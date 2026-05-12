@@ -1,4 +1,5 @@
 ---
+import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -14,6 +15,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * an arbitrary listing page. The site-wide `Person` markup
  * (BaseLayout) already declares Sarah's identity + affiliation;
  * Google connects employers via the linked `organizationUrl` text.
+ *
+ * S19: optional per-entry `heroImage` lifts the wall-of-text into a
+ * visual timeline. Photos are attributed via `heroImageSource` (link
+ * back to the original LinkedIn post) — re-hosting is only used when
+ * the post owner is Sarah, her direct collaborators, or her employer's
+ * official channel, with attribution preserved.
  */
 
 const allExperience = await getCollection("experience");
@@ -89,6 +96,36 @@ const description =
                   e.data.organization
                 )}
               </p>
+              {e.data.heroImage && e.data.heroImageAlt && (
+                <figure class="pt-2 space-y-1.5">
+                  <Picture
+                    src={e.data.heroImage}
+                    alt={e.data.heroImageAlt}
+                    widths={[400, 700, 1000]}
+                    sizes="(min-width: 768px) 700px, 90vw"
+                    formats={["avif", "webp"]}
+                    fallbackFormat="jpg"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                  />
+                  {(e.data.heroImageCaption || e.data.heroImageSource) && (
+                    <figcaption class="text-[11px] text-muted-foreground/80 leading-snug">
+                      {e.data.heroImageCaption}
+                      {e.data.heroImageCaption && e.data.heroImageSource && " · "}
+                      {e.data.heroImageSource && (
+                        <a
+                          href={e.data.heroImageSource}
+                          class="underline hover:text-foreground"
+                          rel="noopener"
+                        >
+                          Source ↗
+                        </a>
+                      )}
+                    </figcaption>
+                  )}
+                </figure>
+              )}
               <p class="text-base leading-relaxed">{e.data.summary}</p>
               {e.data.highlights.length > 0 && (
                 <ul class="space-y-2 text-sm leading-relaxed list-disc pl-5 marker:text-muted-foreground/60">
