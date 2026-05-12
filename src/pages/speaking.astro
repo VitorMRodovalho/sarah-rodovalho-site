@@ -26,14 +26,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * `subEvent` workPerformed — the closest canonical mapping for an
  * invited-talk-at-event pattern.
  *
- * S15b: integrated 3 chart/diagram images from the PMI Women In
- * Construction 2026 deck (image40 AI Compute Demand Growth · image39
- * Anatomy of a Data Center · image32 Physical Backbone). Looked up
- * by engagement id; rendered as a gallery below abstract via Astro
- * Picture (AVIF/WebP/JPG fallback). Project photos (Passeio das
- * Águas + BRT under construction) intentionally skipped — potential
- * overlap with the confidential EB-1 deck. Vitor + Sarah to confirm
- * license OK for the 3 included diagrams when reviewing.
+ * Selected chart/diagram images from the PMI Women In Construction 2026
+ * deck (AI Compute Demand Growth · Anatomy of a Data Center · Physical
+ * Backbone) are rendered as a gallery below abstract via Astro Picture
+ * (AVIF/WebP/JPG fallback). Project photos (Passeio das Águas + BRT
+ * under construction) intentionally skipped — license to be confirmed
+ * before adding.
  */
 
 const allEng = await getCollection("engagements");

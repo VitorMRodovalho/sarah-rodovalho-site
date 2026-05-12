@@ -57,10 +57,9 @@ const publications = defineCollection({
  *    inventing year precision the source data doesn't carry.
  *  - `scope` groups awards visually on the page; not all 6 buckets
  *    will always be populated.
- *  - `kazarianCriterion` is metadata for internal EB-1A mapping; NOT
- *    displayed on the public site (avoids leaking immigration framing
- *    into a professional context). Used at most by Vitor + counsel
- *    when extracting evidence rows for case work.
+ *  - `evidenceCategory` is internal cross-referencing metadata; NOT
+ *    displayed on the public site to keep the page's frame on
+ *    professional recognition.
  */
 const awards = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/awards" }),
@@ -78,7 +77,7 @@ const awards = defineCollection({
           "academic-honor",
           "competitive-scholarship",
         ]),
-        kazarianCriterion: z.array(z.number().int().min(1).max(10)).optional(),
+        evidenceCategory: z.array(z.number().int().min(1).max(10)).optional(),
         description: z.string(),
         externalUrl: z.url().optional(),
         heroImage: image().optional(),
@@ -97,9 +96,7 @@ const awards = defineCollection({
  * `experience` — curated employment timeline.
  *
  * Source-of-truth: CV + LinkedIn (cross-validated). 5-7 highlighted
- * projects per ADR-023 §D4.1 §Experience (deferred from initial PRs;
- * shipped as PR-S07 once Sarah's MVP content was settled). Full
- * 17-role chronology lives in LinkedIn for completeness.
+ * projects; full 17-role chronology lives in LinkedIn for completeness.
  *
  * Schema design notes:
  *  - `period` free text, same convention as `awards` collection
@@ -158,8 +155,7 @@ const experience = defineCollection({
  *  - `category` controls a small tonal accent + badge label, not a
  *    full filter UI (kept simple while the catalog is < 10 items).
  *  - All fact sources MUST be public (CV / LinkedIn / Scholar / public
- *    press) — see `feedback_role_title_verify_against_offer_letter.md`
- *    + ADR-023 §D8.
+ *    press).
  *  - `hasDetailPage` toggles whether `/work/[slug]` is rendered; the
  *    card always links to `#anchor` on /work otherwise.
  */
@@ -219,9 +215,9 @@ const projects = defineCollection({
  *  - `status` covers active / in-progress / expired; in-progress
  *    entries surface a "pursuing" badge.
  *  - `credentialId` is public-verifiable (e.g., LEED GA ID, NCARB
- *    Record number, CAU registry number). Per ADR-023 §D8 these are
- *    not PII because they are designed to be looked up against the
- *    governing body's registry.
+ *    Record number, CAU registry number). These are not PII because
+ *    they are designed to be looked up against the governing body's
+ *    registry.
  *  - `verifyUrl` should link to a public verification endpoint
  *    (Credly profile, USGBC search, etc.) — the single trustworthy
  *    proof-of-claim path.

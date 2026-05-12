@@ -8,10 +8,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  *
  * Source: Astro Content Collection `awards` (schema in `src/content.config.ts`).
  * Items are grouped visually by `scope` field; the metadata
- * `kazarianCriterion` is intentionally NOT displayed (it's internal mapping
- * for EB-1A evidence work — leaking it would frame this page as immigration
- * material rather than professional recognition, against ADR-023 §strategic
- * frame).
+ * `evidenceCategory` is internal cross-referencing intentionally NOT
+ * displayed to keep the page's frame on professional recognition.
  *
  * Per-item Schema.org JSON-LD uses `EducationalOccupationalCredential` for
  * scholarships/honors and `Award` for the rest. Both are valid Schema types.

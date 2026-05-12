@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Font subsets — latin + latin-ext only (S12 perf). Latin-ext covers
+/* Font subsets — latin + latin-ext only (perf). Latin-ext covers
    the diacritics needed for Portuguese names (ã, í, ç, õ, á) used
    throughout Sarah's biography (Faria Alcantara Macedo, Goiânia,
    Passeio das Águas, Aliansce). Stripping cyrillic / greek /
@@ -22,28 +22,24 @@
 @import "@fontsource/inter/latin-ext-600.css";
 
 /**
- * Site-wide design tokens (S09 brand foundation + S11 theme system
- * + S14d palette Option B).
+ * Site-wide design tokens.
  *
  * Palette: pure white + cool slate neutrals + deep slate-blue accent.
- * Shift away from the previous warm-cream + warm-bronze palette to
- * match Sarah's primary positioning as Integrated Design Manager in
- * mission-critical hyperscale infrastructure with a Systems
- * Engineering PhD — a tech-industry register rather than an
- * architectural-craft register. Architecture heritage remains visible
- * in Newsreader serif display + editorial layout patterns; the
- * palette now signals to the tech audience she communicates with
- * daily.
+ * Matches Sarah's primary positioning as Integrated Design Manager in
+ * mission-critical hyperscale infrastructure with a Systems Engineering
+ * PhD — a tech-industry register rather than an architectural-craft
+ * register. Architecture heritage remains visible in Newsreader serif
+ * display + editorial layout patterns.
  *
  * Type pairing: Newsreader (editorial serif display, David Jonathan Ross)
  * + Inter (body sans). Bundled via @fontsource so no Google Fonts CDN call.
  *
- * Theme system (S11): Light default, explicit User toggle for Light /
- * Dark / System. CSS uses `[data-theme="dark"]` attribute selector
- * (NOT `prefers-color-scheme` media query) — single source of truth
- * resolved at first paint by the inline bootstrap script in BaseLayout.
- * Falls back to legacy media query so users without JS still get OS
- * dark mode honored.
+ * Theme system: Light default, explicit User toggle for Light / Dark /
+ * System. CSS uses `[data-theme="dark"]` attribute selector (NOT
+ * `prefers-color-scheme` media query) — single source of truth resolved
+ * at first paint by the inline bootstrap script in BaseLayout. Falls
+ * back to legacy media query so users without JS still get OS dark mode
+ * honored.
  */
 
 @theme {
