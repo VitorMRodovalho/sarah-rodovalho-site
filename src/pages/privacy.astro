@@ -1,0 +1,291 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * /privacy — factual notice of what this site collects, what it doesn't,
+ * and which third-party services see your visit. Shipped S28 per ADR-024
+ * Phase 1a prereq (compliance-counsel D4): a public privacy page must
+ * exist on both personal-branding sites before any Orenu→site data sync
+ * lands. CCPA-focused; minimal copy; no marketing posture.
+ *
+ * Scope intentionally narrow to current visitor-facing data flows.
+ * Fonts are bundled via @fontsource (NOT loaded from Google Fonts CDN),
+ * so the only platform-level third-party data flow is Cloudflare hosting.
+ * Build-time content sourcing (e.g. future Orenu auto-sync of publications
+ * + talks + credentials) is not visitor data and is intentionally not
+ * disclosed here — visitor-facing notice covers visitor-facing flows only.
+ */
+
+const title = "Privacy · Sarah Rodovalho";
+const description =
+  "Plain-English notice for sarahrodovalho.com — what this site collects, what it doesn't, and the third-party services that see your visit. No analytics, no forms, no cookies; fonts bundled rather than loaded from a CDN; the only third-party data flow is Cloudflare hosting.";
+
+const lastUpdated = "2026-05-12";
+
+const collection = [
+  {
+    label: "Visitor analytics",
+    headline: "None.",
+    body: "This site runs no third-party analytics: no Google Analytics, no Plausible, no Cloudflare Web Analytics, no Mixpanel, no LinkedIn Insight tag, no Meta Pixel, no behavioral tracking SDK. There is no JavaScript on these pages that reports on what you do.",
+  },
+  {
+    label: "Cookies & local storage",
+    headline: "First-party only.",
+    body: "No cookies are set by this site's code. Your browser's localStorage holds a single key — theme — recording your light/dark/system preference for the next visit. That key never leaves your browser; it is not transmitted to any server.",
+  },
+  {
+    label: "Forms",
+    headline: "None.",
+    body: "The site has no contact forms. Where it invites you to get in touch, it does so via a mailto: link that opens your own email client. Anything you send arrives in my regular inbox and is handled like any other personal email.",
+  },
+  {
+    label: "Fonts",
+    headline: "Bundled, not fetched.",
+    body: "The two webfonts used on this site — Newsreader and Inter — are bundled with the page at build time via the @fontsource npm packages. They are served from the same Cloudflare edge as the rest of the site; no requests go to Google Fonts, Adobe Fonts, or any other webfont CDN when you load these pages.",
+  },
+];
+
+const thirdParty = [
+  {
+    name: "Cloudflare",
+    kind: "Hosting + CDN",
+    body: "This site is served from Cloudflare's edge network as static assets. Cloudflare collects standard request data — IP address, user agent, request path, timestamp, country — for security, abuse mitigation, and operational telemetry. I see only the aggregate dashboards Cloudflare provides; I do not have access to per-visit logs.",
+    linkLabel: "Cloudflare Privacy Policy",
+    linkUrl: "https://www.cloudflare.com/privacypolicy/",
+  },
+];
+
+const rights = [
+  {
+    name: "Right to know",
+    body: "What personal information has been collected about you.",
+  },
+  {
+    name: "Right to delete",
+    body: "Personal information held about you.",
+  },
+  {
+    name: "Right to non-discrimination",
+    body: "For exercising your CCPA rights.",
+  },
+  {
+    name: "Global Privacy Control (GPC)",
+    body: "Signal honored by default — nothing on this site collects information that I could opt you out of.",
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-4xl mx-auto space-y-16">
+      <header class="space-y-5">
+        <p class="eyebrow"><span class="accent-rule"></span>Privacy</p>
+        <h1
+          class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+        >
+          How this site handles{" "}
+          <span class="italic text-accent">your data.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed max-w-3xl">
+          Plain-English notice of what this site collects, what it doesn't,
+          and which third-party services see your visit.
+          <strong class="text-foreground">Short version</strong>: no analytics,
+          no forms, no cookies — fonts are bundled with the page rather than
+          loaded from a third-party CDN, so the only platform-level data flow
+          is Cloudflare hosting.
+        </p>
+        <p
+          class="font-mono text-[11px] tabular-nums uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          Last updated · <time datetime={lastUpdated}>{lastUpdated}</time>
+        </p>
+      </header>
+
+      <section class="space-y-7">
+        <header class="space-y-2 max-w-3xl">
+          <p
+            class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]"
+          >
+            01 · <span class="uppercase">What this site collects from you</span>
+          </p>
+          <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+            What this site collects from you
+          </h2>
+          <p class="text-sm text-muted-foreground">
+            Four categories, all factual — what is and isn't collected, in
+            plain language.
+          </p>
+        </header>
+        <ul class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {
+            collection.map((c) => (
+              <li class="space-y-2 border border-border/60 rounded-md p-5">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                    {c.label}
+                  </p>
+                  <h3 class="font-display text-lg sm:text-xl tracking-tight">
+                    {c.headline}
+                  </h3>
+                </div>
+                <p class="text-sm leading-relaxed text-foreground/85">
+                  {c.body}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="space-y-7">
+        <header class="space-y-2 max-w-3xl">
+          <p
+            class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]"
+          >
+            02 · <span class="uppercase">Third-party data flows</span>
+          </p>
+          <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+            Third-party data flows
+          </h2>
+          <p class="text-sm text-muted-foreground">
+            One service sees your traffic at the network layer. I do not
+            control its data collection beyond what is described in its
+            privacy notice.
+          </p>
+        </header>
+        <ul class="space-y-5">
+          {
+            thirdParty.map((t) => (
+              <li class="space-y-2 border border-border/60 rounded-md p-5">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 class="font-display text-lg sm:text-xl tracking-tight">
+                    {t.name}
+                  </h3>
+                  <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                    {t.kind}
+                  </p>
+                </div>
+                <p class="text-sm leading-relaxed text-foreground/85">
+                  {t.body}
+                </p>
+                <p class="text-xs pt-1">
+                  <a
+                    href={t.linkUrl}
+                    class="underline hover:text-foreground text-muted-foreground"
+                    rel="noopener"
+                  >
+                    {t.linkLabel} →
+                  </a>
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="space-y-7">
+        <header class="space-y-2 max-w-3xl">
+          <p
+            class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]"
+          >
+            03 · <span class="uppercase">What this site publishes about me</span>
+          </p>
+          <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+            What this site publishes about me
+          </h2>
+        </header>
+        <p class="text-sm leading-relaxed text-foreground/85 max-w-3xl">
+          Every page embeds
+          <a
+            href="https://schema.org/Person"
+            class="underline hover:text-foreground"
+            rel="noopener"
+          >Schema.org Person</a>
+          JSON-LD describing me — name, role, employer, university affiliation,
+          Scholar and LinkedIn URLs — and a BreadcrumbList for navigation.
+          This is structured data about <strong>me</strong>, intended to help
+          search engines resolve who I am as a public researcher. It is not
+          information about you, and it does not change based on who is
+          visiting.
+        </p>
+      </section>
+
+      <section class="space-y-7">
+        <header class="space-y-2 max-w-3xl">
+          <p
+            class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]"
+          >
+            04 · <span class="uppercase">Your rights · CCPA / CPRA</span>
+          </p>
+          <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+            Your rights
+          </h2>
+          <p class="text-sm text-muted-foreground">
+            If you are a California resident, the California Consumer Privacy
+            Act (CCPA, as amended by CPRA) grants you specific rights.
+          </p>
+        </header>
+        <ul class="space-y-3 text-sm leading-relaxed text-foreground/85 max-w-3xl pl-5 list-disc marker:text-accent">
+          {
+            rights.map((r) => (
+              <li>
+                <strong>{r.name}</strong> — {r.body}
+              </li>
+            ))
+          }
+        </ul>
+        <div class="space-y-3 text-sm leading-relaxed text-foreground/85 max-w-3xl">
+          <p>
+            In practice, the answer for this site is short: nothing personally
+            identifiable is collected from you that I can access. Cloudflare
+            handles its own logging per the privacy notice linked above. To
+            exercise any of these rights or ask a question, email
+            <a
+              href="mailto:sarah@sarahrodovalho.com"
+              class="underline hover:text-foreground"
+            >
+              sarah@sarahrodovalho.com
+            </a>.
+          </p>
+          <p>
+            I do not <em>sell</em> personal information and do not
+            <em>share</em> personal information for cross-context behavioral
+            advertising as those terms are defined in California Civil Code
+            §1798.140.
+          </p>
+        </div>
+      </section>
+
+      <section class="space-y-7">
+        <header class="space-y-2 max-w-3xl">
+          <p
+            class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]"
+          >
+            05 · <span class="uppercase">Changes to this notice</span>
+          </p>
+          <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+            Changes to this notice
+          </h2>
+        </header>
+        <p class="text-sm leading-relaxed text-foreground/85 max-w-3xl">
+          This notice will be updated when the site's data flows change.
+          Edits are reflected in the <strong>Last updated</strong> date in
+          the header.
+        </p>
+      </section>
+
+      <section class="max-w-3xl">
+        <p class="text-xs text-muted-foreground/80 leading-relaxed">
+          This notice is informational, not a legal contract. For formal
+          legal or compliance questions, email
+          <a
+            href="mailto:sarah@sarahrodovalho.com"
+            class="underline hover:text-foreground"
+          >
+            sarah@sarahrodovalho.com
+          </a>.
+        </p>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
