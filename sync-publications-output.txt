@@ -1,0 +1,13 @@
+sync_publications.py [APPLY]
+  content_dir = src/content/publications
+  Orenu public rows: 3
+  MDX files:         3
+  Matched pairs:     3
+  Unmatched Orenu:   0
+  Unmatched MDX:     0
+
+Summary:
+  Citation updates planned: 0
+  Drift warnings (non-authoritative fields): 0
+  Stubs needed:  0
+  Orphan MDX:    0

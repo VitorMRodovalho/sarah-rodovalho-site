@@ -1,0 +1,17 @@
+sync_engagements.py [DRY-RUN]
+  content_dir = src/content/engagements
+  Orenu public rows: 4
+  MDX files:         4
+  Matched pairs:     4
+  Unmatched Orenu:   0
+  Unmatched MDX:     0
+
+  DRIFT [startse-construtech-summit-2024.mdx]:
+    date:   Orenu=2024-01-01
+            MDX  =2024-02-27  (gap 57 days)
+
+Summary:
+  Drift warnings (date misalignment > 30 days): 1
+  Stubs needed:  0
+  Orphan MDX:    0
+  Note: Phase 1b is presence-aware ONLY — no fields auto-overwritten.
