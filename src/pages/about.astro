@@ -1,5 +1,7 @@
 ---
 import { Picture } from "astro:assets";
+import nucleoIaYtThumb from "../assets/about/nucleo-ia-youtube-curadoria-thumbnail.jpg";
+import thesisDefenseImg from "../assets/about/mssd-thesis-defense-2023.jpg";
 import fullBody from "../assets/sarah-full-body.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -19,6 +21,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * roles, public certifications, public talks). PII-whitelisted per
  * ADR-023 §D8 — no phone, no personal gmail, no salary, no address
  * beyond city.
+ *
+ * S20: enrichment pack — Núcleo IA YouTube thumbnail facade (no iframe
+ * to keep the page JS-light per web.dev "thumbnail facade" pattern);
+ * MSSD thesis defense photo inline next to the M.Sc. Education bullet;
+ * Arquitinas Cohort 10 mentee mention added to the Now list.
  */
 
 const title = "About · Sarah Rodovalho";
@@ -145,6 +152,48 @@ const description =
             </a>
             , a joint initiative of the PMI Brazilian Chapters (Jan 2024 –
             present).
+            <figure class="mt-3 max-w-xs">
+              <a
+                href="https://www.youtube.com/watch?v=cvABmVkjpJg&list=PLQJVKrw1fcrwqDt5zvX6OvI_S_7rsuZNq&index=3"
+                rel="noopener"
+                class="block group"
+                aria-label="Watch Sarah's curation update video on YouTube"
+              >
+                <Picture
+                  src={nucleoIaYtThumb}
+                  alt="Sarah Rodovalho on camera wearing a headset, recording a curation update for Núcleo IA & GP — the Núcleo IA orange logo visible top-right and an overlay caption 'LATERAL' across the lower frame."
+                  widths={[280, 480, 640]}
+                  sizes="(min-width: 768px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface group-hover:ring-accent/50 transition-colors"
+                />
+              </a>
+              <figcaption class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">
+                <a
+                  href="https://www.youtube.com/watch?v=cvABmVkjpJg&list=PLQJVKrw1fcrwqDt5zvX6OvI_S_7rsuZNq&index=3"
+                  class="underline hover:text-foreground"
+                  rel="noopener"
+                >
+                  Watch on YouTube ↗
+                </a>
+                {" "}· curation update for Núcleo IA & GP.
+              </figcaption>
+            </figure>
+          </li>
+          <li>
+            <strong>Mentee, Arquitinas Cohort 10</strong> at{" "}
+            <a
+              href="https://www.linkedin.com/company/arquitina/"
+              class="underline hover:text-foreground"
+              rel="noopener"
+            >
+              Arquitina
+            </a>{" "}
+            — mentorship program supporting Latinx women pursuing US
+            architectural licensure (Dec 2025 – present).
           </li>
         </ul>
       </section>
@@ -213,6 +262,28 @@ const description =
           <li>
             <strong>M.Sc. in Sustainable Design &amp; Construction Management</strong
             > · Thomas Jefferson University, PA · 2021 – 2023
+            <figure class="mt-3 max-w-sm">
+              <Picture
+                src={thesisDefenseImg}
+                alt="Sarah Rodovalho standing next to an interactive whiteboard displaying her M.Sc. thesis title slide: 'The Design of a Holistic Community Chemotherapy Infusion Center in Philadelphia · Thesis in Master of Science in Sustainable Design · Sarah Rodovalho · Advisor: Robert Fryer · Thomas Jefferson University · Spring 2023'."
+                widths={[300, 500, 700]}
+                sizes="(min-width: 768px) 380px, 90vw"
+                formats={["avif", "webp"]}
+                fallbackFormat="jpg"
+                loading="lazy"
+                decoding="async"
+                class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+              />
+              <figcaption class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">
+                Thesis defense at Thomas Jefferson University, Spring 2023 —
+                the same research subsequently presented as a peer-reviewed
+                conference panel at ARCC 2025 (see{" "}
+                <a href="/research" class="underline hover:text-foreground">
+                  research
+                </a>
+                ).
+              </figcaption>
+            </figure>
           </li>
           <li>
             <strong>MBA in Real Estate &amp; Construction Business Management</strong
