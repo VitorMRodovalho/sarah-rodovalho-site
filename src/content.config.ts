@@ -165,31 +165,41 @@ const experience = defineCollection({
  */
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/projects" }),
-  schema: z.object({
-    title: z.string(),
-    subtitle: z.string(),
-    role: z.string(),
-    employer: z.string(),
-    employerUrl: z.url().optional(),
-    period: z.string(),
-    yearStart: z.number().int(),
-    yearEnd: z.number().int().nullable().default(null),
-    isCurrent: z.boolean().default(false),
-    location: z.string(),
-    category: z.enum([
-      "data-center",
-      "retail-mall",
-      "transit",
-      "healthcare",
-      "manufacturing",
-      "academia",
-      "hospitality",
-    ]),
-    abstract: z.string(),
-    scope: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
-    order: z.number().int().default(100),
-    hasDetailPage: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z
+      .object({
+        title: z.string(),
+        subtitle: z.string(),
+        role: z.string(),
+        employer: z.string(),
+        employerUrl: z.url().optional(),
+        period: z.string(),
+        yearStart: z.number().int(),
+        yearEnd: z.number().int().nullable().default(null),
+        isCurrent: z.boolean().default(false),
+        location: z.string(),
+        category: z.enum([
+          "data-center",
+          "retail-mall",
+          "transit",
+          "healthcare",
+          "manufacturing",
+          "academia",
+          "hospitality",
+        ]),
+        abstract: z.string(),
+        scope: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+        heroImage: image().optional(),
+        heroImageAlt: z.string().optional(),
+        heroImageCaption: z.string().optional(),
+        heroImageSource: z.url().optional(),
+        order: z.number().int().default(100),
+        hasDetailPage: z.boolean().default(false),
+      })
+      .refine((data) => !data.heroImage || data.heroImageAlt, {
+        message: "heroImageAlt is required when heroImage is set",
+        path: ["heroImageAlt"],
+      }),
 });
 
 /**
