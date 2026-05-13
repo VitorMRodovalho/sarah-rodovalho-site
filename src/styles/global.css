@@ -149,6 +149,18 @@ a {
   color: var(--color-foreground);
 }
 
+/* WatermarkLayer companion — lifts body content above the fixed-position
+ * watermark aside. Siblings of `<aside class="wm-layer">` need a positioning
+ * context to honor z-index; .wm-layer sits at z-index:0, content at 1. */
+body > main,
+body > footer,
+body > header,
+body > nav,
+body > a.skip-to-content {
+  position: relative;
+  z-index: 1;
+}
+
 /* Skip-to-content link — visible only on keyboard focus (S12 a11y). */
 .skip-to-content {
   position: absolute;
