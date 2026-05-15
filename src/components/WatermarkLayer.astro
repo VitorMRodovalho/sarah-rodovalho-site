@@ -14,6 +14,12 @@
  *             communicates the page's semantic context. Source:
  *             sustainability-2025-co2-csi-categories.mdx finding
  *             ("CSI 03 · concrete: ≥75% contribution to GWP").
+ *  - "work" → Construction takeoff register: Σ-formula for line-item
+ *             quantification with waste / contingency factor + the
+ *             quantity → schedule → budget chain. Scoped to /work.
+ *  - "speaking" → Conference proceedings citation template — speaker /
+ *             title / venue / year structure in italic, with §-bulleted
+ *             field definitions. Scoped to /speaking.
  *  - "none" → renders only the 32px engineering grid (no overlay).
  *
  * Fixed-position aside, aria-hidden, pointer-events:none. Body content is
@@ -23,7 +29,7 @@
  */
 
 interface Props {
-  variant?: "home" | "lca" | "none";
+  variant?: "home" | "lca" | "work" | "speaking" | "none";
 }
 
 const { variant = "none" } = Astro.props;
@@ -83,6 +89,30 @@ const { variant = "none" } = Astro.props;
         <span class="var">Q</span><sub>i</sub> — quantity of material <span class="num">i</span><br />
         <span class="var">LCF</span><sub>i</sub> — life-cycle factor<br /><br />
         CSI 03 · concrete: ≥<span class="num">75%</span> contribution
+      </span>
+    </div>
+  )}
+  {variant === "work" && (
+    <div class="wm-eq">
+      <span class="var">Q</span><sub>total</sub> = Σ<sub>i</sub> (<span class="var">q</span><sub>i</sub> · <span class="var">f</span><sub>i</sub>)
+      <span class="meta">construction takeoff · scope quantification</span>
+      <span class="defs">
+        <span class="var">q</span><sub>i</sub> — quantity per scope line<br />
+        <span class="var">f</span><sub>i</sub> — waste / contingency factor<br />
+        <span class="var">Q</span><sub>total</sub> — committed line total<br /><br />
+        quantity <span class="num">↦</span> schedule <span class="num">↦</span> budget
+      </span>
+    </div>
+  )}
+  {variant === "speaking" && (
+    <div class="wm-eq">
+      <span class="var">[ Speaker. Title. Venue, Year. ]</span>
+      <span class="meta">conference proceedings · invited contribution</span>
+      <span class="defs">
+        <span class="num">§</span> Speaker — author of record · single-name byline<br />
+        <span class="num">§</span> Title — talk citation key<br />
+        <span class="num">§</span> Venue — conference / panel / session<br /><br />
+        cite as · author. title. venue, year, pp.
       </span>
     </div>
   )}
