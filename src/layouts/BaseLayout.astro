@@ -27,7 +27,7 @@ interface Props {
    * pages opt in explicitly so density-heavy pages (e.g. /awards,
    * /credentials) stay clean.
    */
-  watermark?: "home" | "lca" | "none";
+  watermark?: "home" | "lca" | "work" | "speaking" | "none";
 }
 
 const { title, description, noChrome = false, watermark = "none" } = Astro.props;
