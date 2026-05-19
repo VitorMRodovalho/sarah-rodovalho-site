@@ -3,7 +3,9 @@
 **Source**: `~/Downloads/A/My Notebook.pdf` — exported from OneNote notebook **AIA2025**, seção **Ajustes do site**, dated Monday, May 18, 2026, 3:41 PM
 **Author of review**: Sarah Faria Alcantara Macedo Rodovalho
 **Transcribed/mapped by**: Vitor + Claude (Anthropic), 2026-05-18
-**Mapping discipline**: every action item below cites the OneNote PDF page number where the comment + screenshot appears. Items flagged `CLARIFY` require Sarah/Vitor input before implementation.
+**Status**: **v2** — todos os 28 CLARIFYs resolvidos por Vitor; 3 re-análises arquiteturais inline (2.5 / 11.x / 13.x); PR plan re-organizado em 7 PRs (PR-S07a/b separados).
+
+> **v1** focou em transcrição + dúvidas. **v2** consolida decisões e está pronto pra começar a implementar.
 
 ---
 
@@ -11,656 +13,676 @@
 
 | Marca | Significado | Where |
 |---|---|---|
-| 🔴 **Vermelho** (riscado/contorno) | Retirar | Body copy + callout labels |
-| 🟡 **Amarelo** (highlight) | Trocar / mudar para — | Numbers, dates, locations |
-| 🔵 **Azul** (highlight) | Adicionar | New items to add |
+| 🔴 **Vermelho** (riscado/contorno) | Retirar | Body copy + callout labels + months on dates |
+| 🟡 **Amarelo** (highlight) | Trocar / mudar para — | Numbers, dates, locations, section names |
+| 🔵 **Azul** (highlight) | Adicionar | New items (e.g., PhD bullet) |
 | 🟢 **Verde** | Categoria de callout (slot 1) | Scope card callouts |
 | 🩷 **Rosa/Pink** | Categoria de callout (slot 3) | Scope card callouts |
 | 🟠 **Laranja/Orange** | Categoria de callout (slot 4) | Scope card callouts |
-| 🟣 **Roxo/Purple** | Corrigir | Punctual fixes (typos, formatting) |
+| 🟣 **Roxo/Purple** | Corrigir | Punctual fixes (HTML entity leaks like `&amp;`) |
 | ➡️ **Seta rosa** | Realocar | Move block/photo |
-| ➡️ **Seta marrom (brown)** | Trocar tag/label | Source/credit tag |
-| ➡️ **Seta lavanda** | Incluir | Add specific item nearby |
+| ➡️ **Seta marrom (brown)** | Trocar tag/label | Section header ("Beyond the case studies" → "Beyond the selection") |
+| ➡️ **Seta lavanda** | Incluir | Add specific item (e.g., "Assistant" before "Teaching") |
 
-**Callout slot convention** (inferred from cards 02–06 explicit labels): each case study card has 4 callout pills. Sarah's color code maps to **slots**:
-- 🟢 Green = slot 1 (Context / Initiative / Scale-up / Schedule / Scope)
-- 🔵 Blue = slot 2 (Integration / Scope / Tower / Tenants managed)
-- 🩷 Pink = slot 3 (Contribution / Category / Renovation)
-- 🟠 Orange = slot 4 (Methodology / Recognition / Domain / Program)
+**Callout slot convention** (confirmed Vitor 4.5): each case study card has 4 callout pills mapped to color slots in `src/content/projects/*.mdx` `scope` array:
+- 🟢 Green = slot 1
+- 🔵 Blue = slot 2
+- 🩷 Pink = slot 3
+- 🟠 Orange = slot 4
 
-> Today's MDX schema has a single `scope: [{label, value}]` array — slot order in the array maps to display position. Color is rendered by the component (not stored in MDX).
+Per `content.config.ts` `projects.scope` schema: `array({label, value})`. Color rendering is per-position in the array, not stored in MDX.
 
 ---
 
-## Index — pages reviewed
+## Index — pages reviewed + status
 
-| # | OneNote section | PDF pgs | Repo target | Density | Type |
-|---|---|---|---|---|---|
-| 1 | PAGINA DE ENTRADA | 1 | `src/pages/index.astro` | Média | Copy + stats replace |
-| 2 | PAGINA ABOUT | 2–4 | `src/pages/about.astro` | **Alta** | Restructure + copy edits |
-| 3 | PAGINA WORK / EXPERIENCE merge | 3 | `src/pages/work.astro` + `src/pages/experience.astro` | **Alta — estrutural** | Merge pages + remove CV exposure |
-| 4 | Case 01 Aligned hyperscale | 3–4 | `src/content/projects/aligned-multi-building-campus.mdx` | Alta | Body + callouts + date format |
-| 5 | Case 02 Microsoft CO+I CLT | 5 | `src/content/projects/microsoft-coi-hyperscale-program.mdx` | Alta | Body + callouts |
-| 6 | Case 03 Tesla Lathrop | 5 | `src/content/projects/tesla-industrial-rd-portfolio.mdx` | Alta | Body + callouts |
-| 7 | Case 04 Passeio das Águas | 5 | `src/content/projects/passeio-das-aguas-shopping.mdx` | Média | Body + 2 callouts (verde/azul); restantes CLARIFY |
-| 8 | Case 05 Goiânia BRT | 5 | `src/content/projects/goiania-brt-network.mdx` | Média | Body + photo position + Experience link |
-| 9 | Case 06 Virtua Healthcare | 5–6 | `src/content/projects/array-architects-healthcare.mdx` | Alta | Body + callouts + 2 arrows |
-| 10 | PAGINA RESEARCH | 6 | `src/pages/research.astro` | **Zero** | "Não alterar por hoje" |
-| 11 | PAGINA SPEAKING | 6 | `src/pages/speaking.astro` + `src/content/engagements/*` | Média | Watermark slide assets + rewrite talk description |
-| 12 | **NOVA**: Academic / Past Studies | 7 | NEW `src/pages/academic.astro` (or reuse `experience.astro`) | Criar | Receive content removed from About |
-| 13 | PAGINA PRESS KIT | 7 | `src/pages/press-kit.astro` | **CRÍTICA** | Security restructure: admin-only + public/gated layers |
-| 14 | **NOVA**: Contate-me | 3 | NEW `src/pages/contact.astro` | Criar | Simple contact page |
-
-**14 estruturas tocadas + ~30 itens granulares de copy edit dentro delas.**
+| # | OneNote section | PDF pgs | Repo target | Status |
+|---|---|---|---|---|
+| 1 | PAGINA DE ENTRADA | 1 | `src/pages/index.astro` | ✅ Resolved |
+| 2 | PAGINA ABOUT | 2–4 | `src/pages/about.astro` | ✅ Resolved |
+| 3 | PAGINA WORK → merge in EXPERIENCE | 3 | `src/pages/experience.astro` (kept) + `src/pages/work.astro` (deprecated) | ✅ Resolved |
+| 4 | Case 01 Aligned hyperscale | 3–4 | `src/content/projects/aligned-multi-building-campus.mdx` | ✅ Resolved |
+| 5 | Case 02 Microsoft CO+I CLT | 5 | `src/content/projects/microsoft-coi-hyperscale-program.mdx` | ✅ Resolved |
+| 6 | Case 03 Tesla Lathrop | 5 | `src/content/projects/tesla-industrial-rd-portfolio.mdx` | ✅ Resolved |
+| 7 | Case 04 Passeio das Águas | 5 | `src/content/projects/passeio-das-aguas-shopping.mdx` | ✅ Resolved |
+| 8 | Case 05 Goiânia BRT | 5 | `src/content/projects/goiania-brt-network.mdx` | ✅ Resolved |
+| 9 | Case 06 Virtua Healthcare | 5–6 | `src/content/projects/array-architects-healthcare.mdx` | ✅ Resolved |
+| 10 | PAGINA RESEARCH | 6 | `src/pages/research.astro` | ✅ No-op ("Não alterar por hoje") |
+| 11 | PAGINA SPEAKING | 6 | `src/pages/speaking.astro` + slide assets | ✅ Resolved (watermark scope = slide images) |
+| 12 | **NOVA**: Academic | 7 | NEW `src/pages/academic.astro` | ✅ Resolved (re-analysis confirmed clean cut) |
+| 13 | PAGINA PRESS KIT | 7 | `src/pages/press-kit.astro` + NEW `src/pages/admin/*` | ✅ Resolved (admin = logged-in layer per CF Access) |
+| 14 | **NOVA**: Contact | 3 | NEW `src/pages/contact.astro` | ✅ Resolved |
 
 ---
 
 ## 1 · PAGINA DE ENTRADA (home) — `src/pages/index.astro`
 
-> **PDF p. 1.** Section header "PAGINA DE ENTRADA".
+### 1.1 Hero copy — replace ending [RESOLVED]
+- **Decisão Vitor**: substituir "on a multi-building, ~264 MW campus" → **"on a multi-hundred-megawatt campus"**
+- **Ação**: `copy-edit`
+- **Alvo**: hero text em `src/pages/index.astro`
 
-### 1.1 Hero copy — remove "multi-building, ~264 MW campus"
-- **Comentário OneNote**: tag `REMOVER` abaixo do screenshot do hero
-- **Strikethrough vermelho**: "on a multi-building, ~264 MW campus" dentro do parágrafo intro do hero
-- **Ação**: `copy-edit` — remover essa frase específica do hero copy (provavelmente está no body do `index.astro` ou em props passados ao componente Hero)
-- **Alvo**: `src/pages/index.astro` — texto hero atual: "I am Sarah Rodovalho — a senior design and project leader, architect by training, with 16+ years delivering capital programs across hyperscale data centers, advanced manufacturing, healthcare, and large-scale retail in the U.S. and Brazil. Currently **Integrated Design Manager at Aligned Data Centers** on a multi-building, ~264 MW campus, while pursuing a PhD in Information Systems Engineering at Harrisburg University."
-- **CLARIFY-01**: deixar "Currently Integrated Design Manager at Aligned Data Centers" terminando aí, ou substituir por "on a multi-hundred-megawatt campus" (consistência com substituição equivalente no About — ver item 2.3)?
-
-### 1.2 Big numbers — trocar 264 MW + $279 M+
-- **Comentário OneNote**: "Remover e pegar os outros big numbers que tenho na apresentaçao do PMI follow the Sun"
-- **Yellow highlight**: stats "264 MW" e "$279 M+" no bloco "By the numbers / Scale, scope, and a research record"
-- **Stats atuais visíveis**: `16+` (Years in delivery — Brazil), `264 MW` (Current campus scope), `$279 M+` (Microsoft change orders), `3` (UAC · Sustainability · MDPI papers)
-- **Ação**: `asset-replace` — trocar `264 MW` e `$279 M+` por outros big numbers da apresentação **PMI Women in Construction · Follow the Sun · 2026**
-- **Alvo**: `src/pages/index.astro` (stats block, likely defined as array near top of frontmatter)
-- **CLARIFY-02**: quais 2 big numbers da PMI Follow the Sun? Precisa da Sarah indicar. Candidatos lógicos olhando o conteúdo dela (publicações, projetos): números do paper IJAC 2026 / Sustainability 2025 / case studies ARCC. Pedir a Sarah listar os 2 que ela quer ver na home.
-  - Source possível: `src/content/engagements/pmi-women-construction-follow-the-sun-2026.mdx` (já existe no repo) — verificar se já temos os números.
+### 1.2 Big numbers — swap 264 MW + $279 M+ for PMI deck values [RESOLVED]
+- **Source**: PMI Follow the Sun deck (`~/Downloads/A/PMI Women In Construction Follow the Sun 2026 Presentation SR_final.pptx`, slide 29 "Project scale and Impact / Big Numbers")
+- **Decisão**: trocar para os 2 mais hero-iconic da slide 29:
+  - `264 MW` → **`7M+`** label `Square feet delivered`
+  - `$279 M+` → **`~$1.5B+`** label `Total program value`
+- **Demais slots já existentes mantém**: `16+` (Years in delivery) e `3` (Peer-reviewed papers)
+- **Por que estes 2**:
+  - Career-aggregate, não employer-specific (alinhado com concern Sarah sobre exposição interna)
+  - Magnitude maior, mais impactante
+  - Source oficial da apresentação dela (PMI Follow the Sun)
+  - Frame coerente com "16+ years" (já no quadro): toda a stat strip vira career-spanning
+- **Alternativas inferiores consideradas** (do mesmo slide): `60+` Stakeholders, `5` Countries (Brazil, Portugal, Italy, China, US) — bons mas menos hero. Podem ser mencionados em texto narrativo posterior.
 
 ---
 
 ## 2 · PAGINA ABOUT — `src/pages/about.astro`
 
-> **PDF pp. 2–4.** Section header "PAGINA ABOUT".
+### 2.1 Bio narrative — remove "on a multi-building campus" [RESOLVED]
+- **Decisão Vitor**: substituir frase paralela ao 1.1 → bio termina com **"on a multi-hundred-megawatt campus"** (consistência hero ↔ about)
+- **Alvo**: `about.astro` linha 63 — `I currently work at Aligned Data Centers as Integrated Design Manager on a multi-building, ~264 MW campus.`
+- **Trocar para**: `I currently work at Aligned Data Centers as Integrated Design Manager on a multi-hundred-megawatt campus.`
 
-### 2.1 Bio narrative — remove "on a multi-building campus"
-- **Comentário OneNote**: tag `REMOVER`
-- **Strikethrough vermelho**: "on a multi-building campus" no parágrafo "I currently work at Aligned Data Centers as Integrated Design Manager **on a multi-building campus**"
-- **Ação**: `copy-edit`
-- **Alvo**: `src/pages/about.astro` linha ~63 — `<p>I am a senior design and project leader and architect with 16+ years delivering complex capital programs ... I currently work at Aligned Data Centers as Integrated Design Manager on a multi-building, ~264 MW campus.</p>`
-- **Trocar para**: `I currently work at Aligned Data Centers as Integrated Design Manager.` (sem frase de localização/scope)
-- **CLARIFY-03**: ou substituir por "on a multi-hundred-megawatt campus" pra manter o framing de scale sem precisar mexer toda vez que o campus crescer? Linkado com CLARIFY-01.
+### 2.2 Section "Now" → "Current Engagements" [RESOLVED]
+- **Decisão Vitor**: ✅ confirmado
+- **Alvo**: `about.astro` linha 117 — `<h2>Now</h2>` → `<h2>Current Engagements</h2>`
 
-### 2.2 Section "Now" — rename to "Current Engagements"
-- **Comentário OneNote**: "AMARELO HIGHLIGHT #1 - MUDAR PARA : Current Engadements (ou algo do tipo que mostre onde estou engajada ou envolvida atualmente)"
-- **Yellow highlight**: o título "Now" e o subtítulo da section
-- **Ação**: `copy-edit`
-- **Alvo**: `src/pages/about.astro` linha 117 — `<h2 class="font-display text-2xl sm:text-3xl tracking-tight">Now</h2>`
-- **Trocar para**: `Current Engagements`
-- **CLARIFY-04**: Sarah escreveu "Engadements" (typo) — confirmar "Current Engagements" é a versão final.
-
-### 2.3 First bullet — "across a ~264 MW multi-building campus"
-- **Comentário OneNote**: "AMARELO HIGHLITGH #2 - Mudar para -- on a multi-hundred-megawatt campus"
-- **Yellow highlight**: "across a ~264 MW multi-building campus" no primeiro `<li>` da section Now
-- **Ação**: `copy-edit`
-- **Alvo**: `src/pages/about.astro` linhas 122–124 — `Leading integrated design management across a ~264 MW multi-building campus.`
+### 2.3 First bullet "Aligned" — replace stat phrase [RESOLVED]
+- **Decisão Vitor**: ✅ implícito em 1.1/2.1
+- **Alvo**: `about.astro` linhas 122–124 — `Leading integrated design management across a ~264 MW multi-building campus.`
 - **Trocar para**: `Leading integrated design management on a multi-hundred-megawatt campus.`
 
-### 2.4 Add PhD as current engagement (já existe? confirmar position)
-- **Comentário OneNote**: "AZUL HIGHLITGH - addicionar meu PHS aqui como algo que estou engajada nesse momento tb."
-- **Blue highlight**: trecho onde o PhS [PhD] deveria entrar como item da section "Now"
-- **Status atual**: já existe na about.astro linhas 125–130 como segundo `<li>` (`PhD candidate ... Harrisburg University ... in progress, expected Dec 2030`)
-- **CLARIFY-05**: Sarah escreveu "addicionar" mas o item **já existe** na página. Ela quer:
-  - (a) Confirmar que está OK (no-op para 2.4)?
-  - (b) Reposicionar (talvez mover pra primeiro ou destacar)?
-  - (c) Reformular o texto?
-  - **Recomendação default** se Sarah não responder: no-op + reportar "já presente — confirmar se está como você quer".
+### 2.4 PhD bullet — reposition [RESOLVED]
+- **Decisão Vitor**: "está na sessão abaixo de educação, mas como estamos fazendo ajustes é algo que faz sentido estar no contexto da sessão"
+- **Estado atual**: PhD aparece em DUAS sections:
+  1. `about.astro` linhas 125–130 — section Now → mantém como Current Engagement
+  2. `about.astro` linhas 259–262 — section Education
+- **Ação consolidada**:
+  - **Now / Current Engagements**: PhD bullet STAYS (já lá)
+  - **Education section**: vai TODA pra `/academic` (per 2.5) — o PhD bullet vem junto, com status "in progress" badge
+  - **Resultado net**: Sarah aparece com PhD em DOIS lugares — `/about` (como current engagement) E `/academic` (como educação em progresso). Both contexts são honestos e não-duplicativos (current activity vs formal academic record).
 
-### 2.5 Remover bloco CV completo da About — mover pra nova página
-- **Comentário OneNote**: "REMOVEER TODA ESSA PARTE DA PAGINA INICIAL DO SITE / Ta muito curriculo, o ideal eh separar - o principal chamariz ja esta na parte principal que eh o textinho e no que to trabalhando atualmente / Fora que algumas coisas duplica nas outras abas entao eh desnecessario estar aqui"
-- **Tag**: `REMOVER` aplicado a (do que vejo no PDF):
-  - section "Selected past roles" (about.astro linhas 202–251)
-  - section "Education" (about.astro linhas 253–353)
-  - section "Certifications & affiliations" (about.astro linhas 355–399)
-  - section "Languages" (about.astro linhas 401–408)
-- **Reasoning da Sarah**: a página está muito CV, o "chamariz" principal já está no bio header + section Now; duplica conteúdo de `/credentials` e `/experience`
-- **Ação**: `restructure` — remover essas 4 sections do `about.astro`; mover conteúdo para nova página **Academic/Past Studies** (ver item 12) ou consolidar com pages existentes (`/experience` e `/credentials`)
-- **CLARIFY-06**: a Sarah pede "criar uma página dedicada para experiências acadêmicas/passado de estudos" (PDF p.7). Já existem `experience.astro` + `credentials.astro` + `awards.astro`. Três opções:
-  - (a) Criar `src/pages/academic.astro` consolidando Education + Past roles + Certs + Languages (single new page conforme literal da Sarah). Risk: dup com pages existentes.
-  - (b) Mover Education + Languages para `experience.astro` (que já tem Past roles?), Certs ficam em `credentials.astro` (já existem lá).
-  - (c) Manter `experience.astro` como "Past roles" + criar novo `academic.astro` só pra Education + Languages.
-  - **Recomendação default**: (a) — mais fiel à fala literal da Sarah "criar uma página dedicada", e mais simples de implementar. **Verificar primeiro se `experience.astro` e `credentials.astro` já têm o conteúdo equivalente — se sim, remover duplicação na hora de criar o academic.astro.**
+### 2.5 Remove CV-style blocks — restructure [RESOLVED via re-analysis]
+- **Decisão Vitor**: "esta decisão é mais tua que nossa, caso queira fazer uma re análise e voltar com dúvidas pendentes de decisão de negócio com opção a b c e recomendação eu topo em o fazermos"
+- **Re-análise (resultado decisivo, sem dúvidas pendentes)**:
 
-### 2.6 Páginas Education/Certs/Past roles podem já estar duplicadas
-- **Comentário OneNote** (inferido): "Fora que algumas coisas duplica nas outras abas entao eh desnecessario estar aqui"
-- **Ação investigativa**: ler `src/pages/experience.astro` + `credentials.astro` + `awards.astro` antes de implementar 2.5/12, identificar dups, decidir merge vs new.
-- **TODO (Vitor)**: tarefa de implementação — read pre-implementation.
+  **Estado atual em `about.astro`**:
+  - Header / bio (linhas 39–95)
+  - Section Now / Current Engagements (linhas 117–200)
+  - Section Selected past roles (linhas 202–251) — Microsoft + Tesla + TJU + Array + Aliansce
+  - Section Education (linhas 253–353) — PhD + MSc + MBA + Bachelor + photos
+  - Section Certifications & affiliations (linhas 355–399) — PMP, LEED GA, OSHA 30, AIA Assoc, CAU, Sigma Lambda Chi, NCARB
+  - Section Languages (linhas 401–408) — Portuguese + English
+
+  **Pages existentes na repo onde isto já mora (ou pode morar)**:
+  - `src/pages/experience.astro` — JÁ renderiza Past Roles via `experience/*.mdx` collection (7 MDXs)
+  - `src/pages/credentials.astro` — JÁ renderiza Certifications via `credentials/*.mdx` collection (6 MDXs)
+  - `src/pages/awards.astro` — separa awards (não-overlap)
+
+  **Análise de overlap**:
+  | Section em about.astro | Already covered? | Action |
+  |---|---|---|
+  | Bio header + Now | Não | KEEP em /about |
+  | Selected past roles | **SIM** — `/experience` | REMOVE de /about (already at /experience) |
+  | Education | **NÃO** — orphan | MOVE pra NEW /academic |
+  | Certifications & affiliations | **SIM** — `/credentials` | REMOVE de /about (already at /credentials) |
+  | Languages | **NÃO** — orphan | MOVE pra NEW /academic |
+
+  **Decisão final (sem opção a/b/c — data dictates the answer)**:
+  - `/about` fica: bio + Current Engagements (clean, sem CV)
+  - REMOVE de `/about`: Past Roles (já em /experience), Certs (já em /credentials), Education (mudou pra /academic), Languages (mudou pra /academic)
+  - NEW `/academic` contém: **Education** (PhD em progresso + MSc + MBA + Bachelor + photos) + **Languages**
+
+- **Risk flagged**: Section Education em about.astro tem 4 fotos (thesis defense, commencement TJU, UEG CBA 2006, UEG formatura 2009). Ao mover pra /academic, preservar todos os caminhos de Picture + alt text + figcaptions atuais.
+
+### 2.6 (was: investigação) — auto-resolved acima
 
 ---
 
-## 3 · PAGINA WORK / EXPERIENCE merge — `src/pages/work.astro` + `src/pages/experience.astro`
+## 3 · PAGINA WORK / EXPERIENCE merge — kept page: `/experience`
 
-> **PDF p. 3.** Section header "PAGINA WORK".
+### 3.1 Merge — keep `/experience` slug [RESOLVED]
+- **Decisão Vitor**: "expirence" → kept page é **`/experience`**, `/work` é deprecada com 301 redirect
+- **Implementação**:
+  - Copy content de `work.astro` (rich case study layout w/ `projects/*.mdx`) → REPLACE content atual de `experience.astro`
+  - DELETE `src/pages/work.astro`
+  - ADD 301 redirect `/work` → `/experience` em `worker.js`
+- **Camada de dados**:
+  - Manter `projects/*.mdx` collection (6 case studies) — fonte das cards
+  - Manter `experience/*.mdx` collection (7 past roles c/ heroImage) — segunda fonte de foto/link se quiser cruzar
+  - **Por projeto / case study**: foto + link de cada experiência together (Sarah's intent)
+  - Schema atual já suporta — só precisa renderizar
+- **CLARIFY-resolved-12 (intro paragraph)**: Vitor → "sarah removeu tudo pós o primeiro statement"
+  - Atual: `work.astro` linhas 49–66: `Six selected programs from a 16+ year delivery career in the U.S. and Brazil. Each entry pairs scope numbers with the role I held and the project's delivery context. The full chronology — including earlier roles in architecture practice and public-sector work — is on LinkedIn; broader role overview lives on the experience page.`
+  - **Trocar para**: `Six selected programs from a 16+ year delivery career in the U.S. and Brazil.` (somente primeira sentença; remove o resto)
 
-### 3.1 Merge das duas páginas Work + Experience
-- **Comentário OneNote**: "Fazer o merge com a pagina Experience - trazer a foto e o link para junto de cada experiencia"
-- **Ação**: `restructure` — fundir `work.astro` + `experience.astro` em uma única página (provavelmente `work.astro` permanece e `experience.astro` é removida via redirect, ou vice-versa)
-- **Critério**: cada experiência (item do `src/content/experience/*.mdx`) deve aparecer junto com sua foto + link pro case study correspondente em `src/content/projects/*.mdx`
-- **CLARIFY-07**: qual page name fica? `/work` ou `/experience`? Recomendação: `/work` (mais curto, foco no portfolio) + 301 redirect de `/experience` → `/work`.
+### 3.2 NOT exposing CV-style content publicly [RESOLVED]
+- **Decisão Vitor**: "ela falou que estava ficando repetitivo e ela riscou toda parte que é mais descritiva pq tem nos bullet points muita informação sensível de negócio das funções"
+- **Pattern identificado**: `experience/*.mdx` `highlights[]` array contém bullets com:
+  - Internal financial metrics (e.g., `$4.2M+ verified savings`, `20% reduction in design-consultant fees`)
+  - Specific function detail (e.g., `Mechyard tool installation conflict resolution`, `RFP cycles under 72 hours`)
+  - Internal organizational detail (e.g., `divide ownership with a peer Design Manager`)
+- **Decisão de implementação**:
+  - `highlights: []` (empty array) em todos 7 `experience/*.mdx`
+  - Bullets sensíveis MOVE pra novo arquivo gitignored `_private/experience-detailed.md` (single source preservado pra interviews/CV uso pessoal Sarah)
+  - Add `_private/` ao `.gitignore` se ainda não estiver
+- **Net effect público**: `experience.astro` mostra `summary` + heroImage por role, sem bullets. Detalhes ficam em arquivo privado.
 
-### 3.2 NÃO expor currículo aberto
-- **Comentário OneNote**: "nao usar nada dos items do meu currrulo descrito na pagina experiencia (isso eh dado somente para curriculo nao pode ser divulgado abertamente) caso precise posso mandar para alguem separado"
-- **Ação**: `security` / `content-discipline` — auditar `experience.astro` + `src/content/experience/*.mdx` removendo qualquer item que seja CV-style com detalhamento extenso (números internos, employer-specific metrics não-públicos, etc.)
-- **CLARIFY-08**: o que constitui "items do currículo descrito"? Sarah precisa indicar especificamente o que retirar. Recomendação default: comparar conteúdo `experience/*.mdx` com o **bio public** da press-kit BIO_SHORT (~280 chars) — tudo além desse nível de detalhe pra cada experiência deve ser revisto.
-- **TODO (Sarah)**: passar checklist do que retirar específico, OU passar o CV em PDF separado pra Vitor anexar à pasta admin gated (não-public).
-
-### 3.3 Criar página Contate-me
-- **Comentário OneNote**: "Criar uma pagina contate-me simples"
-- **Ação**: `new-page`
+### 3.3 NEW page Contact [RESOLVED]
+- **Decisão Vitor**: "contact" (English-first per CLAUDE.md)
 - **Alvo**: NEW `src/pages/contact.astro`
-- **Escopo "simples"**:
-  - Headline "Get in touch" (ou "Contact" / "Contate-me" — CLARIFY-09 abaixo)
+- **Escopo "simples"** (Sarah's word):
+  - Headline (e.g., "Get in touch")
   - Email único `sarah@sarahrodovalho.com` (mailto link)
   - LinkedIn link
-  - Press inquiries → link pra `/press-kit` (já existe)
+  - Press inquiries → link pra `/press-kit`
   - Localização: "Based in Leesburg, Virginia · Washington DC – Baltimore region"
-  - **NÃO** incluir form (per content-discipline atual + Sarah pediu "simples")
-- **CLARIFY-09**: page slug e nome? `/contact` (English-first, alinhado com restante do site) ou `/contato` (PT)?
-- **Recomendação default**: `/contact` (English-first per CLAUDE.md "Language: English primary").
+  - NO form (per content-discipline + Sarah's "simples")
 
 ---
 
 ## 4 · Case 01 · Aligned hyperscale campus — `src/content/projects/aligned-multi-building-campus.mdx`
 
-> **PDF pp. 3–4.** First case study card screenshot.
-
-### 4.1 Datas — só anos, USA
-- **Comentário OneNote**: "Data colocar somente anos 2025/2026 - USA"
-- **Yellow highlight**: período atual "Oct 2025 - present | Virginia & Maryland, U.S."
-- **Ação**: `copy-edit`
+### 4.1 Date format — only years [RESOLVED]
+- **Decisão Vitor**: `2025` (sem mês)
+- **Convention (per 4.1+)**: `<year> — present · USA` (or country) aplicado a TODOS os cards
 - **Alvo MDX**:
-  - `period: "Oct 2025 — present"` → **trocar para** `period: "2025 — present · USA"` (ou similar)
-  - `location: "Virginia & Maryland, U.S."` → simplificar pra `location: "USA"`
-- **CLARIFY-10**: manter o formato `Oct 2025` ou somente `2025`? Sarah disse "somente anos" → `2025 — present`.
-- **CLARIFY-11**: outros cards seguem o mesmo padrão? Cards 02, 03, 06 também têm `#1 yellow — trocar para USA` — ver itens 5.1, 6.1, 9.2.
+  - `period: "Oct 2025 — present"` → `period: "2025 — present · USA"`
+  - `location: "Virginia & Maryland, U.S."` → `location: "USA"`
 
-### 4.2 Strikethrough vermelho — bloco intro narrative do /work
-- **Comentário OneNote**: implícito no risco vermelho do screenshot principal — o parágrafo "Six selected programs from a 16+ year career in the U.S. and Brazil. Each entry pairs scope-numbers with the role I held..."
-- **Ação**: `copy-edit` — remover esse intro paragraph (parece estar no `work.astro` como header da page, não no MDX do case 01)
-- **Alvo**: `src/pages/work.astro` (verificar header text antes de implementar)
-- **CLARIFY-12**: confirmar com Sarah que esse texto inteiro vai ser removido (não só editado). Alternativa: trocar por algo mais conciso/menos CV-style.
+### 4.2 Intro paragraph — keep first sentence only [RESOLVED]
+- Ver item 3.1 acima (este é o footer prose do /work, vai pra /experience após merge)
 
-### 4.3 Strikethrough vermelho — callout tags "Multi-building" + "Design management"
-- **Comentário OneNote**: risco vermelho nas tags
-- **Status MDX atual**:
-  ```
-  scope:
-    - { label: "Campus capacity", value: "~264 MW" }
-    - { label: "Buildings", value: "Multi-building" }
-    - { label: "Region", value: "DC-Baltimore" }
-    - { label: "Discipline", value: "Design management" }
-  ```
-- **Ação**: `copy-edit` — substituir os 4 callouts pelos novos abaixo (4.5)
+### 4.3 Strikethrough callout tags — superseded by new callouts (4.5)
 
-### 4.4 Body text — rewrite
-- **Comentário OneNote**: texto completo escrito pela Sarah na p. 4
-- **Novo abstract/body**:
+### 4.4 Body text — abstract + body split per recommendation [RESOLVED]
+- **Decisão Vitor**: "em acordo com a recomendação" → 1º parágrafo → `abstract`, 2º parágrafo → MDX body markdown
+- **`abstract` (frontmatter)**:
   > Hyperscale campuses don't get strained because any one workflow is hard. They get strained because design, permitting, underground systems, and field execution all move in parallel — and the toughest problems live in the gaps between them.
-  >
+- **Body markdown (abaixo do frontmatter)**:
   > That's the work at Aligned. I lead owner-side integrated design on a multi-building campus, coordinating trade workstreams across mixed delivery models. A few frameworks have crystallized along the way — for permitting, underground coordination, and handoff.
-- **Ação**: `copy-edit`
-- **Alvo MDX**: `abstract:` (linhas 13–18 do .mdx) + body markdown abaixo do frontmatter
-- **CLARIFY-13**: split entre `abstract` (frontmatter, mostrado no card) e `body markdown` (mostrado no detail page)? Recomendação: 1º parágrafo vai no `abstract`, 2º parágrafo vai no body markdown.
 
-### 4.5 Novos callouts (4 slots — VERDE/BLUE/PINK/ORANGE)
-- **Comentário OneNote** (p.4 transcript literal):
-  - "VERDE / Context"
-  - "BLUE / DUAL-TRACK DELIVERY / Integration / Disciplines/trades/Vendors"
-  - "PINK / NoVA/Maryland corridor"
-  - "ORANGE / Methodology / Field-tested governance frameworks"
-- **Inferência (split label/content per pattern dos cards 02–06)**:
-  - **Slot 1 (Green)**: label `CONTEXT` · value `Dual-track delivery` *(inferido — "Dual-track delivery" parece ser o highlight do conceito; alternativa: value="Integration")*
-  - **Slot 2 (Blue)**: label `INTEGRATION` · value `Disciplines / trades / Vendors`
-  - **Slot 3 (Pink)**: label `REGION` *(inferido, sem label explícito do Sarah)* · value `NoVA / Maryland corridor`
-  - **Slot 4 (Orange)**: label `METHODOLOGY` · value `Field-tested governance frameworks`
-- **CLARIFY-14** ⚠️ **AMBIGUIDADE PRINCIPAL DESTE CARD**: o parse acima é a melhor leitura possível, mas o card 01 é o único onde Sarah não escreveu explicitamente o split entre LABEL e VALUE. Os outros cards (02–06) seguem o padrão `COR / LABEL / VALUE` ou `COR / LABEL / linha1 / linha2`. Para 01 ela escreveu:
-  - `VERDE / Context` → 1 token só (label? value?)
-  - `BLUE / DUAL-TRACK DELIVERY / Integration / Disciplines/trades/Vendors` → 3 tokens
-  - `PINK / NoVA/Maryland corridor` → 1 token só
-  - `ORANGE / Methodology / Field-tested governance frameworks` → 2 tokens
-  - **Pedir clarificação direta da Sarah** — alternativa: ela define cada par {label, value} explicitamente, ou confirma a inferência acima.
+### 4.5 Callouts (4 slots) — inference confirmed [RESOLVED]
+- **Decisão Vitor**: "confirmado a inferência"
+- **MDX `scope` array final** (ordem = display slot):
+  ```yaml
+  scope:
+    - { label: "CONTEXT", value: "Dual-track delivery" }       # green
+    - { label: "INTEGRATION", value: "Disciplines · trades · Vendors" }  # blue
+    - { label: "REGION", value: "NoVA / Maryland corridor" }   # pink
+    - { label: "METHODOLOGY", value: "Field-tested governance frameworks" }  # orange
+  ```
 
 ---
 
 ## 5 · Case 02 · Microsoft CO+I CLT — `src/content/projects/microsoft-coi-hyperscale-program.mdx`
 
-> **PDF p. 5.** Second case study card screenshot.
+### 5.1–5.2 Location + date [RESOLVED]
+- Per convention `<year> — <year> · USA`
 
-### 5.1 Yellow #1 — location → USA
-- **Comentário**: "#1 amarelo trocar para USA"
-- **Ação**: `copy-edit` — trocar location para `USA`
-
-### 5.2 Yellow #2 — período (formato simplificado)
-- **Comentário**: "#2 amarelo - trocar para -"
-- **Ação**: `copy-edit` — formato simplificado de período (anos, USA), consistente com 4.1
-
-### 5.3 Body text — rewrite
-- **Novo abstract/body**:
+### 5.3 Body — abstract + body split [RESOLVED]
+- **`abstract`**:
   > Hyperscale data centers are some of the most carbon-intensive structures in modern construction. Microsoft's mass-timber pilot in Northern Virginia is the industry's first serious attempt to change that — a hybrid cross-laminated timber, steel, and concrete design targeting 35% less embodied carbon than steel and 65% less than precast concrete.
-  >
+- **Body markdown**:
   > I was on the first team. The visible work was construction contracts and change-order management across several concurrent builds. Development of change-order framework that ended up used across projects — and a CO+I team award.
 
-### 5.4 Callouts (4 slots — explícitos pela Sarah)
-- **GREEN** · label `INITIATIVE` · value `First-team CLT data centers (FOK)`
-- **BLUE** · label `SCOPE` · value `Concurrent hyperscale portfolio`
-- **PINK** · label `CONTRIBUITION` *(Sarah escreveu com este spelling — keep ou normalize para `CONTRIBUTION`?)* · value `Change-order framework`
-- **ORANGE** · label `RECOGNITION` · value `CO+I Team Award · FY25`
-- **CLARIFY-15**: spelling `CONTRIBUITION` → `CONTRIBUTION` (typo fix)? Recomendação default: corrigir.
+### 5.4 Callouts (4 slots) — corrigir typo [RESOLVED]
+- **Decisão Vitor**: "sim corrigir" → `CONTRIBUITION` → **`CONTRIBUTION`**
+- **MDX `scope` final**:
+  ```yaml
+  scope:
+    - { label: "INITIATIVE", value: "First-team CLT data centers (FOK)" }  # green
+    - { label: "SCOPE", value: "Concurrent hyperscale portfolio" }          # blue
+    - { label: "CONTRIBUTION", value: "Change-order framework" }            # pink
+    - { label: "RECOGNITION", value: "CO+I Team Award · FY25" }             # orange
+  ```
 
 ---
 
 ## 6 · Case 03 · Tesla Lathrop — `src/content/projects/tesla-industrial-rd-portfolio.mdx`
 
-> **PDF p. 5.** Third case study card screenshot.
+### 6.1–6.2 Location + date [RESOLVED]
 
-### 6.1 Yellow #1 — location → USA
-- **Ação**: `copy-edit` — location `USA`
-
-### 6.2 Yellow #2 — período (formato simplificado)
-- **Ação**: `copy-edit` — consistent com 4.1/5.2
-
-### 6.3 Body text — rewrite
-- **Novo abstract/body**:
+### 6.3 Body — abstract + body split
+- **`abstract`**:
   > The Lathrop Megafactory is the world's first dedicated facility for mass-producing Tesla Megapacks and North America's largest utility-scale battery plant. My time at Tesla overlapped its publicly announced doubling — from 20 to 40 GWh of annual production capacity.
-  >
+- **Body markdown**:
   > The work was a multi-facility portfolio of industrial and workplace projects across Tesla's U.S. operations, coordinated across engineering, facilities, and construction through scope discipline and vendor consolidation.
 
-### 6.4 Callouts (4 slots — explícitos)
-- **GREEN** · label `SCALE-UP` · value `20 → 40 GWh`
-- **BLUE** · label `SCOPE` · value `Multi-facility industrial portfolio`
-- **PINK** · label `CATEGORY` · value `First-of-kind energy storage facility`
-- **ORANGE** · label `DOMAIN` · value `Energy storage manufacturing`
+### 6.4 Callouts (4 slots) — explícitos [RESOLVED]
+```yaml
+scope:
+  - { label: "SCALE-UP", value: "20 → 40 GWh" }                              # green
+  - { label: "SCOPE", value: "Multi-facility industrial portfolio" }         # blue
+  - { label: "CATEGORY", value: "First-of-kind energy storage facility" }    # pink
+  - { label: "DOMAIN", value: "Energy storage manufacturing" }               # orange
+```
 
 ---
 
 ## 7 · Case 04 · Passeio das Águas — `src/content/projects/passeio-das-aguas-shopping.mdx`
 
-> **PDF p. 5.** Fourth case study card screenshot (transição entre p.5).
+### 7.1 Purple — HTML entity leak fix [RESOLVED]
+- **Decisão Vitor**: "está em roxo o `&` que está modulando como `&amp;` tem outros locais da página com esta falha de renderização do símbolo"
+- **Root cause**: ampersand HTML entity leak — algum lugar tem `&amp;` literal no MDX/Astro source onde devia ser `&` (Astro/JSX auto-escapes); ou um double-escape pattern.
+- **Locais para grep (todos os arquivos do repo)**:
+  - `pages/*.astro` — `&amp;` literal (CORRETO em JSX/Astro template, ESCAPADO já)
+  - `content/**/*.mdx` — `&amp;` literal (INCORRETO no MDX frontmatter strings — escape leak)
+  - MDX body — `&amp;` em prose também pode ser leak dependendo do parser
+- **Diagnóstico Vitor flagged "outros locais com mesma falha"** — não-único ao card 04; sweep general aplica
+- **Action**: PR-S10 inclui sweep de `&amp;` em MDX frontmatter strings → trocar por `&` literal (Astro renderiza correctly desde que não venha duplo-escapado)
 
-### 7.1 Purple — corrigir (item não-identificado)
-- **Comentário**: "Purple - corrigir"
-- **Status**: highlight roxo visível no screenshot, mas o **alvo do corrigir não está claro** na transcrição do PDF.
-- **CLARIFY-16** ⚠️: pedir Sarah indicar especificamente o que está em roxo (provavelmente um typo, data ou nome no card). Sem isso, este item fica blocked.
+### 7.2 Vermelho — months elimination [RESOLVED]
+- **Decisão Vitor**: "meses que ela está eliminando e deixando só anos" — alinhado com 4.1 convention
 
-### 7.2 Vermelho — retirar (item não-identificado)
-- **Comentário**: "Vermelho - retirar"
-- **CLARIFY-17** ⚠️: igual ao 7.1 — alvo do risco vermelho não está claro. Pedir Sarah indicar.
+### 7.3 Yellow — date format [RESOLVED]
+- Per convention: Passeio é Brasil → `2013 · Brazil`
 
-### 7.3 Yellow — mudar para —
-- **Ação**: `copy-edit` — consistente com 4.1/5.2/6.2 (formato anos + USA, mas Passeio é Brasil então provavelmente `2013 · Brazil`)
-
-### 7.4 Body text — rewrite
-- **Novo abstract/body**:
+### 7.4 Body — abstract + body split
+- **`abstract`**:
   > Passeio das Águas is one of the largest shopping centers in Brazil's center-west region — a ground-up project I delivered from construction through commissioning and into ongoing tenant operations. It opened on its original target date of 30 October 2013.
-  >
+- **Body markdown**:
   > The visible work was design and construction management at scale. The deeper work was building a tenant-improvement operational framework that was later adopted across Aliansce Sonae's national portfolio — a methodology born on one project that ended up shaping how the company ran the rest.
 
-### 7.5 Callouts (somente 2 explícitos no PDF — verde/azul)
-- **GREEN** · label `SCHEDULE` · value `Delivery on-time`
-- **BLUE** · label `TENANTS MANAGED` · value `300+`
-- **PINK + ORANGE** — não-explicitados no PDF
-- **CLARIFY-18** ⚠️: para 4 slots completos, Sarah precisa indicar PINK e ORANGE. Recomendação default: deixar 2 slots em vez de 4 (cards com slot count variável é OK se o componente suportar), OU sugerir auto-fill:
-  - Pink possível: `BUDGET` / `$232M` (já em MDX hoje)
-  - Orange possível: `IMPACT` / `Framework adopted nationally`
+### 7.5 Callouts (4 slots) — auto-fill suggested by me [RESOLVED via my recommendation]
+- **Decisão Vitor**: "auto-fill a sugerir por ti"
+- **Sugestão (4 slots completos)**:
+  ```yaml
+  scope:
+    - { label: "SCHEDULE", value: "Delivery on-time" }              # green (explicit Sarah)
+    - { label: "TENANTS MANAGED", value: "300+" }                   # blue (explicit Sarah)
+    - { label: "BUDGET", value: "$232M" }                           # pink (auto, from PMI slide 20)
+    - { label: "IMPACT", value: "Framework adopted nationally" }    # orange (auto, from Sarah's body para 2)
+  ```
+- **Justificativa auto-fill**:
+  - Pink BUDGET / $232M — number já público em press-kit + PMI deck slide 20; coerente magnitude
+  - Orange IMPACT / Framework adopted nationally — captura o "deeper work" do parágrafo 2 da Sarah ("tenant-improvement framework adopted across Aliansce Sonae's national portfolio"); transforma a história em um callout dimensional
 
 ---
 
 ## 8 · Case 05 · Goiânia BRT — `src/content/projects/goiania-brt-network.mdx`
 
-> **PDF p. 5.** Fifth case study card screenshot.
+### 8.1 Yellow — date [RESOLVED]
+- Per convention: Brazil → `2017 · Brazil`
 
-### 8.1 Yellow — período mudar
-- **Ação**: `copy-edit` — formato consistente, mas Brazil
-
-### 8.2 Body text — rewrite
-- **Novo abstract/body**:
+### 8.2 Body — abstract + body split
+- **`abstract`**:
   > The Bus Rapid Transit corridor runs through the dense center of Goiânia, Brazil's tenth-largest city — a public-infrastructure program that had to reach functional opening while threading construction through active urban fabric.
-  >
+- **Body markdown**:
   > The visible work was design management across the full corridor — terminals, stations, and ground-up infrastructure. The defining moment was a two-month critical-criteria window: targeted design revisions that bypassed eminent-domain constraints without triggering land disputes, and R$1.5M in design-change savings absorbed before they reached construction.
 
-### 8.3 Foto position + Experience link (seta rosa)
-- **Comentário**: "SETA ROSA / Trocar a foto para apos/abaixo do texto - incluir o link da pagina Experience (se houver um link para a foto)"
-- **Ação**: `restructure` (layout) + `copy-edit` (link)
-- **Alvo**: provavelmente está no template `work.astro` ou no componente que renderiza cada card; pode estar como prop `imagePosition: 'top' | 'bottom'` no MDX frontmatter
-- **CLARIFY-19**: este re-layout aplica APENAS ao card 05, ou seria mais consistente aplicar a todos os 6 cards? Recomendação default: aplicar a TODOS pra mantenção da uniformidade visual. Confirmar com Sarah.
+### 8.3 Photo position — below text, ALL cards [RESOLVED]
+- **Decisão Vitor**: "todos, sarah informou que a foto em cima confunde ela pq a descrição do que está abaixo entao por isto ela solicitou a inversao da ordem"
+- **Reasoning**: foto em cima sem contexto deixa ambíguo qual é o projeto; texto primeiro orienta o leitor antes da imagem confirmar
+- **Implementação**: refactor `work.astro` (que virará `experience.astro` per 3.1) — mover `<figure>` heroImage de ANTES do título para DEPOIS do body+scope grid
+- **Aplicação**: TODOS os 6 case study cards (uniformidade visual)
+- **Note**: card 05 não tem callouts adicionais especificados — manter atual `scope` array
 
 ---
 
-## 9 · Case 06 · Virtua Healthcare (Array Architects) — `src/content/projects/array-architects-healthcare.mdx`
+## 9 · Case 06 · Virtua Healthcare — `src/content/projects/array-architects-healthcare.mdx`
 
-> **PDF p. 5–6.** Sixth case study card screenshot.
+### 9.1 Yellow #1 — title trim [RESOLVED]
+- **Decisão Vitor**: "substituir 'clinical planning & design' por 'planning & design'"
+- **Title atual** (no card screenshot): "Healthcare clinical planning & design"
+- **Title novo**: "Healthcare planning & design" (drop "clinical")
+- **Alvo MDX**: `title:` field
+- **OBS**: também há possível leak `&amp;` (per 7.1 sweep)
 
-### 9.1 Yellow #1 — title trimming
-- **Comentário**: "#1 amarelo trocar para - planning & design"
-- **Status**: title atual no card screenshot é "Healthcare clinical planning &amp; design"
-- **CLARIFY-20**: o que Sarah quer é:
-  - (a) Manter "Healthcare clinical planning & design" (a frase já contém "planning & design")?
-  - (b) Trocar pra somente "planning & design" (drop "Healthcare clinical")?
-  - (c) Trocar pra "Clinical planning & design" (drop "Healthcare")?
-- **Recomendação default**: pedir Sarah indicar.
+### 9.2 Yellow #2 — location → USA [RESOLVED]
+- **Alvo MDX**: `location: "USA"`
 
-### 9.2 Yellow #2 — location → USA
-- **Comentário**: "#2 amarelo - incluir USA"
-- **Ação**: `copy-edit` — incluir/trocar location para `USA`
+### 9.3 Yellow #3 — date [RESOLVED]
+- Per convention: `2022 · USA`
 
-### 9.3 Yellow #3 — período
-- **Comentário**: "#3 amarelo - trocar para -"
-- **Ação**: `copy-edit` — formato consistente (provavelmente `2022 · USA`)
-
-### 9.4 Body text — rewrite
-- **Novo abstract/body**:
+### 9.4 Body — abstract + body split
+- **`abstract`**:
   > Virtua Our Lady of Lourdes in Camden is the anchor project of Virtua Health's $500M "Advancing Well" reinvestment — a 254,000 sq ft new tower and 458,000 sq ft renovation consolidating cardiac, neuroscience, and transplant services for South Jersey.
-  >
+- **Body markdown**:
   > I contributed during design development and construction documentation as an Architectural Designer at Array Architects, the project's architect of record. The visible work was life-safety detailing and RFI workflow through Autodesk Build, delivered ahead of phased-handoff deadlines. The deeper work was clinical-planning practice in its most demanding form — bed-tower programming where adjacencies, infection-control, patient experience, and operational continuity drive every plan decision.
 
-### 9.5 Callouts (4 slots — explícitos)
-- **GREEN** · label `SCOPE` · value `Tower Addition & Renovation`
-- **BLUE** · label `TOWER` · value `254K sq ft`
-- **PINK** · label `RENOVATION` · value `458K sq ft`
-- **ORANGE** · label `PROGRAM` · value `$500M`
+### 9.5 Callouts (4 slots) — explícitos [RESOLVED]
+```yaml
+scope:
+  - { label: "SCOPE", value: "Tower Addition & Renovation" }    # green
+  - { label: "TOWER", value: "254K sq ft" }                     # blue
+  - { label: "RENOVATION", value: "458K sq ft" }                # pink
+  - { label: "PROGRAM", value: "$500M" }                        # orange
+```
 
-### 9.6 Brown arrow — trocar tag de origem
-- **Comentário**: "Brow arrow - TROCAR PARA - THE SELECTION"
-- **Status**: flecha marrom aponta de uma tag/source label existente para "THE SELECTION"
-- **CLARIFY-21** ⚠️: qual tag exatamente trocar para "THE SELECTION"? Inferência: a tag "By yore - Array Architects" / "Earlier work includes..." parte inferior do card pode estar virando "The selection" (ou seja, uma section divider no /work)? Pedir Sarah indicar.
+### 9.6 Brown arrow — section header rename [RESOLVED]
+- **Decisão Vitor**: "trocar 'Beyond the case studies' para 'Beyond the selection'"
+- **Alvo**: `work.astro` linha 184 — `<p class="eyebrow">Beyond the case studies</p>` → `<p class="eyebrow">Beyond the selection</p>`
+- **Note**: após o merge per 3.1, este pedaço fica em `experience.astro`
 
-### 9.7 Lavender arrow — incluir "assistant"
-- **Comentário**: "Seta lavanda * - inlciur **assistent**"
-- **Status**: flecha lavanda aponta para um ponto específico onde adicionar "assistant"
-- **Inferência possível**: role label muda de "Architectural Designer" → "Architectural Designer (Assistant)" / "Assistant Architectural Designer" — pra refletir senioridade na época
-- **CLARIFY-22** ⚠️: confirmar onde e como adicionar "assistant" — provavelmente role title ou mention no body.
+### 9.7 Lavender arrow — add "Assistant" to teaching [RESOLVED]
+- **Decisão Vitor**: "sarah era professora assistente durante o mestrado, então por isto ela solicitou adicionar assistente a frente de teaching para nao gerar uma inferência errada"
+- **Context CPT**: Sarah era aluna do MSc em TJU e atuou como **Teaching Assistant** dos professores de Construction Management como parte do CPT (Curricular Practical Training, F-1 visa work authorization).
+- **Alvos**:
+  - `work.astro` linhas 186–188 (Beyond the selection prose) — "teaching at Thomas Jefferson University's Department of Construction Management" → **"teaching assistant at Thomas Jefferson University's Department of Construction Management"** (ou "as a teaching assistant" se ficar melhor gramaticalmente)
+  - Verificar TODOS os outros locais que mencionam TJU + "teaching" — sweep similar ao `&amp;`
+  - `about.astro` linha 222–224 — JÁ tem "Teaching Assistant" → no-op
+  - `experience/tju-teaching-assistant.mdx` — verificar role + summary; provavelmente já correto
 
 ---
 
 ## 10 · PAGINA RESEARCH — `src/pages/research.astro`
 
-> **PDF p. 6.**
-
-### 10.1 No action
-- **Comentário OneNote**: "Nao alterar nada por hoje"
-- **Ação**: `no-op`
+### 10.1 No-op
+- **Decisão Vitor**: ✅ "Não alterar por hoje"
 
 ---
 
-## 11 · PAGINA SPEAKING — `src/pages/speaking.astro` + `src/content/engagements/*.mdx`
+## 11 · PAGINA SPEAKING + UPCOMING EVENTS PLACEHOLDER
 
-> **PDF p. 6.**
+### 11.1 Upcoming events block — build NOW (re-analysis confirmed) [RESOLVED]
+- **Decisão Vitor**: "eu prefiro do ponto de vista técnico em já criar a página, e colocar em breve next events ou algo do tipo, pq aí temos o placeholder já diagramado e fica fácil de lembrar em atualizar quando tiver novos e futuros eventos a colocar lá, o que inclusive nutre o Orenu com informações valiosas, e Sarah tem já upcoming events (ela só está sem tempo em nos trazer a lista)"
+- **Re-análise — design do placeholder**:
+  - Top da `speaking.astro` ganha uma nova `<section>` ANTES da listagem de past engagements
+  - Use existing `engagements` content collection (schema já tem `date: string`)
+  - Filter dynamically: `upcoming = engagements.filter(e => new Date(e.data.date) >= today)` e `past = engagements.filter(e => new Date(e.data.date) < today)`
+  - Section "Upcoming engagements":
+    - Se `upcoming.length > 0`: render cards iguais aos past, com badge "Upcoming"
+    - Se `upcoming.length === 0`: render empty state — "Sarah is currently scheduling 2026 events. Reach out via [contact](/contact) to invite her."
+- **Implementation notes**:
+  - `speaking.astro` atual já carrega `getCollection("engagements")` (linha 37) — só precisa split por date
+  - HERO_IMAGES + DECK_IMAGES dict (linhas 41–86) precisa cobrir upcoming events também — ok como pattern
+  - Schema engagements suporta `date` — nada a mudar em `content.config.ts`
+- **Tie-in Orenu (per Vitor's intent)**: quando Sarah preencher upcoming events em `engagements/*.mdx`, o mesmo content pode alimentar o Orenu dim_engagement table via auto-PR pattern descrito em ADR-024 phase 1b (fact_speaker_engagement). Continuidade entre o site da Sarah + Orenu data layer.
 
-### 11.1 Future: upcoming events block
-- **Comentário OneNote**: "Mais pra frente a gente pode colocar proximos eventos confirmados ou algo do tipo no topo da pagina ou criar uma pagina (upcoming events) mas por agora acho melhor deixar sem"
-- **Ação**: **deferred / no-op now** — anotar para roadmap futuro
-- **CLARIFY-23**: anotar onde? Sugestão: criar issue no GitHub do repo OU adicionar TODO no `src/pages/speaking.astro`.
+### 11.2 Watermark slide images — embedded diagonal [RESOLVED]
+- **Decisão Vitor**: "as imagens da apresentação dela do PMI ela pediu que tenha uma watermark em cima da imagem para evitar de outros usarem imagem de apresentação dela sem o consent entao é uma proteção que ela está pedindo"
+- **Scope clarification**: watermark **embedida no asset** (binary modification), NÃO page-level ambient (que já existe via `WatermarkLayer.astro`)
+- **Assets alvo** (per `speaking.astro` HERO_IMAGES + DECK_IMAGES dicts):
+  - `src/assets/speaking/24-hours-women-construction-event-banner.png` (event banner)
+  - `src/assets/speaking/ai-compute-demand-growth.png` (slide deck thumbnail)
+  - `src/assets/speaking/anatomy-of-a-data-center.png`
+  - `src/assets/speaking/arcc-2025-sarah-presenting.jpg` (ARCC; este é foto da Sarah, watermark com cuidado pra não cobrir o rosto)
+  - `src/assets/speaking/how-i-ended-up-in-data-centers-timeline.png`
+  - `src/assets/speaking/physical-backbone-digital-world.png`
+- **Watermark text** (default per minha recomendação CLARIFY-25, Vitor não overrode): **"© Sarah Rodovalho · sarahrodovalho.com"**
+- **Pattern**: diagonal, semi-transparente (~25% opacity), repetido em grid (3-4 instances por imagem para dificultar crop-out)
+- **Implementação**: novo script `scripts/watermark-images.py` usando Pillow:
+  - Input: pasta `src/assets/speaking/_originals/` (originais sem watermark, ADD to `.gitignore`)
+  - Output: `src/assets/speaking/*.png/jpg` (watermarked, committed)
+  - Idempotente: skip se output já existe e tem mtime > input
+- **OBS sobre PR #43/#45**: ambient `WatermarkLayer.astro` continua útil pra page-level. Os dois sistemas convivem — Layer cobre página inteira, embedded protege imagens individuais que podem ser baixadas/screenshot/extraídas isoladamente.
 
-### 11.2 Watermark slide images (anti-cópia)
-- **Comentário OneNote**: "colocar marca dagua - varias na diagonal - para que ninguem possa copiar - em todas as images dos slides"
-- **Status atual**: PR #43 + #45 já adicionaram **ambient watermarks** (page-level Astro component `WatermarkLayer.astro`). Sarah pediu watermark **nas imagens dos slides** especificamente.
-- **CLARIFY-24** ⚠️: distinção importante:
-  - (a) WatermarkLayer atual (overlay no page background) — já existe
-  - (b) Watermarks **embedidos nas imagens dos slides** (multiple diagonal stripes within image asset) — NOT yet, requer image processing
-- **Ação se confirmada (b)**: `asset-replace` + script — adicionar watermarks diagonais multiple ao asset .jpg/.png dos slides (provavelmente em `src/assets/speaking/` ou `public/speaking/`). Recomendação técnica:
-  - Usar Python script (Pillow) ou ImageMagick para regenerar assets com diagonal watermark "© Sarah Rodovalho · sarahrodovalho.com"
-  - Manter originals em pasta `_originals/` (gitignored) e versão watermarked em `src/assets/speaking/`
-- **CLARIFY-25**: texto exato do watermark? Sugestão default: `© Sarah Rodovalho · sarahrodovalho.com · Do not redistribute`.
-
-### 11.3 Talk PMI — descrição rewrite
-- **Comentário OneNote**: "Na descricao do talk trocar para - An invited session at PMI's annual global women-in-construction-leadership conference. The talk is for construction project managers thinking about a pivot into mission-critical infrastructure — what a data center actually is in the AI era, what transfers from architecture and large-scale construction, and what you have to stop assuming you can't do."
-- **Ação**: `copy-edit`
-- **Alvo**: `src/content/engagements/pmi-women-construction-follow-the-sun-2026.mdx` — campo `abstract:` ou `description:`
-- **Body**:
+### 11.3 PMI talk description rewrite [RESOLVED]
+- **Alvo**: `src/content/engagements/pmi-women-construction-follow-the-sun-2026.mdx` — campo `abstract:`
+- **Body novo**:
   > An invited session at PMI's annual global women-in-construction-leadership conference. The talk is for construction project managers thinking about a pivot into mission-critical infrastructure — what a data center actually is in the AI era, what transfers from architecture and large-scale construction, and what you have to stop assuming you can't do.
 
-### 11.4 Outros items
-- **Comentário**: "Outro items ok por agora"
-- **Ação**: `no-op` para os outros engagements (4 engagements MDX no repo: ARCC 2025, IA na Construção Autodesk Forma 2026, PMI Follow the Sun 2026, StartSE Construtech Summit 2024)
+### 11.4 Outros engagements [RESOLVED]
+- **Decisão Vitor (Sarah implicit)**: "Outro items ok por agora"
+- **No-op** para `arcc-2025-wellbeing-net-zero-healthcare.mdx`, `ia-na-construcao-autodesk-forma-2026.mdx`, `startse-construtech-summit-2024.mdx`
 
 ---
 
-## 12 · NOVA PÁGINA · Academic / Past Studies — NEW `src/pages/academic.astro`
+## 12 · NOVA PÁGINA · Academic — NEW `src/pages/academic.astro`
 
-> **PDF p. 7.**
-
-### 12.1 Criar página dedicada
-- **Comentário OneNote**: "Criar uma pagina dedicada para as experiencias academicas/passado de estudos e colocar os items que estavam na pagina ABOUT"
-- **Ação**: `new-page`
-- **Alvo**: NEW `src/pages/academic.astro`
-- **Conteúdo** (vindo do about.astro, sections 2.5 retiradas):
-  - **Education** (PhD Harrisburg, MSc TJU, MBA FGV, Bachelor UEG) + photos thesis defense + commencement + UEG group + UEG formatura
-  - **Past roles** (Microsoft, Tesla, TJU, Array, Aliansce Sonae) — **SUJEITO A REVISÃO** do item 3.2 (não expor CV detalhado)
-  - **Certifications & affiliations** (PMP, LEED GA, OSHA 30, AIA Associate, CAU, Sigma Lambda Chi, NCARB)
-  - **Languages** (Portuguese, English)
-- **CLARIFY-26**: nome do page slug — `/academic` (mais conciso) vs `/background` (mais inclusivo de past roles)? Recomendação default: `/academic` se foco for education-heavy, `/background` se incluir past roles também. Como Sarah disse "academicas/passado de estudos", `/academic` é mais fiel literal. Mas se 12.1 inclui Past roles, `/background` é mais honesto.
-- **Recomendação técnica**: `/background` cobre tudo. Confirmar com Sarah.
-
-### 12.2 Cross-link com `/credentials` existente
-- **Status atual**: `src/pages/credentials.astro` já existe + 6 MDX em `src/content/credentials/*`
-- **Ação**: `restructure` — decidir se `/academic` tem section "Certifications" linkando pra `/credentials`, ou se duplica (não recomendado), ou se remove `/credentials` (não recomendado — já indexado pelo Google?).
-- **Recomendação**: `/academic` tem section "Certifications" como **lista compacta** com link **"See full credentials with verification IDs →"** para `/credentials`.
-
-### 12.3 Cross-link com `/experience` (se persistir)
-- **Status**: dependente do item 3.1 (merge work + experience)
-- **Recomendação**: se Past roles vai pra `/academic`, então `/experience` (se permanecer como page) seria sobrepor — melhor: ou `/experience` vira `/work` (merge), ou `/experience` é deprecada com 301 → `/academic`.
+### 12.1 Page slug + scope [RESOLVED]
+- **Decisão Vitor**: `academic` (English, conciso)
+- **URL final**: `/academic`
+- **Conteúdo** (movido de `about.astro` per 2.5):
+  - **Section: Education**
+    - PhD in Information Systems Engineering & Management · Harrisburg University, PA · 2026 – 2030 (in progress, badge)
+    - M.Sc. in Sustainable Design & Construction Management · Thomas Jefferson University, PA · 2021 – 2023 + 2 photos (thesis defense + commencement)
+    - MBA in Real Estate & Construction Business Management · FGV, Brazil · 2012 – 2016
+    - Bachelor of Architecture and Urban Planning · UEG, Brazil · 2004 – 2009 + 2 photos (UEG CBA 2006 + formatura 2009)
+  - **Section: Languages**
+    - Portuguese (native or bilingual)
+    - English (full professional)
+- **Cross-links** (rodapé):
+  - "Active credentials with verification IDs on [credentials](/credentials)"
+  - "Awards & honors on [awards](/awards)"
+- **Layout**: mirror `/credentials.astro` aesthetic (max-w-4xl, eyebrow + h1 + sections)
+- **Assets**: reaproveitar imports de `about.astro` linhas 3–8 (thesisDefenseImg, commencementImg, uegCbaImg, uegFormaturaImg)
+- **Navigation**: adicionar link "Academic" no `SiteHeader.astro` (provavelmente entre About e Experience)
 
 ---
 
-## 13 · PAGINA PRESS KIT — `src/pages/press-kit.astro` — **RESTRUCTURE CRÍTICA (SEGURANÇA)**
+## 13 · PAGINA PRESS KIT + ADMIN LAYER (security restructure + future newsletter)
 
-> **PDF p. 7.** Section header em CAPS LOCK pela Sarah.
+### 13.1 Public press-kit — minimal restructure [RESOLVED]
+- **Decisão Vitor sintetizada**: estrutura literal da Sarah confirmada
+- **Novo conteúdo público** de `src/pages/press-kit.astro`:
+  - Headshot (lower-res, watermarked com "Sarah Rodovalho · sarahrodovalho.com" no canto)
+  - One short bio (~280 chars):
+    > Sarah Rodovalho is an Integrated Design Manager at Aligned Data Centers and a doctoral researcher at Harrisburg University, with 16+ years delivering capital programs across hyperscale data centers, advanced manufacturing, and large-scale infrastructure in the U.S. and Brazil. She serves on the AIA Construction Contract Administration Knowledge Community Leadership Board (2026–2030).
+  - Pronunciation guide (display name + IPA somente; **remove** legal name completo "Sarah Faria Alcantara Macedo Rodovalho")
+  - Contact email `sarah@sarahrodovalho.com`
+  - CTA: "For high-resolution images, extended bios, or quick-fact sheets, email me directly."
+- **REMOVED do público**: BIO_MEDIUM (~810 chars), BIO_LONG (~1850 chars), QUICK_FACTS array, hi-res photo downloads, legal name
 
-### 13.1 Remover tudo do PUBLIC layer para ADMIN-only
-- **Comentário OneNote** (transcrito literal):
-  > "PAGINA PRESS KIT - REMOVER TUDO PARA UMA AREA ADMIN (TEM VARIAS COISAS PARA COORIGIR) E RODEI MEUS CONCERNS E O CLAU CONDORDOU COMIGO QUE EH UM RISO MUITO GRANDE DEIXAR ISSO DISPONIVEL. ENTAO ELE SUGERIU:"
-- **Status atual**: `press-kit.astro` expõe **publicamente** (sem gate):
-  - 3 bios completas (SHORT 280 chars, MEDIUM 810 chars, LONG 1850 chars)
-  - Pronunciação completa (nome legal completo "Sarah Faria Alcantara Macedo Rodovalho" + IPA + soft "h" explanation)
-  - Quick facts numbers ($232M, $279M+, 264 MW, AIA board 2026-2030, CAU A978191, etc.)
-  - High-res photo downloads (jpg + png, sem watermark, com filename sugerindo redistribution)
-  - Email direto `sarah@sarahrodovalho.com`
-- **Risk concern da Sarah**: exposição de identifying info + employer-specific metrics + hi-res photos sem gate = enables scraping/misuse
-- **Validation extern**: "CLAU" (terceiro, provavelmente colega de confiança) concordou com a concern e sugeriu a estrutura abaixo.
+### 13.2 Gate type — Lighter (direct email) [RESOLVED]
+- **Decisão Vitor**: ✅ Opção A — Lighter gate / direct email
+- **Implementação**: copy-only no `press-kit.astro` público; sem form/captcha/backend
 
-### 13.2 Nova estrutura PUBLIC layer (no gate)
-- **Sarah's design literal**:
-  > **Public layer (no gate)**
-  > - Headshot (lower resolution, watermarked or with a small "Sarah Rodovalho · sarahrodovalho.com" mark in the corner — discourages reuse without breadcrumb)
-  > - One short bio (~280 chars), written tightly -- (Sarah Rodovalho is an Integrated Design Manager at Aligned Data Centers and a doctoral researcher at Harrisburg University, with 16+ years delivering capital programs across hyperscale data centers, advanced manufacturing, and large-scale infrastructure in the U.S. and Brazil. She serves on the AIA Construction Contract Administration Knowledge Community Leadership Board (2026–2030).)
-  > - Pronunciation guide
-  > - Contact email for press inquiries
-  > - Brief mention that medium/long bios, high-res photos, and quick-fact sheets are *available on request*
-- **Ação**: `restructure` — reescrever `press-kit.astro` removendo tudo além desses 5 items, com asset pipeline:
-  - Headshot watermarked low-res: NEW `public/press/sarah-rodovalho-headshot-watermarked-lowres.jpg` (gerar via script)
-  - Pronunciation: manter parcial (nome de display + IPA simples; remover nome legal completo "Sarah Faria Alcantara Macedo Rodovalho" pro gated layer)
-  - Email: manter `sarah@sarahrodovalho.com`
-  - CTA "for medium/long bios + hi-res photos + quick-facts — available on request" → link para form/email
+### 13.3 Admin layer — re-analysis [RESOLVED → architecture decision]
+- **Decisão Vitor**: "sarah está sugerindo de a página ter uma camada logada, ou seja que ela possa entrar no site como admin e ter uma sessao visivel somente a ela"
+- **Casos de uso**:
+  1. Sarah usa o site durante apresentações — admin-view expõe info não-pública sem precisar abrir outros tabs/files
+  2. Future: Substack-style newsletter archive (como [dfolloni.substack.com/archive](https://dfolloni.substack.com/archive)) — onde subscribers leem newsletters da Sarah
+  3. Gated press-kit assets (BIOs longas, hi-res photos, quick-facts, employer-specific refs) ficam acessíveis a Sarah logada
+- **Re-análise — opções de auth provider**:
 
-### 13.3 Nova estrutura GATED layer (request only)
-- **Sarah's design literal**:
-  > **Gated layer (request only)**
-  > - Medium and long bios
-  > - High-resolution print-quality headshot
-  > - Quick-facts sheet with verifiable claims (publications, board appointments, certifications)
-  > - Anything with specific employer/program references
-- **Gate options literal**:
-  > **Light gate — form-based request.** A short form: name, organization, event/publication, intended use, deadline. Auto-replies are fine. This catches 95% of legitimate requesters (event programmers, podcast bookers, journalists) without friction, while filtering out the casual scrapers.
-  > **Lighter gate — direct email.** "For high-resolution images, extended bios, or quick-fact sheets, email sarah@sarahrodovalho.com." This is what most senior consultants and academics use. Easier to set up, slightly higher friction for legitimate users, but creates a paper trail of who has your assets.
-- **CLARIFY-27** ⚠️ **DECISÃO ARQUITETURAL**: qual gate?
-  - **Opção A (Lighter gate / direct email)**: zero infrastructure, só copy. Recomendado para MVP.
-  - **Opção B (Light gate / form)**: requer form backend (Cloudflare Pages Function? Formspree? Web3Forms?), captcha (Cloudflare Turnstile), email forwarding setup.
-  - **Recomendação default**: começar com (A) — direct email com paper trail; migrar pra (B) quando volume justificar.
-- **Ação**: `restructure` + `new-page` (se gate-B) — depende da decisão acima.
+  | Provider | Custo | Effort | Pattern já no household | Recomendação |
+  |---|---|---|---|---|
+  | **Cloudflare Access** (Zero Trust) | Free (até 50 users) | Baixo (config wrangler.toml + Access policy) | ✅ orenu.vitormr.dev usa Email OTP | ⭐ **Recomendado** |
+  | Clerk | Free (até 10k MAU) | Médio (React/JS SDK) | ❌ | Overkill p/ 1 user |
+  | Auth.js (NextAuth) | Free | Médio-alto (requer DB) | ❌ | Não cabe — site é Astro static |
+  | Supabase Auth | Free tier ok | Alto (novo projeto Supabase) | ❌ | Custo cognitivo desnecessário |
 
-### 13.4 Admin-only area
-- **Comentário literal Sarah**: "REMOVER TUDO PARA UMA AREA ADMIN"
-- **CLARIFY-28** ⚠️ **DECISÃO ARQUITETURAL**: como armazenar os assets full (hi-res, long bios, quick-facts)?
-  - **Opção A**: gitignored folder `_admin/press-kit/` no repo (assets nunca commitam; servidos manualmente quando request chega)
-  - **Opção B**: Cloudflare R2 bucket gated com signed URLs (mais infra mas escala)
-  - **Opção C**: existing private GitHub repo / Notion private page / Sarah's own OneDrive (zero infra)
-  - **Recomendação default**: (C) — Sarah envia manualmente cada requisição da inbox; zero infra, máxima discrição, paper trail orgânico via email.
+- **Decisão final (single source of truth)**:
+  - **Auth**: Cloudflare Access (Email OTP, free tier, Sarah's email allowlist)
+  - **Routes**: `/admin/*` protegido por Access policy em `wrangler.toml`
+  - **Páginas admin (initial)**:
+    - `src/pages/admin/index.astro` — dashboard placeholder com links pra outras admin pages
+    - `src/pages/admin/press-kit-full.astro` — conteúdo full do press-kit original (BIO_MEDIUM, BIO_LONG, QUICK_FACTS, hi-res photo downloads, legal name)
+    - `src/pages/admin/newsletter.astro` — placeholder com external link to Substack archive (quando Sarah criar)
+  - **Wrangler config (delta to add)**:
+    ```toml
+    # wrangler.toml
+    [[env.production.access]]
+    name = "Sarah admin"
+    type = "self_hosted"
+    domain = "sarahrodovalho.com"
+    paths = ["/admin/*"]
+    require_email = ["sarah@sarahrodovalho.com"]
+    ```
+- **Justificativa Cloudflare Access pick**:
+  - Já tem em casa (orenu.vitormr.dev gate descrito em `decisions/ADR-013-security.md` e `docs/runbooks/cloudflare-access-gate-orenu.md`) — runbook + experiência operacional já existem
+  - Zero código de auth (no JWT handling, no session management) — Cloudflare cuida; assets server-side normais
+  - Email OTP UX já validado para Sarah (mesmo padrão Vitor + Sarah usam em Orenu)
+  - Custo $0 até 50 users (Sarah só precisa de 1 user)
 
-### 13.5 Watermark headshot público
-- **Implementação**: script Python/Pillow ou ImageMagick para regenerar headshot atual em versão lower-res + watermark esquina inferior direita
-- **Asset target**: `public/press/sarah-rodovalho-headshot-public.jpg` (substituir atual `sarah-rodovalho-headshot.jpg`)
-- **Watermark text**: `Sarah Rodovalho · sarahrodovalho.com`
-- **Resolution**: target ~600×600 (web-display only, defeating print-quality reuse)
-
----
-
-## 14 · NOVA PÁGINA · Contate-me — NEW `src/pages/contact.astro`
-
-> **PDF p. 3.** (Comentário no contexto de "PAGINA WORK".)
-
-Ver item 3.3 acima.
+### 13.4 Substack newsletter — placeholder now, integration later [RESOLVED]
+- **Decisão Vitor**: "placeholder para futuro, dando voz a tudo que ela tem a dizer via newsletter no substrack"
+- **Phase 1 (PR-S07b)**: `/admin/newsletter.astro` placeholder text — "Sarah's newsletter archive will appear here. External link → [substack URL when published]"
+- **Phase 2 (FUTURE PR-S13)**: quando Sarah publicar Substack:
+  - Pull RSS feed via build-time script (`scripts/sync_substack.py`)
+  - Render archive em `/newsletter` (público!) — newsletter content é PARA ser lido pelo público (não admin-gated)
+  - Cron rebuild (Cloudflare Pages auto-deploy on schedule)
+  - Pattern espelha o `dfolloni.substack.com/archive` referência citada por Vitor
+- **OPSEC note**: Substack URL pública por design — não-PII. Tags como "AI · construction · women in tech" alinham com personal branding pattern Sarah já tem.
 
 ---
 
-## 🔍 Consolidated CLARIFY list (24 items)
+## 14 · NOVA PÁGINA · Contact — NEW `src/pages/contact.astro`
 
-Items abaixo precisam de input Sarah/Vitor **antes** ou **durante** implementação:
-
-| ID | Item | Página/Item | Pergunta |
-|---|---|---|---|
-| CLARIFY-01 | Hero ending | 1.1 | Stop em "Aligned Data Centers" ou substituir por "multi-hundred-megawatt campus"? |
-| CLARIFY-02 | Big numbers | 1.2 | Quais 2 stats do PMI Follow the Sun pra trocar 264MW + $279M+? |
-| CLARIFY-03 | Bio ending | 2.1 | Idem CLARIFY-01 (paralelo no About) |
-| CLARIFY-04 | "Current Engagements" | 2.2 | Confirmar typo fix |
-| CLARIFY-05 | PhD bullet | 2.4 | Já existe — no-op, reposition, ou rewrite? |
-| CLARIFY-06 | Página academic | 2.5 | (a) novo `/academic`, (b) merge em existing `experience.astro` + `credentials.astro`, ou (c) split? |
-| CLARIFY-07 | Work vs Experience name | 3.1 | Qual slug mantém? `/work` ou `/experience`? |
-| CLARIFY-08 | CV-style content audit | 3.2 | Sarah lista o que retirar do `experience/*.mdx` |
-| CLARIFY-09 | Contact slug | 3.3 | `/contact` ou `/contato`? |
-| CLARIFY-10 | Date format | 4.1 | `Oct 2025` ou só `2025`? |
-| CLARIFY-11 | USA convention | 4.1+ | Todos os cards aplicam mesmo padrão `2025 — present · USA`? |
-| CLARIFY-12 | Intro paragraph remove | 4.2 | Remover inteiro ou editar? |
-| CLARIFY-13 | abstract vs body split | 4.4 | Como dividir 2 parágrafos novos entre frontmatter+body? |
-| CLARIFY-14 | ⚠️ Case 01 callouts | 4.5 | Sarah confirma split label/value das 4 cores |
-| CLARIFY-15 | CONTRIBUITION typo | 5.4 | Corrigir spelling? |
-| CLARIFY-16 | ⚠️ Purple item card 04 | 7.1 | Qual elemento está em roxo? |
-| CLARIFY-17 | ⚠️ Red item card 04 | 7.2 | Qual elemento está riscado em vermelho? |
-| CLARIFY-18 | ⚠️ Card 04 pink+orange | 7.5 | 2 callouts faltam — Sarah indica ou cards podem ter 2 só? |
-| CLARIFY-19 | Photo position scope | 8.3 | Aplica só ao card 05 ou todos? |
-| CLARIFY-20 | Card 06 title | 9.1 | Manter title atual ou trim? |
-| CLARIFY-21 | ⚠️ Brown arrow target | 9.6 | Qual tag exatamente troca pra "THE SELECTION"? |
-| CLARIFY-22 | ⚠️ Lavender "assistant" | 9.7 | Onde + como adicionar "assistant"? |
-| CLARIFY-23 | Future upcoming events | 11.1 | TODO em código ou GitHub issue? |
-| CLARIFY-24 | ⚠️ Watermark scope | 11.2 | Page-level (already done) ou embedded-in-image (new work)? |
-| CLARIFY-25 | Watermark text | 11.2 | Texto exato do watermark? |
-| CLARIFY-26 | Academic slug | 12.1 | `/academic` ou `/background`? |
-| CLARIFY-27 | ⚠️ Press-kit gate type | 13.3 | Light gate (form) ou Lighter gate (email)? |
-| CLARIFY-28 | ⚠️ Admin-only storage | 13.4 | gitignore folder / R2 / external (OneDrive/Notion)? |
-
-**Items com ⚠️ são blockers para implementação** — sem resposta da Sarah, ficamos parados em pontos específicos.
+Detalhado em 3.3 acima.
 
 ---
 
-## 📋 Proposed PR sequencing (6 PRs)
+## 🔍 CLARIFY resolutions summary
 
-Ordem por **risco/dependência/urgência**:
+| ID | Item | Resolution |
+|---|---|---|
+| 01 | Hero ending | "multi-hundred-megawatt campus" |
+| 02 | Big numbers | 7M+ sq ft + ~$1.5B+ total program value (PMI slide 29) |
+| 03 | Bio ending | Same as 01 — "multi-hundred-megawatt campus" |
+| 04 | "Current Engagements" | ✅ confirmed |
+| 05 | PhD bullet | Keep in Now (already there); ALSO appears in /academic Education |
+| 06 | Academic page | NEW `/academic` w/ Education + Languages (data-driven decision) |
+| 07 | Kept slug | `/experience` (work.astro deprecated, 301 to /experience) |
+| 08 | CV content audit | `highlights: []` empty in MDX; sensitive bullets → gitignored `_private/` |
+| 09 | Contact slug | `/contact` (English) |
+| 10 | Date format | Year only (no month) |
+| 11 | USA convention | All cards apply same pattern |
+| 12 | Intro paragraph | Keep first sentence only |
+| 13 | abstract+body split | 1st para → frontmatter abstract; 2nd para → MDX body |
+| 14 | Card 01 callouts | Inference confirmed (CONTEXT / INTEGRATION / REGION / METHODOLOGY) |
+| 15 | CONTRIBUITION | → CONTRIBUTION (typo fix) |
+| 16 | Purple card 04 | `&amp;` HTML entity leak; sweep needed |
+| 17 | Red card 04 | Month elimination (per 4.1 convention) |
+| 18 | Card 04 callouts | Auto-fill: BUDGET / $232M + IMPACT / Framework adopted nationally |
+| 19 | Photo position | All cards photo BELOW text |
+| 20 | Card 06 title | "Healthcare planning & design" (drop "clinical") |
+| 21 | Brown arrow | "Beyond the case studies" → "Beyond the selection" |
+| 22 | Lavender "assistant" | "teaching at TJU" → "teaching assistant at TJU" in Beyond prose |
+| 23 | Upcoming events | Build placeholder NOW with empty-state pattern + dynamic engagement filter |
+| 24 | Watermark scope | Embedded-in-image (binary modification), NOT just page-level overlay |
+| 25 | Watermark text | "© Sarah Rodovalho · sarahrodovalho.com" diagonal repeated |
+| 26 | Academic slug | `/academic` ✅ |
+| 27 | Press-kit gate | Lighter gate (direct email) ✅ |
+| 28 | Admin storage | Logged-in admin layer via Cloudflare Access Email OTP |
 
-### PR-S07 · Press Kit security restructure ⚠️ URGENT
-- **Why first**: exposição de PII + employer-specific data + hi-res photos sem gate é o item de maior risco identificado. Sarah + Clau concordaram que é "risco muito grande".
+**All 28 resolved. Ready to implement.**
+
+---
+
+## 📋 Updated PR sequencing (7 PRs)
+
+### PR-S07a · Press Kit minimal public restructure ⚠️ URGENT SECURITY
 - **Scope**:
-  - `src/pages/press-kit.astro` → minimal public layer (headshot watermarked + bio 280 chars + pronunciation parcial + email + "available on request" CTA)
-  - Watermark headshot público (script + new asset)
-  - Gated layer copy (depending on CLARIFY-27: form OR email-only)
-  - Move long bios + quick-facts + hi-res photos to admin-only storage (CLARIFY-28)
-- **Blockers**: CLARIFY-27 (gate type), CLARIFY-28 (storage)
-- **Files**: `src/pages/press-kit.astro`, `public/press/sarah-rodovalho-headshot.jpg` (regen), `scripts/watermark-headshot.py` (new), conditionally new form page
-- **Done criterion**: opened `/press-kit` shows minimal public layer only; full-detail assets inaccessible without explicit request
+  - `src/pages/press-kit.astro` → minimal public layer per 13.1
+  - Generate low-res watermarked headshot (`scripts/watermark-headshot.py` new) → `public/press/sarah-rodovalho-headshot-public.jpg`
+  - Keep `mailto:` CTA only (no form)
+  - Remove BIO_MEDIUM, BIO_LONG, QUICK_FACTS, hi-res photo downloads, legal name from public view
+- **Files**: `src/pages/press-kit.astro`, `public/press/*.jpg` (regen), `scripts/watermark-headshot.py` (new), `.gitignore` (add `public/press/_originals/`)
+- **Done criterion**: opened `/press-kit` shows minimal layer; legal name + hi-res not on public DOM
 
-### PR-S08 · Home + About copy edits (small, safe)
-- **Why second**: low-risk copy edits; visible improvement; warm-up for the bigger restructures
+### PR-S07b · Admin layer skeleton (Cloudflare Access)
 - **Scope**:
-  - `src/pages/index.astro` — remove "on a multi-building, ~264 MW campus" from hero (1.1); swap big numbers (1.2, blocked on CLARIFY-02)
-  - `src/pages/about.astro` — remove "on a multi-building campus" from bio (2.1); rename "Now" → "Current Engagements" (2.2); replace "~264 MW multi-building" → "multi-hundred-megawatt" (2.3); confirm PhD bullet (2.5)
-- **Blockers (partial)**: CLARIFY-01, CLARIFY-02, CLARIFY-03, CLARIFY-04, CLARIFY-05 — most can be inferred/default
+  - Add Cloudflare Access policy in `wrangler.toml` for `/admin/*` (Sarah's email allowlist)
+  - NEW `src/pages/admin/index.astro` (dashboard placeholder w/ navigation to sub-pages)
+  - NEW `src/pages/admin/press-kit-full.astro` (BIO_SHORT + BIO_MEDIUM + BIO_LONG + QUICK_FACTS + hi-res photo downloads + legal name — content moved here from press-kit.astro)
+  - NEW `src/pages/admin/newsletter.astro` (placeholder + external Substack link slot)
+  - Update `worker.js` if needed to coordinate with Access (typically not — Access intercepts at edge)
+  - Cloudflare Pages settings UI: enable Access policy
+- **Depends on**: PR-S07a (press-kit.astro must be already cleaned before content moves to admin)
+- **Done criterion**: `/admin/*` requires email-OTP login; Sarah logs in successfully; press-kit-full content visible in admin
+
+### PR-S08 · Home + About copy edits (safe parallel)
+- **Scope**:
+  - `src/pages/index.astro`:
+    - Hero text: remove "on a multi-building, ~264 MW campus" (1.1)
+    - Stats swap: `264 MW` → `7M+` / `Square feet delivered`; `$279 M+` → `~$1.5B+` / `Total program value` (1.2)
+  - `src/pages/about.astro`:
+    - Bio: replace "multi-building campus" → "multi-hundred-megawatt campus" (2.1)
+    - Rename "Now" → "Current Engagements" (2.2)
+    - First bullet: "~264 MW multi-building" → "multi-hundred-megawatt" (2.3)
 - **Files**: `src/pages/index.astro`, `src/pages/about.astro`
-- **Done criterion**: home + about read clean per Sarah's intent; no CV-block removal yet (that's PR-S09)
+- **Independent of PR-S07a/b** — can run in parallel
 
-### PR-S09 · About CV-block removal + new Academic page + new Contact page
-- **Why third**: depends on PR-S08 (about copy stable); creates 1–2 new pages
+### PR-S09 · About CV-block removal + NEW Academic + NEW Contact
 - **Scope**:
-  - Remove sections "Selected past roles", "Education", "Certifications & affiliations", "Languages" from `src/pages/about.astro` (2.5)
-  - Audit `experience.astro` + `credentials.astro` for duplication (2.6)
-  - Create new `src/pages/academic.astro` (or `/background` — CLARIFY-26) with education + past roles + certs + languages
-  - Create new `src/pages/contact.astro` (3.3)
-  - Update SiteHeader navigation to include new pages
-  - 301 redirects in `worker.js` for any deprecated paths
-- **Blockers**: CLARIFY-06, CLARIFY-08, CLARIFY-09, CLARIFY-26
-- **Files**: `src/pages/about.astro`, NEW `src/pages/academic.astro`, NEW `src/pages/contact.astro`, `src/components/SiteHeader.astro`, `worker.js` (if redirects)
-- **Done criterion**: about page is bio-only; academic page is complete CV-style page; contact page is minimal & functional
+  - REMOVE from `src/pages/about.astro`: section Selected past roles, section Education, section Certifications & affiliations, section Languages (2.5)
+  - NEW `src/pages/academic.astro` w/ Education + Languages (12.1) — moves assets imports from about.astro
+  - NEW `src/pages/contact.astro` simples (3.3)
+  - Update `src/components/SiteHeader.astro` navigation: add "Academic" + "Contact" links
+- **Files**: `src/pages/about.astro`, NEW `src/pages/academic.astro`, NEW `src/pages/contact.astro`, `src/components/SiteHeader.astro`
+- **Depends on**: PR-S08 (about content stabilized first)
 
-### PR-S10 · Work/Experience merge
-- **Why fourth**: structural change to navigation; depends on PR-S09 academic page existing (so /experience can be deprecated cleanly)
+### PR-S10 · Work → Experience merge + photo position + entity sweep
 - **Scope**:
-  - Merge `src/pages/work.astro` + `src/pages/experience.astro` into single page (3.1)
-  - Bring photo + Experience-page link junto de cada case study card (3.1)
-  - Apply photo-position adjustment from card 05 (Goiânia BRT) → all cards uniformly (8.3, CLARIFY-19)
-  - Audit `src/content/experience/*.mdx` for CV-style content; remove items per 3.2 (blocked on CLARIFY-08)
-  - 301 redirect `/experience` → `/work` in `worker.js`
-- **Blockers**: CLARIFY-07, CLARIFY-08, CLARIFY-19
-- **Files**: `src/pages/work.astro`, `src/pages/experience.astro` (delete), `src/content/experience/*.mdx` (audit), `worker.js`
-- **Done criterion**: `/work` is single source of truth for portfolio; `/experience` redirects; no CV-detailed content public
+  - Move `work.astro` rich case-study layout INTO `experience.astro` (3.1)
+  - DELETE `src/pages/work.astro`
+  - Add 301 redirect `/work` → `/experience` in `worker.js`
+  - Photo position: ALL 6 cards photo BELOW text instead of above (8.3, 19)
+  - Rename "Beyond the case studies" → "Beyond the selection" (9.6, 21)
+  - Add "Assistant" to teaching mention in Beyond prose (9.7, 22)
+  - Audit `experience/*.mdx` × 7: empty `highlights: []`, move sensitive bullets to NEW `_private/experience-detailed.md` (3.2, 8)
+  - Add `_private/` to `.gitignore`
+  - Intro paragraph: keep first sentence only (3.1, 12)
+  - **Sweep `&amp;` HTML entity leaks** (7.1, 16, 20) — grep all MDX + Astro files for double-encoded ampersands
+- **Files**: `src/pages/experience.astro` (replaced), `src/pages/work.astro` (deleted), `worker.js`, `src/content/experience/*.mdx` (×7), NEW `_private/experience-detailed.md`, `.gitignore`, MDX/Astro sweep
+- **Depends on**: PR-S09 (academic page exists so /experience doesn't need to host past-roles overlap)
 
 ### PR-S11 · Case studies batch (cards 01–06)
-- **Why fifth**: depends on Work page structure (PR-S10) being stable; many small focused changes
-- **Scope**: 6 MDX file edits + body rewrites + callout updates per cards 01–06:
-  - Card 01 Aligned (4.x) — body + callouts (CLARIFY-13, CLARIFY-14 blocker)
-  - Card 02 Microsoft CO+I (5.x) — body + callouts + spelling fix
-  - Card 03 Tesla (6.x) — body + callouts
-  - Card 04 Passeio (7.x) — body + 2 callouts + Purple/Red items (CLARIFY-16, 17, 18 blockers)
-  - Card 05 Goiânia BRT (8.x) — body + photo position
-  - Card 06 Virtua (9.x) — body + callouts + arrow items (CLARIFY-20, 21, 22 blockers)
-- **Blockers**: many (see column 3)
-- **Files**: `src/content/projects/*.mdx` (6 files)
-- **Done criterion**: each case study card reads per Sarah's new body + has consistent callouts + date format
+- **Scope**: 6 MDX file updates per items 4–9:
+  - All 6: location `USA`/`Brazil`, period year-only convention, abstract+body split
+  - Card 01 Aligned (4.4, 4.5)
+  - Card 02 Microsoft CO+I (5.3, 5.4 + CONTRIBUTION typo fix)
+  - Card 03 Tesla (6.3, 6.4)
+  - Card 04 Passeio (7.4, 7.5 + auto-fill pink/orange)
+  - Card 05 BRT (8.2)
+  - Card 06 Virtua (9.1 title trim + 9.4 body + 9.5 callouts)
+- **Files**: `src/content/projects/*.mdx` (×6)
+- **Depends on**: PR-S10 (experience page layout stable)
 
-### PR-S12 · Speaking watermarks + PMI talk rewrite
-- **Why last**: depends on watermark architecture decision (might reuse asset from PR-S07)
+### PR-S12 · Speaking watermarks + PMI talk rewrite + upcoming events placeholder
 - **Scope**:
-  - Rewrite talk PMI description in `src/content/engagements/pmi-women-construction-follow-the-sun-2026.mdx` (11.3)
-  - Image-embedded watermarks on slide images (CLARIFY-24, 25 blockers); decision: do this OR confirm current ambient layer is enough
-  - GitHub issue or TODO comment for future upcoming-events block (11.1, CLARIFY-23)
-- **Blockers**: CLARIFY-24, CLARIFY-25, CLARIFY-23
-- **Files**: `src/content/engagements/pmi-women-construction-follow-the-sun-2026.mdx`, conditionally `src/assets/speaking/*` (regen), conditionally `scripts/watermark-images.py` (new)
-- **Done criterion**: PMI talk reads per Sarah's copy; slide assets watermarked per Sarah's anti-cópia intent
+  - NEW `scripts/watermark-images.py` (Pillow, diagonal multi-instance pattern)
+  - Watermark all PMI deck slide assets in `src/assets/speaking/*` (11.2, 24, 25)
+  - Move originals to `src/assets/speaking/_originals/` (`.gitignore` add)
+  - Rewrite `pmi-women-construction-follow-the-sun-2026.mdx` `abstract:` (11.3)
+  - ADD upcoming-events section at top of `speaking.astro` (11.1, 23):
+    - Split `engagements` by `date >= today` vs `< today`
+    - Render "Upcoming engagements" section with cards (if any) or empty state
+  - Optional: add Schema.org `Event` JSON-LD for upcoming events too (consistency)
+- **Files**: `src/pages/speaking.astro`, `src/content/engagements/pmi-women-construction-follow-the-sun-2026.mdx`, `src/assets/speaking/*` (regen), NEW `scripts/watermark-images.py`, `.gitignore`
+- **Depends on**: PR-S11 (work/experience merge stable; speaking page can be touched independently but ordering keeps cognitive load low)
 
 ---
 
 ## Implementation order summary
 
 ```
-PR-S07 (urgent, security)
- └─► PR-S08 (parallel-safe copy edits)
-      └─► PR-S09 (CV restructure → new pages)
-           └─► PR-S10 (Work/Experience merge)
-                └─► PR-S11 (case studies batch)
-                     └─► PR-S12 (speaking watermarks)
+PR-S07a (Press Kit minimal public — security urgent)
+ │
+ ├─► PR-S07b (Admin layer skeleton + content move)
+ │
+PR-S08 (parallel-safe copy edits — Home + About)
+ │
+ └─► PR-S09 (About CV removal + new Academic + new Contact)
+      │
+      └─► PR-S10 (Work → Experience merge + photo position + entity sweep)
+           │
+           └─► PR-S11 (case studies batch)
+                │
+                └─► PR-S12 (speaking watermarks + PMI rewrite + upcoming events)
 ```
 
 Estimated effort:
-- PR-S07: 1–2 sessions (depends on gate decision)
+- PR-S07a: 0.5 session (asset gen + page rewrite)
+- PR-S07b: 1 session (Cloudflare Access config + 3 admin pages skeleton)
 - PR-S08: 0.5 session
-- PR-S09: 1–2 sessions
-- PR-S10: 1 session
-- PR-S11: 1–2 sessions
-- PR-S12: 0.5–1 session
-- **Total**: ~5–8 working sessions to ship Sarah's full review
+- PR-S09: 1 session (3 page touches + nav)
+- PR-S10: 1.5 sessions (merge + photo refactor + sweep + audit)
+- PR-S11: 1 session (6 MDX files)
+- PR-S12: 1 session (script + 6 assets + page + abstract)
+- **Total**: ~6.5 sessions to ship Sarah's full review
+
+---
+
+## Future (post-Sarah-review-PRs)
+
+- **PR-S13**: Substack newsletter integration when Sarah publishes (13.4 phase 2) — RSS feed pull + build-time render at `/newsletter`
+- **PR-S14**: Orenu ADR-024 phase 1b `fact_speaker_engagement` — auto-PR from engagement MDX into Orenu data layer
 
 ---
 
 ## Next step
 
-1. **Sarah responds CLARIFY-01 → CLARIFY-28** (preferably as a list in OneNote or chat; minimum: blockers marked ⚠️)
-2. **Vitor reviews this doc, adjusts mappings if I misread something** (especially the CLARIFY items)
-3. **Start with PR-S07** (Press Kit security restructure) — highest urgency
+1. **Vitor reviews this v2 doc** — sanity check my interpretations of all CLARIFYs + the 3 architectural decisions (2.5 / 11.1 / 13.4)
+2. **Confirm PR-S07a starts now** OR identify any blocker I missed
+3. **Start implementing**
+
+> Sarah's clarifications were exhaustive — there are no open blockers. We're ready to start at PR-S07a.
 
 ---
 
-**Document maintained**: this is a living doc until all 6 PRs ship. Update CLARIFY status as Sarah answers; mark items as DONE as PRs merge.
+**Document maintained**: living doc until all 7 PRs ship. Each PR closes its corresponding items here; update status column from "Resolved" → "Shipped" as PRs merge.
