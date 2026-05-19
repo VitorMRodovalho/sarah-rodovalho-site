@@ -1,0 +1,215 @@
+---
+import { Picture } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import eventBannerImg from "../assets/speaking/24-hours-women-construction-event-banner.png";
+import aiComputeImg from "../assets/speaking/ai-compute-demand-growth.png";
+import anatomyImg from "../assets/speaking/anatomy-of-a-data-center.png";
+import arccPresentingImg from "../assets/speaking/arcc-2025-sarah-presenting.jpg";
+import careerTimelineImg from "../assets/speaking/how-i-ended-up-in-data-centers-timeline.png";
+import physicalBackboneImg from "../assets/speaking/physical-backbone-digital-world.png";
+
+/**
+ * Single card for /speaking — renders one engagement (talk / panel /
+ * workshop / keynote / interview) with optional hero image, deck-image
+ * gallery, and Schema.org JSON-LD. Used by speaking.astro for both the
+ * Upcoming and Past lanes.
+ */
+
+interface Props {
+  engagement: CollectionEntry<"engagements">;
+  index: number;
+  isUpcoming?: boolean;
+}
+
+const { engagement: e, index: i, isUpcoming = false } = Astro.props;
+
+const KIND_LABEL: Record<typeof e.data.kind, string> = {
+  talk: "Talk",
+  panel: "Panel",
+  workshop: "Workshop",
+  keynote: "Keynote",
+  interview: "Interview",
+};
+
+const HERO_IMAGES: Record<
+  string,
+  { src: typeof eventBannerImg; alt: string }
+> = {
+  "pmi-women-construction-follow-the-sun-2026": {
+    src: eventBannerImg,
+    alt: "24 Hours of Women in Construction Leadership — event banner with three construction workers, PMI Project Management Institute branding and PMI-CP certification badge",
+  },
+  "arcc-2025-wellbeing-net-zero-healthcare": {
+    src: arccPresentingImg,
+    alt: "Sarah Rodovalho presenting her ARCC 2025 conference poster 'Integrating Comprehensive Wellbeing and Net-Zero Energy in Healthcare Design' at University of Maryland, College Park — gesturing toward the poster's healthcare-facility renderings and diagrams while in conversation with another attendee in the conference hall",
+  },
+};
+
+const DECK_IMAGES: Record<
+  string,
+  Array<{ src: typeof aiComputeImg; alt: string; caption: string }>
+> = {
+  "pmi-women-construction-follow-the-sun-2026": [
+    {
+      src: careerTimelineImg,
+      alt: "How I Ended Up in Data Centers — a career timeline graphic with five icons representing Brazil, Architecture, Construction, Technology, and Data Centers, connected by a horizontal line",
+      caption:
+        'How I Ended Up in Data Centers · "a career built across industries, countries, and disciplines."',
+    },
+    {
+      src: aiComputeImg,
+      alt: "AI Compute Demand Growth — projection through 2030, exponential curve from 2018 early AI training clusters to 2030 inference-dominant compute",
+      caption:
+        "AI Compute Demand Growth · compute capacity (ExaFLOPS) doubling every ~7 months · $6.7T global data center investment needed by 2030.",
+    },
+    {
+      src: physicalBackboneImg,
+      alt: "The Physical Backbone of the Digital World — diagram connecting user devices, fiber/Wi-Fi, data centers, and cloud services with streaming, AI, online banking, cloud platforms as use cases",
+      caption:
+        "The Physical Backbone of the Digital World — every digital service relies on physical infrastructure (devices → fiber → data centers → cloud).",
+    },
+    {
+      src: anatomyImg,
+      alt: "Anatomy of a Data Center — schematic showing substation, power distribution, cooling plant, network and fiber, IT infrastructure, building systems, facility support",
+      caption:
+        "Anatomy of a Data Center · from substation to racks — power · cooling · network · IT infrastructure · facility support.",
+    },
+  ],
+};
+
+const slug = e.id.replace(/\.mdx$/, "");
+const hero = HERO_IMAGES[slug];
+const deck = DECK_IMAGES[slug];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: e.data.event,
+  ...(e.data.eventUrl ? { url: e.data.eventUrl } : {}),
+  startDate: e.data.date,
+  ...(e.data.venue ? { location: { "@type": "Place", name: e.data.venue } } : {}),
+  workPerformed: {
+    "@type": "CreativeWork",
+    name: e.data.title,
+    abstract: e.data.abstract,
+    ...(e.data.audience ? { audience: e.data.audience } : {}),
+  },
+  performer: {
+    "@type": "Person",
+    name: "Sarah Rodovalho",
+    url: "https://sarahrodovalho.com",
+  },
+};
+---
+
+<article
+  class="space-y-4 border border-border/60 rounded-md p-6 sm:p-7 hover:border-accent/50 hover:bg-accent-soft/15 transition-colors"
+>
+  <div class="flex items-baseline gap-4">
+    <span class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]">
+      {String(i + 1).padStart(2, "0")}
+    </span>
+    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      {isUpcoming && (
+        <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent border border-accent/60 rounded-full px-2 py-0.5">
+          Upcoming
+        </span>
+      )}
+      <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
+        {KIND_LABEL[e.data.kind]}
+      </span>
+      <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+        {e.data.event}
+      </span>
+      <span class="text-[10px] text-muted-foreground/80">
+        · {e.data.date}
+      </span>
+    </div>
+  </div>
+  {hero && (
+    <Picture
+      src={hero.src}
+      alt={hero.alt}
+      widths={[500, 800, 1100]}
+      sizes="(min-width: 640px) 600px, 90vw"
+      formats={["avif", "webp"]}
+      fallbackFormat="jpg"
+      loading="lazy"
+      decoding="async"
+      class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+    />
+  )}
+  <h3 class="font-display text-2xl sm:text-3xl tracking-tight leading-[1.1]">
+    {e.data.title}
+  </h3>
+  {e.data.venue && (
+    <p class="text-xs text-muted-foreground/80">{e.data.venue}</p>
+  )}
+  {e.data.audience && (
+    <p class="text-sm text-muted-foreground italic">
+      For: {e.data.audience}
+    </p>
+  )}
+  <p class="text-base leading-relaxed text-foreground/85">
+    {e.data.abstract}
+  </p>
+  {deck && (
+    <div class="pt-3 space-y-4">
+      <p class="eyebrow !text-[10px]">From the talk deck</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {deck.map((img) => (
+          <figure class="space-y-2">
+            <Picture
+              src={img.src}
+              alt={img.alt}
+              widths={[300, 500, 700]}
+              sizes="(min-width: 640px) 30vw, 90vw"
+              formats={["avif", "webp"]}
+              fallbackFormat="jpg"
+              loading="lazy"
+              decoding="async"
+              class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+            />
+            <figcaption class="text-[11px] text-muted-foreground leading-snug">
+              {img.caption}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  )}
+  <div class="flex flex-wrap gap-x-5 gap-y-1 text-xs pt-1">
+    {e.data.eventUrl && (
+      <a
+        href={e.data.eventUrl}
+        class="underline hover:text-foreground text-muted-foreground"
+        rel="noopener"
+      >
+        Event page →
+      </a>
+    )}
+    {e.data.deckUrl && (
+      <a
+        href={e.data.deckUrl}
+        class="underline hover:text-foreground text-muted-foreground"
+        rel="noopener"
+      >
+        Slides →
+      </a>
+    )}
+    {e.data.videoUrl && (
+      <a
+        href={e.data.videoUrl}
+        class="underline hover:text-foreground text-muted-foreground"
+        rel="noopener"
+      >
+        Recording →
+      </a>
+    )}
+  </div>
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(jsonLd)}
+  />
+</article>
