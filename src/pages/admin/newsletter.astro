@@ -68,12 +68,20 @@ const description =
       </section>
 
       <footer
-        class="border-t border-border/60 pt-8 text-xs text-muted-foreground/80 leading-relaxed"
+        class="border-t border-border/60 pt-8 text-xs text-muted-foreground/80 leading-relaxed space-y-3"
       >
         <p>
           When live, the public route <code>/newsletter</code> renders the
           archive from RSS; this admin route can be repurposed for
           subscriber-only analytics or drafting metadata if needed.
+        </p>
+        <p>
+          <a
+            href="https://orenu.cloudflareaccess.com/cdn-cgi/access/logout"
+            class="underline hover:text-foreground"
+          >Sign out of Cloudflare Access</a>{" "}
+          — clears the session cookie. Re-entry to <code>/admin/*</code> will
+          challenge again.
         </p>
       </footer>
     </div>
