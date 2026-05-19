@@ -28,9 +28,22 @@ interface Props {
    * /credentials) stay clean.
    */
   watermark?: "home" | "lca" | "work" | "speaking" | "none";
+  /**
+   * Defense-in-depth for admin-gated routes (/admin/*). Emits robots
+   * noindex,nofollow,noarchive,nosnippet so search engines won't index
+   * even if a transient mis-configuration of CF Access lets a crawler
+   * past the edge gate. Public pages omit this prop and stay indexable.
+   */
+  noIndex?: boolean;
 }
 
-const { title, description, noChrome = false, watermark = "none" } = Astro.props;
+const {
+  title,
+  description,
+  noChrome = false,
+  watermark = "none",
+  noIndex = false,
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImage = new URL("/images/og-default.jpg", Astro.site).toString();
 
@@ -80,6 +93,14 @@ const breadcrumbItems: Array<{
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
+    {
+      noIndex && (
+        <meta
+          name="robots"
+          content="noindex,nofollow,noarchive,nosnippet"
+        />
+      )
+    }
 
     <!-- Theme bootstrap (S11): blocking inline script resolves
          localStorage.theme into an explicit data-theme attr on <html>

@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+/**
+ * /admin/newsletter — placeholder for future Substack archive
+ * integration. Per docs/site-reviews/2026-05-18-onenote-ajustes.md
+ * item 13.4 (admin layer phase 1), full integration scheduled as
+ * PR-S13 when Sarah publishes her first newsletter.
+ *
+ * Pattern reference: dfolloni.substack.com/archive — newsletter
+ * archive surfaced on the personal site via RSS feed pull at build
+ * time. Subscribers stay on Substack; the site mirrors the public
+ * archive.
+ */
+
+const title = "Newsletter (placeholder) · Admin · Sarah Rodovalho";
+const description =
+  "Placeholder for future Substack archive integration. Visible only to admin.";
+---
+
+<BaseLayout title={title} description={description} noIndex={true}>
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-10">
+      <header class="space-y-5">
+        <p class="eyebrow">
+          <span class="accent-rule"></span>Admin · newsletter (placeholder)
+        </p>
+        <h1
+          class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+        >
+          Substack archive —{" "}
+          <span class="italic text-accent">coming soon.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Placeholder for the newsletter archive integration. When Sarah
+          publishes her first Substack issue, this page will mirror the
+          public archive (built at deploy time from the Substack RSS feed)
+          — pattern modeled on dfolloni.substack.com/archive.
+        </p>
+      </header>
+
+      <section class="space-y-4">
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Status
+        </h2>
+        <ul
+          class="space-y-2 text-sm text-muted-foreground leading-relaxed list-disc pl-5"
+        >
+          <li>
+            <strong class="text-foreground">Substack URL:</strong> pending —
+            Sarah to create the publication and share the URL.
+          </li>
+          <li>
+            <strong class="text-foreground">Integration approach:</strong> RSS
+            feed pull at build time → static archive at <code>/newsletter</code>{" "}
+            (public, not admin) when shipped.
+          </li>
+          <li>
+            <strong class="text-foreground">Scheduled PR:</strong> PR-S13 (per
+            <code>docs/site-reviews/2026-05-18-onenote-ajustes.md</code>{" "}
+            §13.4 phase 2).
+          </li>
+          <li>
+            <strong class="text-foreground">Dependency:</strong> Sarah's first
+            published issue.
+          </li>
+        </ul>
+      </section>
+
+      <footer
+        class="border-t border-border/60 pt-8 text-xs text-muted-foreground/80 leading-relaxed"
+      >
+        <p>
+          When live, the public route <code>/newsletter</code> renders the
+          archive from RSS; this admin route can be repurposed for
+          subscriber-only analytics or drafting metadata if needed.
+        </p>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>

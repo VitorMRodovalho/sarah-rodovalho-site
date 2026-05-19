@@ -1,0 +1,271 @@
+---
+import { Picture } from "astro:assets";
+import headshot from "../../assets/sarah-headshot.jpg";
+import fullBody from "../../assets/sarah-full-body.png";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+/**
+ * /admin/press-kit-full — gated companion to the public /press-kit.
+ * Per docs/site-reviews/2026-05-18-onenote-ajustes.md items 13.1–13.3
+ * (PR-S07b admin layer).
+ *
+ * Visibility model:
+ *   - /press-kit (public): short bio + watermarked headshot +
+ *     pronunciation (display name + IPA) + email CTA
+ *   - /admin/press-kit-full (gated): short + medium + long bios,
+ *     quick-facts with employer-specific stats, pronunciation with
+ *     legal name, hi-res photo downloads
+ *
+ * Cloudflare Access (Email OTP) blocks unauthenticated access at the
+ * edge. BaseLayout noIndex={true} is defense-in-depth: robots
+ * directives prevent indexing if the gate is briefly mis-configured.
+ *
+ * The public site never links here; Sarah types the URL or follows it
+ * from /admin (dashboard).
+ */
+
+const title = "Press kit (full) · Sarah Rodovalho";
+const description =
+  "Full press kit assets — short, medium, and long bios, quick-facts, hi-resolution photos, and pronunciation with legal name. Gated.";
+
+const BIO_SHORT =
+  "Sarah Rodovalho is an Integrated Design Manager at Aligned Data Centers and a doctoral researcher at Harrisburg University, with 16+ years delivering capital programs across hyperscale data centers, advanced manufacturing, and large-scale infrastructure in the U.S. and Brazil. She serves on the AIA Construction Contract Administration Knowledge Community Leadership Board (2026–2030).";
+
+const BIO_MEDIUM =
+  "Sarah Rodovalho is an Integrated Design Manager at Aligned Data Centers and a doctoral researcher in Information Systems Engineering at Harrisburg University. She has 16+ years delivering complex capital programs across hyperscale data centers, advanced manufacturing, and large-scale infrastructure in the U.S. and Brazil — including program work with Tesla, Microsoft Cloud Operations + Innovation, and Aliansce Sonae's $232M Passeio das Águas mall. Her published research integrates BIM, energy analysis, and life-cycle assessment for carbon-neutral construction. She holds PMP, LEED Green Associate, OSHA 30, AIA Associate, and Brazilian CAU credentials, and serves on the AIA Construction Contract Administration Knowledge Community Leadership Board (2026–2030).";
+
+const BIO_LONG = [
+  "Sarah Rodovalho is an Integrated Design Manager at Aligned Data Centers, currently leading design coordination on a multi-building, ~264 MW hyperscale campus in the Washington DC – Baltimore corridor. She is also a doctoral candidate in Information Systems Engineering & Management at Harrisburg University of Science and Technology, researching how data analytics and AI can improve infrastructure delivery.",
+  "Across 16+ years in the architecture, engineering, and construction industry, Sarah has delivered capital programs spanning hyperscale data centers, advanced manufacturing, healthcare facilities, public transit, and large-scale retail in the United States and Brazil. Past program work includes 8 concurrent hyperscale builds at Microsoft Cloud Operations + Innovation (~1.1M+ sq ft, $279M+ in change orders directed), 20+ industrial and R&D projects at Tesla (~2.25M sq ft across Fremont, Lathrop, and Nevada), and Aliansce Sonae's $232M Passeio das Águas Shopping — center-west Brazil's largest mall, delivered from ground-up through commissioning on time and on budget.",
+  "Sarah holds peer-reviewed publications in the International Journal of Architectural Computing and Sustainability (MDPI), with research focused on integrating BIM, energy analysis, and life-cycle assessment for carbon-neutral construction. She serves on the AIA Construction Contract Administration Knowledge Community Leadership Board (2026–2030) and is the founder of the AI & PM Study and Research Hub at the PMI Brazilian Chapters. She holds the PMP, LEED Green Associate, OSHA 30, and AIA Associate credentials, the Brazilian Architecture License (CAU A978191), and is pursuing NCARB licensure. She is based in Leesburg, Virginia.",
+] as const;
+
+const QUICK_FACTS = [
+  { label: "Years in delivery", value: "16+" },
+  { label: "Career portfolio", value: "7M+ sq ft · ~$1.5B+" },
+  { label: "Current campus scope", value: "~264 MW" },
+  { label: "Microsoft change orders", value: "$279 M+" },
+  { label: "Peer-reviewed papers", value: "3" },
+  { label: "Credentials", value: "PMP · LEED GA · OSHA 30 · AIA" },
+  { label: "Brazilian license", value: "CAU A978191" },
+  { label: "Countries delivered", value: "5 (US · BR · PT · IT · CN)" },
+] as const;
+---
+
+<BaseLayout title={title} description={description} noIndex={true}>
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-14">
+      <header class="space-y-5">
+        <p class="eyebrow">
+          <span class="accent-rule"></span>Admin · press kit (full)
+        </p>
+        <h1
+          class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+        >
+          Bios, photos, and quick facts —{" "}
+          <span class="italic text-accent">ready for your event copy.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          The full press kit content. For event organizers, podcast producers,
+          and journalists who have asked via the public press-kit page — this
+          is what to send them. Public surface stays at{" "}
+          <a href="/press-kit" class="underline hover:text-foreground"
+            >/press-kit</a
+          >.
+        </p>
+      </header>
+
+      <!-- PRONUNCIATION (with legal name) ─────────────────────────── -->
+      <section class="space-y-4">
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Name &amp; pronunciation
+        </h2>
+        <div
+          class="border border-border bg-surface p-5 sm:p-6 rounded-md space-y-3"
+        >
+          <p class="text-sm text-muted-foreground uppercase tracking-[0.15em]">
+            Display name
+          </p>
+          <p class="font-display text-2xl tracking-tight">Sarah Rodovalho</p>
+          <p
+            class="text-sm text-muted-foreground uppercase tracking-[0.15em] pt-2"
+          >
+            Full legal name
+          </p>
+          <p class="text-base">Sarah Faria Alcantara Macedo Rodovalho</p>
+          <p
+            class="text-sm text-muted-foreground uppercase tracking-[0.15em] pt-2"
+          >
+            Pronunciation
+          </p>
+          <p class="font-mono text-sm">SAH-rah · ho-doh-VAH-lyoo</p>
+          <p class="text-xs text-muted-foreground/80">
+            IPA · /ˈsa.ɾɐ ʁo.do.ˈva.ʎu/ (Brazilian Portuguese). Brazilian R at
+            the start of "Rodovalho" is a soft "h" sound; the "lh" is a
+            palatal "ly" — closer to "lyoo" than "loh".
+          </p>
+        </div>
+      </section>
+
+      <!-- BIOS ────────────────────────────────────────────────────── -->
+      <section class="space-y-6">
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">Bios</h2>
+        <p class="text-sm text-muted-foreground">
+          Three lengths. Copy whatever fits the format.
+        </p>
+
+        <div class="space-y-3">
+          <h3 class="eyebrow">Short · ~280 chars (also published on /press-kit)</h3>
+          <div
+            class="border border-border bg-surface p-5 rounded-md text-base leading-relaxed"
+          >
+            <p>{BIO_SHORT}</p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="eyebrow">Medium · ~810 chars (1 paragraph)</h3>
+          <div
+            class="border border-border bg-surface p-5 rounded-md text-base leading-relaxed"
+          >
+            <p>{BIO_MEDIUM}</p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="eyebrow">Long · ~1850 chars (3 paragraphs)</h3>
+          <div
+            class="border border-border bg-surface p-5 rounded-md text-base leading-relaxed space-y-4"
+          >
+            {BIO_LONG.map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </section>
+
+      <!-- QUICK FACTS ─────────────────────────────────────────────── -->
+      <section class="space-y-6">
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Quick facts
+        </h2>
+        <dl
+          class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 border-t border-border-strong/40 pt-6"
+        >
+          {
+            QUICK_FACTS.map((f) => (
+              <div class="space-y-1 border-b border-border/40 pb-4">
+                <dt class="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {f.label}
+                </dt>
+                <dd class="font-display text-xl sm:text-2xl tracking-tight">
+                  {f.value}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <!-- PHOTOS ──────────────────────────────────────────────────── -->
+      <section class="space-y-6">
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Photos · hi-resolution
+        </h2>
+        <p class="text-sm text-muted-foreground">
+          Use freely for editorial and event-introduction contexts. Credit
+          "Sarah Rodovalho" in image captions when feasible.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <article class="space-y-3">
+            <Picture
+              src={headshot}
+              alt="Sarah Rodovalho — professional headshot, hi-resolution"
+              widths={[400, 700, 1200, 1493]}
+              sizes="(min-width: 640px) 45vw, 90vw"
+              formats={["avif", "webp"]}
+              fallbackFormat="jpg"
+              loading="lazy"
+              decoding="async"
+              class="w-full rounded-md ring-1 ring-border/60"
+            />
+            <div class="space-y-1">
+              <p class="font-display text-base">Professional headshot</p>
+              <p class="text-xs text-muted-foreground">
+                JPG · 1493×1506 · ~272 KB · neutral white background
+              </p>
+              <a
+                href="/admin/press/sarah-rodovalho-headshot.jpg"
+                download="sarah-rodovalho-headshot.jpg"
+                class="text-xs underline hover:text-foreground text-muted-foreground"
+              >
+                Download original JPG →
+              </a>
+            </div>
+          </article>
+
+          <article class="space-y-3">
+            <Picture
+              src={fullBody}
+              alt="Sarah Rodovalho — full-length portrait, hi-resolution"
+              widths={[400, 700, 1200, 1493]}
+              sizes="(min-width: 640px) 45vw, 90vw"
+              formats={["avif", "webp"]}
+              fallbackFormat="jpg"
+              loading="lazy"
+              decoding="async"
+              class="w-full rounded-md ring-1 ring-border/60"
+            />
+            <div class="space-y-1">
+              <p class="font-display text-base">Full-length portrait</p>
+              <p class="text-xs text-muted-foreground">
+                PNG · ~1.5 MB · neutral grey background
+              </p>
+              <a
+                href="/admin/press/sarah-rodovalho-full-body.png"
+                download="sarah-rodovalho-full-body.png"
+                class="text-xs underline hover:text-foreground text-muted-foreground"
+              >
+                Download original PNG →
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- CONTACT ─────────────────────────────────────────────────── -->
+      <section
+        class="border-t border-border/60 pt-10 space-y-3 text-sm text-muted-foreground leading-relaxed"
+      >
+        <h2
+          class="font-display text-2xl sm:text-3xl tracking-tight text-foreground"
+        >
+          Press inquiries
+        </h2>
+        <p>
+          Email:{" "}
+          <a
+            href="mailto:sarah@sarahrodovalho.com"
+            class="underline hover:text-foreground"
+            >sarah@sarahrodovalho.com</a
+          >
+        </p>
+        <p>
+          LinkedIn:{" "}
+          <a
+            href="https://www.linkedin.com/in/sarahrodovalho"
+            rel="noopener"
+            class="underline hover:text-foreground"
+            >linkedin.com/in/sarahrodovalho</a
+          >
+        </p>
+        <p>Based in Leesburg, Virginia · Washington DC – Baltimore region.</p>
+      </section>
+
+      <p
+        class="text-[11px] text-muted-foreground/60 pt-6 border-t border-border/40"
+      >
+        Last revised: 2026-05-18 · admin-only · noindex
+      </p>
+    </div>
+  </main>
+</BaseLayout>

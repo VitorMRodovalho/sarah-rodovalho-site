@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+/**
+ * /admin — private dashboard, gated by Cloudflare Access (Email OTP)
+ * at the edge. Per docs/site-reviews/2026-05-18-onenote-ajustes.md
+ * item 13.3 (PR-S07b).
+ *
+ * Purpose: surface non-public assets to Sarah during presentations and
+ * to authenticated guests granted via the Lighter gate email pattern.
+ * Public press-kit (PR-S07a) keeps a minimal surface; full press kit
+ * content lives here.
+ *
+ * Pages NOT linked from the public SiteHeader (NAV array). Sarah
+ * navigates here by typing the URL after passing the CF Access
+ * challenge.
+ */
+
+const title = "Admin · Sarah Rodovalho";
+const description =
+  "Private admin dashboard for Sarah Rodovalho — full press kit assets and newsletter archive. Gated by Cloudflare Access.";
+
+const CARDS = [
+  {
+    href: "/admin/press-kit-full",
+    label: "Full press kit",
+    description:
+      "Bios (short, medium, long), pronunciation with legal name, quick-facts strip with employer-specific stats, and hi-resolution headshot + full-body photo downloads.",
+  },
+  {
+    href: "/admin/newsletter",
+    label: "Newsletter archive",
+    description:
+      "Placeholder for future Substack archive integration (PR-S13). External link to Substack when published.",
+  },
+] as const;
+---
+
+<BaseLayout title={title} description={description} noIndex={true}>
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-14">
+      <header class="space-y-5">
+        <p class="eyebrow"><span class="accent-rule"></span>Admin · private</p>
+        <h1
+          class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+        >
+          Back-of-house —{" "}
+          <span class="italic text-accent">visible only to you.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          This area is gated by Cloudflare Access (Email OTP). The content
+          below is intentionally not on the public site — full bios, hi-res
+          photos, and employer-specific stats live here for use in
+          presentations and for press requests granted via the Lighter gate
+          email pattern.
+        </p>
+      </header>
+
+      <section class="space-y-6">
+        <ul class="grid grid-cols-1 gap-5">
+          {
+            CARDS.map((card) => (
+              <li class="border border-border rounded-md p-6 hover:border-accent/50 hover:bg-accent-soft/15 transition-colors">
+                <a href={card.href} class="block group space-y-2">
+                  <h2 class="font-display text-xl sm:text-2xl tracking-tight group-hover:text-accent transition-colors">
+                    {card.label} →
+                  </h2>
+                  <p class="text-sm text-muted-foreground leading-relaxed">
+                    {card.description}
+                  </p>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <footer
+        class="border-t border-border/60 pt-8 text-xs text-muted-foreground/80 leading-relaxed"
+      >
+        <p>
+          Sign-out: clear the CF_Authorization cookie (DevTools → Application →
+          Cookies → sarahrodovalho.com) or close the browser. Cloudflare Access
+          session expires per the policy set in Zero Trust dashboard.
+        </p>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>

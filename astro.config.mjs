@@ -18,7 +18,16 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   site: "https://sarahrodovalho.com",
   output: "static",
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      // Exclude admin-gated routes from sitemap. CF Access blocks
+      // crawlers at the edge, but excluding here is defense-in-depth
+      // — pairs with BaseLayout `noIndex` meta on /admin/* pages and
+      // robots.txt Disallow.
+      filter: (page) => !page.includes("/admin/"),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
