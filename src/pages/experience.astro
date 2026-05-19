@@ -4,141 +4,220 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
- * /experience — curated employment timeline.
+ * /experience — Selected case studies (curated project highlights).
  *
- * Source: Astro Content Collection `experience` (schema in
- * `src/content.config.ts`). 5-7 highlighted projects from a 17-role
- * career — full chronology lives on LinkedIn (linked in the footer).
+ * Source: Astro Content Collection `projects` (schema in
+ * `src/content.config.ts`). Each project = one delivered body of
+ * work with quantitative scope in the foreground.
  *
- * Per-entry Schema.org JSON-LD intentionally omitted: there is no
- * clean Schema.org type for "this person worked here in the past" on
- * an arbitrary listing page. The site-wide `Person` markup
- * (BaseLayout) already declares Sarah's identity + affiliation;
- * Google connects employers via the linked `organizationUrl` text.
+ * Per-card heroImage is fuzzy-joined from the `experience` collection
+ * by employer ↔ organization match. Some projects have no photo
+ * available — figure simply omits.
  *
- * Optional per-entry `heroImage` lifts the wall-of-text into a visual
- * timeline. Photos are attributed via `heroImageSource` (link back to
- * the original LinkedIn post) — re-hosting is only used when the post
- * owner is Sarah, her direct collaborators, or her employer's official
- * channel, with attribution preserved.
+ * Layout: editorial 2-column at md+ (text-left / stat-right; reversed
+ * on odd rows). Photo renders BELOW the text+scope grid per Sarah's
+ * UX direction (text orients reader before the image confirms).
+ *
+ * Replaces the prior /work page (deleted in PR-S10); /work now
+ * 301-redirects to /experience via worker.js.
  */
 
-const allExperience = await getCollection("experience");
-const experience = allExperience.sort((a, b) => a.data.order - b.data.order);
+const allProjects = await getCollection("projects");
+const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
 
-const INDUSTRY_LABEL: Record<(typeof experience)[number]["data"]["industry"], string> = {
-  "data-center": "Data center",
-  manufacturing: "Manufacturing",
-  healthcare: "Healthcare",
-  "retail-mall": "Retail / mall",
+const allExperience = await getCollection("experience");
+
+/**
+ * Fuzzy organization-name match for the project ↔ experience join.
+ *
+ * Project.employer is a short canonical form ("Microsoft (CO+I)",
+ * "Goiânia Bus Rapid Transit network") while experience.organization
+ * may carry program suffixes or alt-form parentheticals ("Microsoft
+ * Cloud Operations + Innovation (CO+I)", "Goiânia Bus Rapid Transit
+ * (BRT) network"). Normalize by stripping parentheticals and
+ * non-word symbols before comparing — substring either direction
+ * counts as a match.
+ */
+const normalizeOrgName = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const findExperienceMatch = (employer: string) => {
+  const e = normalizeOrgName(employer);
+  return allExperience.find((entry) => {
+    const o = normalizeOrgName(entry.data.organization);
+    return o === e || o.includes(e) || e.includes(o);
+  });
+};
+
+const CATEGORY_LABEL: Record<(typeof projects)[number]["data"]["category"], string> = {
+  "data-center": "Data center · hyperscale",
+  "retail-mall": "Retail · large-scale",
   transit: "Public transit",
-  academia: "Academia",
+  healthcare: "Healthcare",
+  manufacturing: "Industrial · manufacturing",
+  academia: "Academic",
+  hospitality: "Hospitality",
 };
 
 const title = "Experience · Sarah Rodovalho";
 const description =
-  "Selected projects from Sarah Rodovalho's 16+ years delivering hyperscale data centers, advanced manufacturing, healthcare facilities, public transit, and large-scale retail across the U.S. and Brazil.";
+  "Curated case studies from Sarah Rodovalho's 16+ year delivery career — hyperscale data centers, advanced manufacturing, large-scale retail, public transit, and healthcare across the U.S. and Brazil. Scope, role, and project context for each engagement.";
 ---
 
 <BaseLayout title={title} description={description}>
   <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-    <div class="max-w-3xl mx-auto space-y-14">
-      <header class="space-y-5">
-        <p class="eyebrow"><span class="accent-rule"></span>Experience</p>
+    <div class="mx-auto max-w-6xl space-y-16 md:space-y-24">
+      <header class="space-y-5 max-w-3xl">
+        <p class="eyebrow"><span class="accent-rule"></span>Selected work</p>
         <h1 class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]">
-          Selected projects across <span class="italic text-accent">infrastructure</span>,
+          Case studies across <span class="italic text-accent">hyperscale infrastructure</span>,
           manufacturing, and the built environment.
         </h1>
         <p class="text-base text-muted-foreground leading-relaxed">
-          Highlights from 16+ years of capital-program delivery in the U.S. and
-          Brazil — hyperscale data centers, advanced manufacturing, healthcare
-          facilities, public transit, and large-scale retail. Full chronology
-          on{" "}
-          <a
-            href="https://www.linkedin.com/in/sarahrodovalho"
-            class="underline hover:text-foreground"
-            rel="noopener"
-          >
-            LinkedIn
-          </a>
-          .
+          Six selected programs from a 16+ year delivery career in the U.S. and
+          Brazil.
         </p>
       </header>
 
-      <section class="space-y-10">
+      <ol class="space-y-20 md:space-y-28">
         {
-          experience.map((e) => (
-            <article class="space-y-3 border-l-2 border-border/40 pl-6">
-              <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
-                  {INDUSTRY_LABEL[e.data.industry]}
-                </span>
-                {e.data.isCurrent && (
-                  <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-primary">
-                    Current
-                  </span>
-                )}
-                <span class="text-xs text-muted-foreground/80">{e.data.period}</span>
-                <span class="text-xs text-muted-foreground/60">·</span>
-                <span class="text-xs text-muted-foreground/80">{e.data.location}</span>
-              </div>
-              <h2 class="font-display text-2xl sm:text-3xl tracking-tight">{e.data.role}</h2>
-              <p class="text-sm font-medium">
-                {e.data.organizationUrl ? (
-                  <a
-                    href={e.data.organizationUrl}
-                    class="underline hover:text-foreground"
-                    rel="noopener"
+          projects.map((p, i) => {
+            const reversed = i % 2 === 1;
+            const expMatch = findExperienceMatch(p.data.employer);
+            const heroImg = expMatch?.data.heroImage;
+            const heroAlt = expMatch?.data.heroImageAlt;
+            const heroCaption = expMatch?.data.heroImageCaption;
+            const heroSource = expMatch?.data.heroImageSource;
+            return (
+              <li
+                id={p.id.replace(/\.mdx$/, "")}
+                class="space-y-8 md:space-y-10 scroll-mt-24"
+              >
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
+                  <div
+                    class:list={[
+                      "md:col-span-7 space-y-6",
+                      reversed && "md:col-start-6 md:col-end-13 md:order-2",
+                    ]}
                   >
-                    {e.data.organization}
-                  </a>
-                ) : (
-                  e.data.organization
-                )}
-              </p>
-              {e.data.heroImage && e.data.heroImageAlt && (
-                <figure class="pt-2 space-y-1.5">
-                  <Picture
-                    src={e.data.heroImage}
-                    alt={e.data.heroImageAlt}
-                    widths={[400, 700, 1000]}
-                    sizes="(min-width: 768px) 700px, 90vw"
-                    formats={["avif", "webp"]}
-                    fallbackFormat="jpg"
-                    loading="lazy"
-                    decoding="async"
-                    class="w-full rounded-md ring-1 ring-border/60 bg-surface"
-                  />
-                  {(e.data.heroImageCaption || e.data.heroImageSource) && (
-                    <figcaption class="text-[11px] text-muted-foreground/80 leading-snug">
-                      {e.data.heroImageCaption}
-                      {e.data.heroImageCaption && e.data.heroImageSource && " · "}
-                      {e.data.heroImageSource && (
+                    <div class="flex items-baseline gap-5">
+                      <span class="font-display text-5xl sm:text-6xl tabular-nums tracking-[-0.02em] text-accent leading-none">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div class="flex flex-col gap-1 pt-2">
+                        <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                          {CATEGORY_LABEL[p.data.category]}
+                        </span>
+                        {p.data.isCurrent && (
+                          <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
+                            Current engagement
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <h2 class="font-display text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.05]">
+                      {p.data.title}
+                    </h2>
+                    <p class="text-sm font-medium">
+                      <span class="text-foreground">{p.data.role}</span>
+                      <span class="text-muted-foreground"> · </span>
+                      {p.data.employerUrl ? (
                         <a
-                          href={e.data.heroImageSource}
-                          class="underline hover:text-foreground"
+                          href={p.data.employerUrl}
+                          class="text-muted-foreground hover:text-foreground underline"
                           rel="noopener"
                         >
-                          Source ↗
+                          {p.data.employer}
                         </a>
+                      ) : (
+                        <span class="text-muted-foreground">{p.data.employer}</span>
                       )}
-                    </figcaption>
-                  )}
-                </figure>
-              )}
-              <p class="text-base leading-relaxed">{e.data.summary}</p>
-              {e.data.highlights.length > 0 && (
-                <ul class="space-y-2 text-sm leading-relaxed list-disc pl-5 marker:text-muted-foreground/60">
-                  {e.data.highlights.map((h) => (
-                    <li>{h}</li>
-                  ))}
-                </ul>
-              )}
-            </article>
-          ))
-        }
-      </section>
+                    </p>
+                    <p class="text-xs text-muted-foreground/80">
+                      {p.data.period} · {p.data.location}
+                    </p>
+                    <p class="text-base text-foreground/85 leading-relaxed pt-2">
+                      {p.data.abstract}
+                    </p>
+                  </div>
 
+                  <aside
+                    class:list={[
+                      "md:col-span-5 md:sticky md:top-24",
+                      reversed && "md:col-start-1 md:col-end-6 md:order-1",
+                    ]}
+                    aria-label={`${p.data.title} scope`}
+                  >
+                    <dl class="grid grid-cols-2 gap-x-6 gap-y-8">
+                      {p.data.scope.map((s) => (
+                        <div class="space-y-2 border-t-2 border-foreground/80 pt-4">
+                          <dt class="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                            {s.label}
+                          </dt>
+                          <dd class="font-display text-3xl sm:text-4xl tracking-[-0.02em] tabular-nums leading-[0.95]">
+                            {s.value}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </aside>
+                </div>
+
+                {heroImg && heroAlt && (
+                  <figure class="space-y-2">
+                    <Picture
+                      src={heroImg}
+                      alt={heroAlt}
+                      widths={[600, 900, 1200, 1600]}
+                      sizes="(min-width: 1024px) 1100px, 95vw"
+                      formats={["avif", "webp"]}
+                      fallbackFormat="jpg"
+                      loading="lazy"
+                      decoding="async"
+                      class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                    />
+                    {(heroCaption || heroSource) && (
+                      <figcaption class="text-[11px] text-muted-foreground/80 leading-snug">
+                        {heroCaption}
+                        {heroCaption && heroSource && " · "}
+                        {heroSource && (
+                          <a
+                            href={heroSource}
+                            class="underline hover:text-foreground"
+                            rel="noopener"
+                          >
+                            Source ↗
+                          </a>
+                        )}
+                      </figcaption>
+                    )}
+                  </figure>
+                )}
+              </li>
+            );
+          })
+        }
+      </ol>
+
+      <footer class="border-t border-border/60 pt-10 max-w-3xl space-y-4">
+        <p class="eyebrow">Beyond the selection</p>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Earlier work includes architectural practice in healthcare and
+          institutional projects in Brazil and the U.S., teaching assistant at
+          Thomas Jefferson University's Department of Construction Management,
+          and founding work at the AI &amp; PM Study and Research Hub of the PMI
+          Brazilian Chapters. See{" "}
+          <a href="/about" class="underline hover:text-foreground">
+            about
+          </a>{" "}
+          for the broader picture.
+        </p>
+      </footer>
     </div>
   </main>
 </BaseLayout>

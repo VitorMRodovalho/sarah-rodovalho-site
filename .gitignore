@@ -155,3 +155,6 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+
+# Private reference (sensitive CV detail kept locally, NOT committed)
+_private/
