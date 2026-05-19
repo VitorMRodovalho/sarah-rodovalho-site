@@ -14,6 +14,14 @@ main = "./worker.js"
 compatibility_date = "2026-05-09"
 workers_dev = false
 
+# Non-secret config consumed by worker.js for /admin/api/metrics.
+# CF_ANALYTICS_TOKEN is a wrangler secret (Account Analytics:Read) and
+# is NOT declared here — install via `wrangler secret put CF_ANALYTICS_TOKEN`.
+[vars]
+CF_ACCOUNT_ID = "67d4c2262aebde75efb5fb6a1bb12cd2"
+CF_WEB_ANALYTICS_SITE_TAG = "cc6508bd183d4de494749127e6dd03b6"
+CF_SITE_LAUNCH_DATE = "2026-05-09"
+
 [assets]
 directory = "./dist"
 binding = "ASSETS"

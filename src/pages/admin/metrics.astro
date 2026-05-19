@@ -1,0 +1,361 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+/**
+ * /admin/metrics — Cloudflare Web Analytics aggregates for
+ * sarahrodovalho.com. Gated by Cloudflare Access at the edge.
+ *
+ * The shell is server-rendered (static); the metric values are
+ * fetched client-side from /admin/api/metrics (handled by worker.js).
+ * Worker pulls CF GraphQL Analytics, caches 5min, and returns curated
+ * JSON. CF Access cookie auto-flows on the fetch since the request is
+ * same-origin.
+ *
+ * Privacy posture: matches /privacy disclosure. CF Web Analytics is
+ * cookieless and aggregate-only — same data rendered here lives on
+ * dash.cloudflare.com, just brought into the gated /admin area for
+ * Sarah's convenience during divulgation pushes.
+ *
+ * UTM/QR vocab consumed in the top-referrers + top-pages breakdown is
+ * documented in docs/site-reviews/utm-conventions.md.
+ */
+
+const title = "Site metrics · Sarah Rodovalho";
+const description =
+  "Cloudflare Web Analytics aggregates for sarahrodovalho.com — visits, top pages, top countries, top referrers, press-kit interest. Gated /admin view.";
+---
+
+<BaseLayout title={title} description={description} noIndex={true}>
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-5xl mx-auto space-y-14">
+      <header class="space-y-5">
+        <p class="eyebrow">
+          <span class="accent-rule"></span>Admin · metrics
+        </p>
+        <h1
+          class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+        >
+          Who's visiting, and{" "}
+          <span class="italic text-accent">where they're looking.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed max-w-3xl">
+          Aggregate counts from Cloudflare Web Analytics for the last 30
+          days, with a 7-day comparison and per-channel breakdown.
+          Cookieless and aggregate-only, matching the public{" "}
+          <a href="/privacy" class="underline hover:text-foreground">privacy
+            notice</a>. UTM-tagged links surface as distinct rows under
+          Top pages (see{" "}
+          <a
+            href="https://github.com/VitorMRodovalho/sarah-rodovalho-site/blob/main/docs/site-reviews/utm-conventions.md"
+            rel="noopener"
+            class="underline hover:text-foreground"
+          >
+            utm-conventions
+          </a>
+          ).
+        </p>
+        <p
+          id="generatedAt"
+          class="font-mono text-[11px] tabular-nums uppercase tracking-[0.18em] text-muted-foreground/80"
+        >
+          Cache · refreshes every 5 min
+        </p>
+      </header>
+
+      <div id="metrics-root" class="space-y-12">
+        <p class="text-sm text-muted-foreground">Loading metrics…</p>
+      </div>
+
+      <footer class="border-t border-border/60 pt-8 text-xs text-muted-foreground/80 leading-relaxed">
+        <p>
+          Source: <a
+            href="https://dash.cloudflare.com/67d4c2262aebde75efb5fb6a1bb12cd2/web-analytics"
+            rel="noopener"
+            class="underline hover:text-foreground"
+          >Cloudflare Web Analytics dashboard</a> (same data). Server-side
+          query through CF GraphQL Analytics API; results cached 5 min in
+          Worker Cache. Site tag and account ID are public-ish identifiers
+          and are not secrets.
+        </p>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  type MetricsTotals = {
+    views: number;
+    visits: number;
+  };
+
+  type MetricsListItem = {
+    label: string;
+    views: number;
+    visits: number;
+  };
+
+  type MetricsDaily = {
+    date: string | null;
+    views: number;
+    visits: number;
+  };
+
+  type MetricsPayload = {
+    siteTag: string;
+    launch: string;
+    generatedAt: string;
+    totals: {
+      last7d: MetricsTotals;
+      prior7d: MetricsTotals;
+      last30d: MetricsTotals;
+      prior30d: MetricsTotals;
+      allTime: MetricsTotals;
+      delta7d: number | null;
+      delta30d: number | null;
+    };
+    daily: MetricsDaily[];
+    topPages: MetricsListItem[];
+    topCountries: MetricsListItem[];
+    topReferrers: MetricsListItem[];
+    pressKit: {
+      public: MetricsTotals;
+      full: MetricsTotals;
+    };
+  };
+
+  async function init() {
+    const root = document.getElementById("metrics-root");
+    const generatedAt = document.getElementById("generatedAt");
+    if (!root) return;
+
+    try {
+      const resp = await fetch("/admin/api/metrics", {
+        credentials: "include",
+      });
+      if (!resp.ok) {
+        const errBody = await resp.text();
+        root.innerHTML = renderError(
+          `HTTP ${resp.status} · ${errBody.slice(0, 240)}`,
+        );
+        return;
+      }
+      const data = (await resp.json()) as MetricsPayload;
+      root.innerHTML = renderMetrics(data);
+      if (generatedAt) {
+        const ts = new Date(data.generatedAt);
+        generatedAt.textContent = `Generated · ${ts.toUTCString()} · refreshes every 5 min`;
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      root.innerHTML = renderError(msg);
+    }
+  }
+
+  function renderError(msg: string): string {
+    return `
+      <section class="border border-border/60 rounded-md p-6 space-y-2">
+        <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+          Metrics unavailable
+        </p>
+        <p class="font-display text-xl tracking-tight">Couldn't load the data right now.</p>
+        <p class="text-sm text-muted-foreground leading-relaxed">${escapeHtml(msg)}</p>
+        <p class="text-sm leading-relaxed pt-2">
+          Fallback: open the
+          <a href="https://dash.cloudflare.com/67d4c2262aebde75efb5fb6a1bb12cd2/web-analytics"
+             rel="noopener"
+             class="underline hover:text-foreground">Cloudflare dashboard</a>
+          directly.
+        </p>
+      </section>`;
+  }
+
+  function renderMetrics(d: MetricsPayload): string {
+    return [
+      renderHero(d),
+      renderSparkline(d.daily),
+      renderTripleGrid(d),
+      renderPressKit(d),
+    ].join("");
+  }
+
+  function renderHero(d: MetricsPayload): string {
+    const last30 = d.totals.last30d;
+    const last7 = d.totals.last7d;
+    const all = d.totals.allTime;
+    const d30 = formatDelta(d.totals.delta30d);
+    const d7 = formatDelta(d.totals.delta7d);
+
+    return `
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        ${heroCard("Last 30 days", last30.visits, last30.views, d30, "vs prior 30d")}
+        ${heroCard("Last 7 days", last7.visits, last7.views, d7, "vs prior 7d")}
+        ${heroCard("Since launch", all.visits, all.views, null, formatDate(d.launch))}
+      </section>`;
+  }
+
+  function heroCard(
+    label: string,
+    visits: number,
+    views: number,
+    delta: { text: string; cls: string } | null,
+    sub: string,
+  ): string {
+    const deltaPart = delta
+      ? `<p class="font-mono text-xs tabular-nums ${delta.cls}">${delta.text} · ${sub}</p>`
+      : `<p class="font-mono text-xs tabular-nums text-muted-foreground">${escapeHtml(sub)}</p>`;
+    return `
+      <div class="border border-border/60 rounded-md p-6 space-y-2 hover:border-accent/50 transition-colors">
+        <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">${escapeHtml(label)}</p>
+        <p class="font-display text-4xl sm:text-5xl tracking-[-0.02em] tabular-nums leading-none">
+          ${formatNumber(visits)}
+        </p>
+        <p class="text-xs text-muted-foreground">
+          visits · ${formatNumber(views)} page views
+        </p>
+        ${deltaPart}
+      </div>`;
+  }
+
+  function renderSparkline(daily: MetricsDaily[]): string {
+    if (!daily.length) return "";
+    const W = 720;
+    const H = 80;
+    const pad = 4;
+    const max = Math.max(...daily.map((p) => p.visits), 1);
+    const stepX = (W - pad * 2) / Math.max(daily.length - 1, 1);
+    const points = daily
+      .map((p, i) => {
+        const x = pad + i * stepX;
+        const y = H - pad - (p.visits / max) * (H - pad * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      })
+      .join(" ");
+    const first = daily[0]?.date ?? "";
+    const last = daily[daily.length - 1]?.date ?? "";
+
+    return `
+      <section class="border border-border/60 rounded-md p-6 space-y-3">
+        <div class="flex items-baseline justify-between">
+          <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Daily visits · 30d</p>
+          <p class="font-mono text-[10px] tabular-nums text-muted-foreground/80">
+            ${formatDate(first)} → ${formatDate(last)}
+          </p>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" class="w-full h-20" preserveAspectRatio="none" role="img" aria-label="Daily visits, last 30 days">
+          <polyline fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            class="text-accent" points="${points}" />
+        </svg>
+        <p class="text-xs text-muted-foreground">Peak day: ${formatNumber(max)} visits.</p>
+      </section>`;
+  }
+
+  function renderTripleGrid(d: MetricsPayload): string {
+    return `
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        ${listCard("Top pages · 30d", d.topPages, formatPath)}
+        ${listCard("Top countries · 30d", d.topCountries, escapeHtml)}
+        ${listCard("Top referrers · 30d", d.topReferrers, formatReferrer)}
+      </section>`;
+  }
+
+  function listCard(
+    label: string,
+    items: MetricsListItem[],
+    formatter: (s: string) => string,
+  ): string {
+    if (!items.length) {
+      return `
+        <div class="border border-border/60 rounded-md p-6 space-y-2">
+          <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">${escapeHtml(label)}</p>
+          <p class="text-sm text-muted-foreground">No data yet.</p>
+        </div>`;
+    }
+    const rows = items
+      .map(
+        (it) => `
+          <li class="flex items-baseline justify-between gap-3 text-sm">
+            <span class="truncate text-foreground/85">${formatter(it.label)}</span>
+            <span class="font-mono tabular-nums text-xs text-muted-foreground shrink-0">${formatNumber(it.visits)}</span>
+          </li>`,
+      )
+      .join("");
+    return `
+      <div class="border border-border/60 rounded-md p-6 space-y-3">
+        <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">${escapeHtml(label)}</p>
+        <ul class="space-y-2.5">${rows}</ul>
+      </div>`;
+  }
+
+  function renderPressKit(d: MetricsPayload): string {
+    const pub = d.pressKit.public;
+    const full = d.pressKit.full;
+    return `
+      <section class="border border-border/60 rounded-md p-6 space-y-4">
+        <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Press-kit interest · 30d</p>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="space-y-1">
+            <p class="font-display text-3xl tracking-[-0.02em] tabular-nums leading-none">${formatNumber(pub.visits)}</p>
+            <p class="text-xs text-muted-foreground">Public press-kit (<code class="text-foreground/70">/press-kit</code>)</p>
+          </div>
+          <div class="space-y-1">
+            <p class="font-display text-3xl tracking-[-0.02em] tabular-nums leading-none">${formatNumber(full.visits)}</p>
+            <p class="text-xs text-muted-foreground">Full press-kit (admin-gated)</p>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  // ----- helpers --------------------------------------------------------
+
+  function formatNumber(n: number): string {
+    if (typeof n !== "number" || !Number.isFinite(n)) return "—";
+    return n.toLocaleString("en-US");
+  }
+
+  function formatDelta(
+    pct: number | null,
+  ): { text: string; cls: string } | null {
+    if (pct === null || !Number.isFinite(pct)) return null;
+    const sign = pct > 0 ? "+" : pct < 0 ? "" : "";
+    const cls =
+      pct > 0
+        ? "text-accent"
+        : pct < 0
+          ? "text-muted-foreground"
+          : "text-muted-foreground/80";
+    return { text: `${sign}${pct}%`, cls };
+  }
+
+  function formatDate(iso: string | null | undefined): string {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  function formatPath(p: string): string {
+    if (!p) return "(home)";
+    const trimmed = p.length > 60 ? p.slice(0, 57) + "…" : p;
+    return `<code class="text-foreground/85">${escapeHtml(trimmed)}</code>`;
+  }
+
+  function formatReferrer(host: string): string {
+    if (!host || host === "(empty)") return "(direct / no referrer)";
+    return escapeHtml(host);
+  }
+
+  function escapeHtml(s: string): string {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  init();
+</script>
