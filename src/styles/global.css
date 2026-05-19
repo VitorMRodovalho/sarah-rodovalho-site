@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 /* Font subsets — latin + latin-ext only (perf). Latin-ext covers
-   the diacritics needed for Portuguese names (ã, í, ç, õ, á) used
-   throughout Sarah's biography (Faria Alcantara Macedo, Goiânia,
-   Passeio das Águas, Aliansce). Stripping cyrillic / greek /
-   vietnamese subsets eliminates ~70% of shipped font weight; browsers
-   still pick the right subset via unicode-range. */
+   the diacritics needed for Portuguese place + project names used
+   throughout the site (Goiânia, Passeio das Águas, Aliansce, etc.).
+   Stripping cyrillic / greek / vietnamese subsets eliminates ~70% of
+   shipped font weight; browsers still pick the right subset via
+   unicode-range. */
 @import "@fontsource/newsreader/latin-400.css";
 @import "@fontsource/newsreader/latin-ext-400.css";
 @import "@fontsource/newsreader/latin-500.css";
