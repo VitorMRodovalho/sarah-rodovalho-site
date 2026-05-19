@@ -1,0 +1,102 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * /contact — minimal contact page. Per
+ * docs/site-reviews/2026-05-18-onenote-ajustes.md item 3.3 (PR-S09),
+ * Sarah requested "uma pagina contate-me simples" — direct routes to
+ * reach her without a form, captcha, or third-party service. Press
+ * inquiries cross-link to /press-kit which has bios + headshot.
+ */
+
+const title = "Contact · Sarah Rodovalho";
+const description =
+  "Direct contact for Sarah Rodovalho — email, LinkedIn, and location. For press inquiries, see the press kit.";
+---
+
+<BaseLayout title={title} description={description}>
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto space-y-12">
+      <header class="space-y-5">
+        <p class="eyebrow"><span class="accent-rule"></span>Contact</p>
+        <h1
+          class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+        >
+          Get in touch —{" "}
+          <span class="italic text-accent">direct routes, no forms.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          The fastest way to reach Sarah is email. For press inquiries
+          (event organizers, podcast producers, journalists), see the{" "}
+          <a href="/press-kit" class="underline hover:text-foreground"
+            >press kit</a
+          >{" "}
+          for bios, pronunciation, and headshot first.
+        </p>
+      </header>
+
+      <section class="space-y-5">
+        <dl
+          class="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6 border-t border-border/60 pt-8"
+        >
+          <div class="space-y-1">
+            <dt
+              class="text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              Email
+            </dt>
+            <dd class="text-base">
+              <a
+                href="mailto:sarah@sarahrodovalho.com"
+                class="underline hover:text-foreground"
+              >
+                sarah@sarahrodovalho.com
+              </a>
+            </dd>
+          </div>
+          <div class="space-y-1">
+            <dt
+              class="text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              LinkedIn
+            </dt>
+            <dd class="text-base">
+              <a
+                href="https://www.linkedin.com/in/sarahrodovalho"
+                rel="noopener"
+                class="underline hover:text-foreground"
+              >
+                linkedin.com/in/sarahrodovalho
+              </a>
+            </dd>
+          </div>
+          <div class="space-y-1">
+            <dt
+              class="text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              Based in
+            </dt>
+            <dd class="text-base">
+              Leesburg, Virginia · Washington DC – Baltimore region
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section
+        class="border-t border-border/60 pt-8 space-y-3 text-sm text-muted-foreground leading-relaxed"
+      >
+        <h2
+          class="font-display text-xl sm:text-2xl tracking-tight text-foreground"
+        >
+          Press inquiries
+        </h2>
+        <p>
+          For high-resolution images, extended bios, or quick-fact sheets,
+          email directly — Sarah responds personally to confirm context and
+          intended use.
+        </p>
+      </section>
+    </div>
+  </main>
+</BaseLayout>

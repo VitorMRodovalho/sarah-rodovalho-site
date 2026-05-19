@@ -1,0 +1,245 @@
+---
+import { Picture } from "astro:assets";
+import commencementImg from "../assets/about/mssd-tju-commencement-2023.jpg";
+import thesisDefenseImg from "../assets/about/mssd-thesis-defense-2023.jpg";
+import uegCbaImg from "../assets/about/ueg-cba-2006-organizing-team.jpg";
+import uegFormaturaImg from "../assets/about/ueg-class-formatura-2009.jpg";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * /academic — formal education record + languages.
+ *
+ * Per docs/site-reviews/2026-05-18-onenote-ajustes.md item 12.1
+ * (PR-S09), Sarah requested a dedicated page for "experiências
+ * academicas / passado de estudos" — the slow-changing formal record
+ * that was previously crowding /about. Page is intentionally separate
+ * from:
+ *   - /experience  — employment timeline (faster-changing role record)
+ *   - /credentials — license + certification verifications
+ *   - /awards      — competitive recognition + honors
+ *
+ * Education section: 4 degrees + 4 photos (thesis defense, TJU
+ * commencement, UEG CBA organizing team, UEG graduating class).
+ * Languages section: PT native + EN full professional.
+ *
+ * Layout mirrors /credentials.astro aesthetic for cross-page coherence.
+ */
+
+const title = "Academic · Sarah Rodovalho";
+const description =
+  "Formal academic record for Sarah Rodovalho — PhD candidate at Harrisburg University, M.Sc. Sustainable Design & Construction Management from Thomas Jefferson University, MBA from FGV Brazil, and Bachelor of Architecture and Urban Planning from UEG. Working languages: Portuguese and English.";
+---
+
+<BaseLayout title={title} description={description}>
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-4xl mx-auto space-y-16">
+      <header class="space-y-5">
+        <p class="eyebrow"><span class="accent-rule"></span>Academic</p>
+        <h1
+          class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
+        >
+          Formal education and{" "}
+          <span class="italic text-accent">working languages.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed max-w-3xl">
+          Slow-changing formal record — degrees, working languages, and the
+          photos that anchor them. Verifiable professional credentials and
+          industry honors live on{" "}
+          <a href="/credentials" class="underline hover:text-foreground"
+            >credentials</a
+          >{" "}
+          and{" "}
+          <a href="/awards" class="underline hover:text-foreground">awards</a>.
+        </p>
+      </header>
+
+      <!-- EDUCATION ─────────────────────────────────────────────── -->
+      <section class="space-y-7">
+        <header class="space-y-2 max-w-3xl">
+          <p
+            class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]"
+          >
+            01 · <span class="uppercase">Education</span>
+          </p>
+          <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+            Education
+          </h2>
+        </header>
+
+        <ul class="space-y-8 text-base leading-relaxed">
+          <li class="space-y-2">
+            <p>
+              <strong>PhD in Information Systems Engineering &amp; Management</strong
+              > · Harrisburg University of Science and Technology, PA · 2026 –
+              2030{" "}
+              <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
+                · In progress
+              </span>
+            </p>
+            <p class="text-sm text-muted-foreground">
+              Research focus: data analytics and AI applied to infrastructure
+              delivery, building on the Master's research thread on
+              carbon-neutral construction.
+            </p>
+          </li>
+
+          <li class="space-y-3">
+            <p>
+              <strong
+                >M.Sc. in Sustainable Design &amp; Construction Management</strong
+              > · Thomas Jefferson University, PA · 2021 – 2023
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+              <figure>
+                <Picture
+                  src={thesisDefenseImg}
+                  alt="Sarah Rodovalho standing next to an interactive whiteboard displaying her M.Sc. thesis title slide: 'The Design of a Holistic Community Chemotherapy Infusion Center in Philadelphia · Thesis in Master of Science in Sustainable Design · Sarah Rodovalho · Advisor: Robert Fryer · Thomas Jefferson University · Spring 2023'."
+                  widths={[300, 500, 700]}
+                  sizes="(min-width: 640px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+                <figcaption
+                  class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug"
+                >
+                  Thesis defense, Spring 2023 — same research presented at ARCC
+                  2025 (see{" "}
+                  <a href="/research" class="underline hover:text-foreground">
+                    research
+                  </a>
+                  ).
+                </figcaption>
+              </figure>
+              <figure>
+                <Picture
+                  src={commencementImg}
+                  alt="Sarah Rodovalho in cap and gown walking on stage at the Thomas Jefferson University commencement ceremony, between two academic officials in regalia; the podium displays 'Jefferson · Thomas Jefferson University · Home of Sidney Kimmel Medical College' and an American flag stands behind the stage."
+                  widths={[300, 500, 700]}
+                  sizes="(min-width: 640px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+                <figcaption
+                  class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug"
+                >
+                  Thomas Jefferson University commencement, Spring 2023 — dual
+                  M.Sc. in Construction Management and Sustainable Design
+                  conferred.
+                </figcaption>
+              </figure>
+            </div>
+          </li>
+
+          <li class="space-y-2">
+            <p>
+              <strong
+                >MBA in Real Estate &amp; Construction Business Management</strong
+              > · Fundação Getulio Vargas (FGV), Brazil · 2012 – 2016
+            </p>
+          </li>
+
+          <li class="space-y-3">
+            <p>
+              <strong>Bachelor of Architecture and Urban Planning</strong> ·
+              Universidade Estadual de Goiás, Brazil · 2004 – 2009
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+              <figure>
+                <Picture
+                  src={uegCbaImg}
+                  alt="Stage group portrait of about seventeen members of the XVIII Brazilian Architects Congress organizing support team, taken on stage with a red curtain backdrop on 2006-10-14. The team wears matching orange organizing t-shirts; Sarah Rodovalho, then an undergraduate architecture student at UEG, kneels at the center front in a white t-shirt."
+                  widths={[300, 500, 700]}
+                  sizes="(min-width: 640px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+                <figcaption
+                  class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug"
+                >
+                  XVIII Congresso Brasileiro de Arquitetos, 2006 — organizing
+                  support team during undergrad. Sarah at center, white t-shirt.
+                </figcaption>
+              </figure>
+              <figure>
+                <Picture
+                  src={uegFormaturaImg}
+                  alt="Studio class portrait of Sarah Rodovalho's UEG Architecture and Urban Planning graduating cohort — about twenty graduates coordinated in black tops and jeans against a white seamless backdrop, posed with arms raised, peace signs, and casual smiles in the Brazilian 'foto da turma' graduating-class tradition."
+                  widths={[300, 500, 700]}
+                  sizes="(min-width: 640px) 280px, 90vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
+                />
+                <figcaption
+                  class="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug"
+                >
+                  Graduating-class portrait — UEG Architecture &amp; Urban
+                  Planning cohort, 2009.
+                </figcaption>
+              </figure>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- LANGUAGES ─────────────────────────────────────────────── -->
+      <section class="space-y-5">
+        <header class="space-y-2 max-w-3xl">
+          <p
+            class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]"
+          >
+            02 · <span class="uppercase">Languages</span>
+          </p>
+          <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+            Working languages
+          </h2>
+        </header>
+        <ul
+          class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-base leading-relaxed"
+        >
+          <li>
+            <strong>Portuguese</strong>{" "}
+            <span class="text-muted-foreground">— native or bilingual</span>
+          </li>
+          <li>
+            <strong>English</strong>{" "}
+            <span class="text-muted-foreground">— full professional</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- CROSS-LINKS ───────────────────────────────────────────── -->
+      <footer
+        class="border-t border-border/60 pt-8 text-sm text-muted-foreground leading-relaxed space-y-2"
+      >
+        <p>
+          Looking for verifiable license + certification IDs? See{" "}
+          <a href="/credentials" class="underline hover:text-foreground"
+            >credentials</a
+          >.
+        </p>
+        <p>
+          Looking for awards, honors, and competitive scholarships? See{" "}
+          <a href="/awards" class="underline hover:text-foreground">awards</a>.
+        </p>
+        <p>
+          Looking for the employment timeline? See{" "}
+          <a href="/experience" class="underline hover:text-foreground"
+            >experience</a
+          >.
+        </p>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>
