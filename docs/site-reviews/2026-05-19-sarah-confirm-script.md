@@ -129,3 +129,38 @@ Resolvido: a gente selou via Worker até reconfigurar o CF Access. Hoje está co
 Para cada item que precisar de ajuste → 1-PR pequeno fix-forward. Vitor + Claude executam.
 
 Se TUDO estiver OK → projeto Sarah-site review fechado. Próxima onda quando você marcar um evento upcoming (preenche um MDX em `engagements/*` → mostra na seção Upcoming + automaticamente alimenta Orenu via ADR-024 sync).
+
+---
+
+## ✅ Resolution — 2026-05-19 evening (Sarah via Vitor)
+
+Todos os 8 itens fechados na sessão de 2026-05-19 noite. Verdicts inline.
+
+### Tabela de resolução
+
+| # | Tópico | Verdict | Commit / ação |
+|---|---|---|---|
+| 1 | Voz dos 6 abstracts de /experience | ✅ OK — mantém | nenhuma |
+| 2 | Watermark cruzando rosto ARCC | ✅ OK — mantém | nenhuma |
+| 3 | Goiânia BRT ano | ✅ 2019–2021 (como deployed) | nenhuma — confirma o que estava |
+| 4 | Clinical role sweep | ✅ Remover "Clinical" em todos os lugares | `31c750e` |
+| 5 | Crédito Vitor → vitormr.dev no rodapé | ✅ Mantém com link | nenhuma |
+| 6 | Link discreto pro /admin no rodapé | ✅ Adiciona | `8c06358` |
+| 7 | AGENTS.md PR #56 joint-owner check | ✅ Confirmado + merged | `7c76c0e` |
+| 8 | FYI 28h admin exposure | ✅ Closed (informativo) | nenhuma |
+
+### Entregas adicionais (não estavam no script original) — 2026-05-19 noite
+
+| Commit | O que ficou pronto |
+|---|---|
+| `4c6a52b` | Doc `docs/site-reviews/utm-conventions.md` — vocabulário UTM + recipe pra QR code de evento + templates LinkedIn/email |
+| `0d8f433` | `/privacy` reescrito pra refletir CF Web Analytics (cookieless aggregate) — fix-forward silencioso do gap de 10 dias entre policy aspiracional e estado real |
+| `342e555` + `52725ec` | `/admin/metrics` dashboard end-to-end — hero (last 30d/7d/since launch) + sparkline + top pages/countries/referrers + press-kit interest. Worker route via CF GraphQL Analytics. Fix shipado depois da Sarah notar `/ = 150 PV > 140 visits totais` (era display de métrica errada) |
+
+### Status
+
+✅ **Sarah-confirm S07–S12 review fechado.** Próximas ondas:
+
+- **Imediato (Sarah)**: quando quiser divulgar, usa templates de `docs/site-reviews/utm-conventions.md` no LinkedIn / email / QR codes
+- **~2.5 semanas (2026-06-06)**: revisitar Camada 2.5 — decidir se Plausible (bounce rate + time-on-page) faz diferença concreta sobre os dados que Camada 1 (CF GraphQL) entregou
+- **Sob demanda da Sarah**: novo talk → MDX em `engagements/*` → auto-sync Orenu via ADR-024. Newsletter (Substack/alternativa) só se ela disser "quero escrever sobre X com cadência Y" — placeholder em /admin/newsletter funciona como está enquanto isso
