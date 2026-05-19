@@ -18,7 +18,7 @@ const title = "Privacy · Sarah Rodovalho";
 const description =
   "Plain-English notice for sarahrodovalho.com — what this site collects, what it doesn't, and the third-party services that see your visit. No analytics, no forms, no cookies; fonts bundled rather than loaded from a CDN; the only third-party data flow is Cloudflare hosting.";
 
-const lastUpdated = "2026-05-12";
+const lastUpdated = "2026-05-19";
 
 const collection = [
   {
@@ -49,6 +49,13 @@ const thirdParty = [
     kind: "Hosting + CDN",
     body: "This site is served from Cloudflare's edge network as static assets. Cloudflare collects standard request data — IP address, user agent, request path, timestamp, country — for security, abuse mitigation, and operational telemetry. I see only the aggregate dashboards Cloudflare provides; I do not have access to per-visit logs.",
     linkLabel: "Cloudflare Privacy Policy",
+    linkUrl: "https://www.cloudflare.com/privacypolicy/",
+  },
+  {
+    name: "Cloudflare Zero Trust Access",
+    kind: "Admin authentication for /admin/*",
+    body: "A small back-of-house area at /admin/* is not linked from the public navigation and is gated by Cloudflare Zero Trust Access (Email OTP). Visiting any /admin/* path triggers a Cloudflare-hosted challenge that asks for an email address; if the address is on my allowlist (only mine), Cloudflare emails a one-time code and sets an authentication cookie on cloudflareaccess.com after the code is entered. If your email is not on the allowlist you cannot proceed past the challenge, and no further data is collected from you. The challenge itself produces standard request logs in Cloudflare per the policy above; I do not see per-visitor data.",
+    linkLabel: "Cloudflare Access — Privacy",
     linkUrl: "https://www.cloudflare.com/privacypolicy/",
   },
 ];
@@ -146,9 +153,9 @@ const rights = [
             Third-party data flows
           </h2>
           <p class="text-sm text-muted-foreground">
-            One service sees your traffic at the network layer. I do not
-            control its data collection beyond what is described in its
-            privacy notice.
+            Cloudflare sees your traffic at the network layer for both the
+            public site and the gated admin layer. I do not control its data
+            collection beyond what is described in its privacy notice.
           </p>
         </header>
         <ul class="space-y-5">

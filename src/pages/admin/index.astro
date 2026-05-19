@@ -79,9 +79,13 @@ const CARDS = [
         class="border-t border-border/60 pt-8 text-xs text-muted-foreground/80 leading-relaxed"
       >
         <p>
-          Sign-out: clear the CF_Authorization cookie (DevTools → Application →
-          Cookies → sarahrodovalho.com) or close the browser. Cloudflare Access
-          session expires per the policy set in Zero Trust dashboard.
+          <a
+            href="https://orenu.cloudflareaccess.com/cdn-cgi/access/logout"
+            class="underline hover:text-foreground"
+          >Sign out of Cloudflare Access</a>{" "}
+          — clears the session cookie. Re-entry to <code>/admin/*</code> will
+          challenge again. Sessions also expire automatically per the policy
+          set in Zero Trust dashboard.
         </p>
       </footer>
     </div>
