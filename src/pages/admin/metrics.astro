@@ -250,11 +250,19 @@ const description =
   }
 
   function renderTripleGrid(d: MetricsPayload): string {
+    // Internal-nav referrers (own hostname) collapse to 0 visits because
+    // navigation between site pages doesn't open a new session. Filter
+    // them out so the panel only shows external sources.
+    const externalReferrers = d.topReferrers.filter(
+      (r) =>
+        r.label !== "sarahrodovalho.com" &&
+        r.label !== "www.sarahrodovalho.com",
+    );
     return `
       <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        ${listCard("Top pages · 30d", d.topPages, formatPath)}
-        ${listCard("Top countries · 30d", d.topCountries, escapeHtml)}
-        ${listCard("Top referrers · 30d", d.topReferrers, formatReferrer)}
+        ${listCard("Top pages · 30d", d.topPages, formatPath, "views", "page views")}
+        ${listCard("Top countries · 30d", d.topCountries, escapeHtml, "visits", "visits")}
+        ${listCard("Top referrers · 30d", externalReferrers, formatReferrer, "visits", "visits")}
       </section>`;
   }
 
@@ -262,6 +270,8 @@ const description =
     label: string,
     items: MetricsListItem[],
     formatter: (s: string) => string,
+    metric: "views" | "visits",
+    metricLabel: string,
   ): string {
     if (!items.length) {
       return `
@@ -270,18 +280,24 @@ const description =
           <p class="text-sm text-muted-foreground">No data yet.</p>
         </div>`;
     }
-    const rows = items
+    // Re-sort by the metric we'll display (CF always orders by count, but
+    // for the visits-based panels we want the leaderboard ordered by visits).
+    const sorted = [...items].sort((a, b) => b[metric] - a[metric]);
+    const rows = sorted
       .map(
         (it) => `
           <li class="flex items-baseline justify-between gap-3 text-sm">
             <span class="truncate text-foreground/85">${formatter(it.label)}</span>
-            <span class="font-mono tabular-nums text-xs text-muted-foreground shrink-0">${formatNumber(it.visits)}</span>
+            <span class="font-mono tabular-nums text-xs text-muted-foreground shrink-0">${formatNumber(it[metric])}</span>
           </li>`,
       )
       .join("");
     return `
       <div class="border border-border/60 rounded-md p-6 space-y-3">
-        <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">${escapeHtml(label)}</p>
+        <div class="flex items-baseline justify-between gap-2">
+          <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">${escapeHtml(label)}</p>
+          <p class="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/60">${escapeHtml(metricLabel)}</p>
+        </div>
         <ul class="space-y-2.5">${rows}</ul>
       </div>`;
   }
@@ -289,16 +305,23 @@ const description =
   function renderPressKit(d: MetricsPayload): string {
     const pub = d.pressKit.public;
     const full = d.pressKit.full;
+    // Path-filtered queries: views (page loads of the path) is what we
+    // want, not visits (sessions whose LANDING page was the path).
+    // Someone arriving at / and clicking to /press-kit counts as a view
+    // here but a visit attributed to /.
     return `
       <section class="border border-border/60 rounded-md p-6 space-y-4">
-        <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Press-kit interest · 30d</p>
+        <div class="flex items-baseline justify-between gap-2">
+          <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Press-kit interest · 30d</p>
+          <p class="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/60">page views</p>
+        </div>
         <div class="grid grid-cols-2 gap-6">
           <div class="space-y-1">
-            <p class="font-display text-3xl tracking-[-0.02em] tabular-nums leading-none">${formatNumber(pub.visits)}</p>
+            <p class="font-display text-3xl tracking-[-0.02em] tabular-nums leading-none">${formatNumber(pub.views)}</p>
             <p class="text-xs text-muted-foreground">Public press-kit (<code class="text-foreground/70">/press-kit</code>)</p>
           </div>
           <div class="space-y-1">
-            <p class="font-display text-3xl tracking-[-0.02em] tabular-nums leading-none">${formatNumber(full.visits)}</p>
+            <p class="font-display text-3xl tracking-[-0.02em] tabular-nums leading-none">${formatNumber(full.views)}</p>
             <p class="text-xs text-muted-foreground">Full press-kit (admin-gated)</p>
           </div>
         </div>
