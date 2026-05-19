@@ -1,13 +1,7 @@
 ---
-import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
-import eventBannerImg from "../assets/speaking/24-hours-women-construction-event-banner.png";
-import aiComputeImg from "../assets/speaking/ai-compute-demand-growth.png";
-import anatomyImg from "../assets/speaking/anatomy-of-a-data-center.png";
-import arccPresentingImg from "../assets/speaking/arcc-2025-sarah-presenting.jpg";
-import careerTimelineImg from "../assets/speaking/how-i-ended-up-in-data-centers-timeline.png";
-import physicalBackboneImg from "../assets/speaking/physical-backbone-digital-world.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import EngagementCard from "../components/EngagementCard.astro";
 
 /**
  * /speaking — invited talks, panels, and workshops.
@@ -22,104 +16,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * organizer can find Sarah's full speaking record without missing
  * either side.
  *
- * Per-item Schema.org JSON-LD uses `Event` with the talk as a
- * `subEvent` workPerformed — the closest canonical mapping for an
- * invited-talk-at-event pattern.
- *
- * Selected chart/diagram images from the PMI Women In Construction 2026
- * deck (AI Compute Demand Growth · Anatomy of a Data Center · Physical
- * Backbone) are rendered as a gallery below abstract via Astro Picture
- * (AVIF/WebP/JPG fallback). Project photos (Passeio das Águas + BRT
- * under construction) intentionally skipped — license to be confirmed
- * before adding.
+ * Engagements are split into Upcoming (date >= today) and Past
+ * (date < today) so the page doubles as a placeholder for invitations
+ * when no events are scheduled. Per-card rendering — including the
+ * hero banner, deck-image gallery, and Schema.org JSON-LD — lives in
+ * components/EngagementCard.astro.
  */
 
 const allEng = await getCollection("engagements");
 const engagements = allEng.sort((a, b) => a.data.order - b.data.order);
 
-/* Hero banner — full-width above abstract, branded for the event. */
-const HERO_IMAGES: Record<
-  string,
-  { src: typeof eventBannerImg; alt: string }
-> = {
-  "pmi-women-construction-follow-the-sun-2026": {
-    src: eventBannerImg,
-    alt: "24 Hours of Women in Construction Leadership — event banner with three construction workers, PMI Project Management Institute branding and PMI-CP certification badge",
-  },
-  "arcc-2025-wellbeing-net-zero-healthcare": {
-    src: arccPresentingImg,
-    alt: "Sarah Rodovalho presenting her ARCC 2025 conference poster 'Integrating Comprehensive Wellbeing and Net-Zero Energy in Healthcare Design' at University of Maryland, College Park — gesturing toward the poster's healthcare-facility renderings and diagrams while in conversation with another attendee in the conference hall",
-  },
-};
-
-/* Gallery — chart/diagram thumbnails below abstract. */
-const DECK_IMAGES: Record<
-  string,
-  Array<{ src: typeof aiComputeImg; alt: string; caption: string }>
-> = {
-  "pmi-women-construction-follow-the-sun-2026": [
-    {
-      src: careerTimelineImg,
-      alt: "How I Ended Up in Data Centers — a career timeline graphic with five icons representing Brazil, Architecture, Construction, Technology, and Data Centers, connected by a horizontal line",
-      caption:
-        'How I Ended Up in Data Centers · "a career built across industries, countries, and disciplines."',
-    },
-    {
-      src: aiComputeImg,
-      alt: "AI Compute Demand Growth — projection through 2030, exponential curve from 2018 early AI training clusters to 2030 inference-dominant compute",
-      caption:
-        "AI Compute Demand Growth · compute capacity (ExaFLOPS) doubling every ~7 months · $6.7T global data center investment needed by 2030.",
-    },
-    {
-      src: physicalBackboneImg,
-      alt: "The Physical Backbone of the Digital World — diagram connecting user devices, fiber/Wi-Fi, data centers, and cloud services with streaming, AI, online banking, cloud platforms as use cases",
-      caption:
-        "The Physical Backbone of the Digital World — every digital service relies on physical infrastructure (devices → fiber → data centers → cloud).",
-    },
-    {
-      src: anatomyImg,
-      alt: "Anatomy of a Data Center — schematic showing substation, power distribution, cooling plant, network and fiber, IT infrastructure, building systems, facility support",
-      caption:
-        "Anatomy of a Data Center · from substation to racks — power · cooling · network · IT infrastructure · facility support.",
-    },
-  ],
-};
-
-const KIND_LABEL: Record<(typeof engagements)[number]["data"]["kind"], string> = {
-  talk: "Talk",
-  panel: "Panel",
-  workshop: "Workshop",
-  keynote: "Keynote",
-  interview: "Interview",
-};
+const todayMidnight = new Date();
+todayMidnight.setHours(0, 0, 0, 0);
+const upcoming = engagements.filter(
+  (e) => new Date(e.data.date) >= todayMidnight,
+);
+const past = engagements.filter(
+  (e) => new Date(e.data.date) < todayMidnight,
+);
 
 const title = "Speaking · Sarah Rodovalho";
 const description =
   "Invited talks, panels, and workshops by Sarah Rodovalho — bridging architectural practice, hyperscale data center delivery, and infrastructure systems research.";
-
-function jsonLdForEngagement(
-  e: (typeof engagements)[number],
-): Record<string, unknown> {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    name: e.data.event,
-    ...(e.data.eventUrl ? { url: e.data.eventUrl } : {}),
-    startDate: e.data.date,
-    ...(e.data.venue ? { location: { "@type": "Place", name: e.data.venue } } : {}),
-    workPerformed: {
-      "@type": "CreativeWork",
-      name: e.data.title,
-      abstract: e.data.abstract,
-      ...(e.data.audience ? { audience: e.data.audience } : {}),
-    },
-    performer: {
-      "@type": "Person",
-      name: "Sarah Rodovalho",
-      url: "https://sarahrodovalho.com",
-    },
-  };
-}
 ---
 
 <BaseLayout title={title} description={description} watermark="speaking">
@@ -143,115 +61,45 @@ function jsonLdForEngagement(
         </p>
       </header>
 
-      <section class="space-y-8">
+      <section aria-labelledby="upcoming-heading" class="space-y-6">
+        <h2
+          id="upcoming-heading"
+          class="font-display text-2xl tracking-tight text-foreground/90"
+        >
+          Upcoming engagements
+        </h2>
         {
-          engagements.map((e, i) => (
-            <article class="space-y-4 border border-border/60 rounded-md p-6 sm:p-7 hover:border-accent/50 hover:bg-accent-soft/15 transition-colors">
-              <div class="flex items-baseline gap-4">
-                <span class="font-mono text-[11px] tabular-nums text-accent tracking-[0.18em]">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-accent">
-                    {KIND_LABEL[e.data.kind]}
-                  </span>
-                  <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
-                    {e.data.event}
-                  </span>
-                  <span class="text-[10px] text-muted-foreground/80">
-                    · {e.data.date}
-                  </span>
-                </div>
-              </div>
-              {HERO_IMAGES[e.id.replace(/\.mdx$/, "")] && (
-                <Picture
-                  src={HERO_IMAGES[e.id.replace(/\.mdx$/, "")].src}
-                  alt={HERO_IMAGES[e.id.replace(/\.mdx$/, "")].alt}
-                  widths={[500, 800, 1100]}
-                  sizes="(min-width: 640px) 600px, 90vw"
-                  formats={["avif", "webp"]}
-                  fallbackFormat="jpg"
-                  loading="lazy"
-                  decoding="async"
-                  class="w-full rounded-md ring-1 ring-border/60 bg-surface"
-                />
-              )}
-              <h2 class="font-display text-2xl sm:text-3xl tracking-tight leading-[1.1]">
-                {e.data.title}
-              </h2>
-              {e.data.venue && (
-                <p class="text-xs text-muted-foreground/80">{e.data.venue}</p>
-              )}
-              {e.data.audience && (
-                <p class="text-sm text-muted-foreground italic">
-                  For: {e.data.audience}
-                </p>
-              )}
-              <p class="text-base leading-relaxed text-foreground/85">
-                {e.data.abstract}
+          upcoming.length > 0 ? (
+            <div class="space-y-8">
+              {upcoming.map((e, i) => (
+                <EngagementCard engagement={e} index={i} isUpcoming />
+              ))}
+            </div>
+          ) : (
+            <div class="border border-dashed border-border/60 rounded-md p-6 sm:p-7 text-sm text-muted-foreground leading-relaxed">
+              <p>
+                No public engagements currently on the calendar. Sarah is
+                scheduling 2026 invitations — reach out via{" "}
+                <a href="/contact" class="underline hover:text-foreground">
+                  contact
+                </a>{" "}
+                to discuss a talk, panel, or workshop.
               </p>
-              {DECK_IMAGES[e.id.replace(/\.mdx$/, "")] && (
-                <div class="pt-3 space-y-4">
-                  <p class="eyebrow !text-[10px]">From the talk deck</p>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {DECK_IMAGES[e.id.replace(/\.mdx$/, "")].map((img) => (
-                      <figure class="space-y-2">
-                        <Picture
-                          src={img.src}
-                          alt={img.alt}
-                          widths={[300, 500, 700]}
-                          sizes="(min-width: 640px) 30vw, 90vw"
-                          formats={["avif", "webp"]}
-                          fallbackFormat="jpg"
-                          loading="lazy"
-                          decoding="async"
-                          class="w-full rounded-md ring-1 ring-border/60 bg-surface"
-                        />
-                        <figcaption class="text-[11px] text-muted-foreground leading-snug">
-                          {img.caption}
-                        </figcaption>
-                      </figure>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div class="flex flex-wrap gap-x-5 gap-y-1 text-xs pt-1">
-                {e.data.eventUrl && (
-                  <a
-                    href={e.data.eventUrl}
-                    class="underline hover:text-foreground text-muted-foreground"
-                    rel="noopener"
-                  >
-                    Event page →
-                  </a>
-                )}
-                {e.data.deckUrl && (
-                  <a
-                    href={e.data.deckUrl}
-                    class="underline hover:text-foreground text-muted-foreground"
-                    rel="noopener"
-                  >
-                    Slides →
-                  </a>
-                )}
-                {e.data.videoUrl && (
-                  <a
-                    href={e.data.videoUrl}
-                    class="underline hover:text-foreground text-muted-foreground"
-                    rel="noopener"
-                  >
-                    Recording →
-                  </a>
-                )}
-              </div>
-              <script
-                is:inline
-                type="application/ld+json"
-                set:html={JSON.stringify(jsonLdForEngagement(e))}
-              />
-            </article>
-          ))
+            </div>
+          )
         }
+      </section>
+
+      <section aria-labelledby="past-heading" class="space-y-6">
+        <h2
+          id="past-heading"
+          class="font-display text-2xl tracking-tight text-foreground/90"
+        >
+          Past engagements
+        </h2>
+        <div class="space-y-8">
+          {past.map((e, i) => <EngagementCard engagement={e} index={i} />)}
+        </div>
       </section>
 
       <footer class="border-t border-border/60 pt-8 space-y-3 text-sm text-muted-foreground leading-relaxed">
