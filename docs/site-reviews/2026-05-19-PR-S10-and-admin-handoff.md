@@ -1,5 +1,7 @@
 # Session handoff — 2026-05-19 close (PR-S10 + admin emergency seal)
 
+> **2026-05-19 ~13:00 UTC — same-day closure update** (added after this doc was first written): PR #51 (`b06dace`, squashed onto main as `867f57c`) reverted the `/admin/*` 403 short-circuit in `worker.js`. CF Access was first verified firing at the edge via anonymous `curl -I` — all 5 admin paths returned **HTTP 302 → `https://orenu.cloudflareaccess.com/cdn-cgi/access/login/sarahrodovalho.com?...`** with `Set-Cookie: CF_AppSession=...`. Worker.js content is now byte-identical to `58ea918^:worker.js` (pre-PR-#50). Post-merge verification: 5× `/admin/*` → 302 to cdn-cgi/access ✅; `/` + `/about/` → 200 cf-cache HIT ✅. **"Pending Vitor" items 1, 2, and 3 below are now closed.** Only item 4 (PR-S10 rebase + open) remains — and the `worker.js` conflict described in the rebase sketch no longer exists, since main now lacks the admin gate.
+
 > Continues `2026-05-18-PR-S10-handoff.md`. This handoff doc closes the 2026-05-19 session and seeds the next one.
 
 ## What landed today
