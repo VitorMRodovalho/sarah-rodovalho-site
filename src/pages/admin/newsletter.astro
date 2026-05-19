@@ -2,20 +2,25 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 /**
- * /admin/newsletter — placeholder for future Substack archive
- * integration. Per docs/site-reviews/2026-05-18-onenote-ajustes.md
- * item 13.4 (admin layer phase 1), full integration scheduled as
- * PR-S13 when Sarah publishes her first newsletter.
+ * /admin/newsletter — Substack hub. Surfaces the publication URL and
+ * the trigger for ramping up the public RSS-feed integration.
  *
- * Pattern reference: dfolloni.substack.com/archive — newsletter
- * archive surfaced on the personal site via RSS feed pull at build
- * time. Subscribers stay on Substack; the site mirrors the public
- * archive.
+ * Phase 1 (now): admin status page + footer Connect link out to
+ * Substack so close-network subscribers can pre-subscribe ahead of
+ * the first issue.
+ *
+ * Phase 2 (gated on Sarah publishing 2-3 issues): public `/newsletter`
+ * page builds at deploy time from the Substack RSS feed
+ * (sarahrodovalho1.substack.com/feed). Pattern reference:
+ * dfolloni.substack.com/archive.
  */
 
-const title = "Newsletter (placeholder) · Admin · Sarah Rodovalho";
+const title = "Newsletter · Admin · Sarah Rodovalho";
 const description =
-  "Placeholder for future Substack archive integration. Visible only to admin.";
+  "Substack publication URL and integration status. Visible only to admin.";
+
+const SUBSTACK_URL = "https://sarahrodovalho1.substack.com";
+const SUBSTACK_FEED_URL = "https://sarahrodovalho1.substack.com/feed";
 ---
 
 <BaseLayout title={title} description={description} noIndex={true}>
@@ -23,21 +28,49 @@ const description =
     <div class="max-w-3xl mx-auto space-y-10">
       <header class="space-y-5">
         <p class="eyebrow">
-          <span class="accent-rule"></span>Admin · newsletter (placeholder)
+          <span class="accent-rule"></span>Admin · newsletter
         </p>
         <h1
           class="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]"
         >
-          Substack archive —{" "}
-          <span class="italic text-accent">coming soon.</span>
+          Sarah's Substack —{" "}
+          <span class="italic text-accent">live, awaiting first issue.</span>
         </h1>
         <p class="text-base text-muted-foreground leading-relaxed">
-          Placeholder for the newsletter archive integration. When Sarah
-          publishes her first Substack issue, this page will mirror the
-          public archive (built at deploy time from the Substack RSS feed)
-          — pattern modeled on dfolloni.substack.com/archive.
+          The publication is up and accepting subscribers. Public RSS
+          integration on this site (`/newsletter`) activates once there
+          are 2–3 published issues to surface.
         </p>
       </header>
+
+      <section class="space-y-4">
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Publication
+        </h2>
+        <div
+          class="border border-border/60 rounded-md p-6 space-y-3 hover:border-accent/50 transition-colors"
+        >
+          <p class="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+            URL
+          </p>
+          <p>
+            <a
+              href={SUBSTACK_URL}
+              rel="noopener"
+              class="font-display text-xl tracking-tight underline hover:text-accent"
+              >sarahrodovalho1.substack.com →</a
+            >
+          </p>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            The <code>"1"</code> suffix is Substack's reservation handling —
+            the unsuffixed handle <code>@sarahrodovalho</code> is already
+            registered as a user (redirects to <code>substack.com/@sarahrodovalho</code>).
+            Renaming the publication slug in Substack settings is worth
+            trying before any QR code / printed material goes out;
+            otherwise the URL works as is.
+          </p>
+        </div>
+      </section>
 
       <section class="space-y-4">
         <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
@@ -47,33 +80,63 @@ const description =
           class="space-y-2 text-sm text-muted-foreground leading-relaxed list-disc pl-5"
         >
           <li>
-            <strong class="text-foreground">Substack URL:</strong> pending —
-            Sarah to create the publication and share the URL.
+            <strong class="text-foreground">Account:</strong> live (HTTP 200).
           </li>
           <li>
-            <strong class="text-foreground">Integration approach:</strong> RSS
-            feed pull at build time → static archive at <code>/newsletter</code>{" "}
-            (public, not admin) when shipped.
+            <strong class="text-foreground">RSS feed:</strong>{" "}
+            <a
+              href={SUBSTACK_FEED_URL}
+              rel="noopener"
+              class="underline hover:text-foreground"
+              ><code>{SUBSTACK_FEED_URL}</code></a
+            >{" "}
+            — valid XML, channel header present, 0 items so far.
           </li>
           <li>
-            <strong class="text-foreground">Scheduled PR:</strong> PR-S13 (per
-            <code>docs/site-reviews/2026-05-18-onenote-ajustes.md</code>{" "}
-            §13.4 phase 2).
+            <strong class="text-foreground">Footer link:</strong> Substack
+            added to the public footer Connect column so close-network
+            subscribers can subscribe pre-launch.
           </li>
           <li>
-            <strong class="text-foreground">Dependency:</strong> Sarah's first
-            published issue.
+            <strong class="text-foreground">Schema.org sameAs:</strong>{" "}
+            Substack URL now included in the Person JSON-LD across every
+            page — helps Google's Knowledge Graph attribute the Substack
+            to Sarah.
+          </li>
+          <li>
+            <strong class="text-foreground">Privacy posture:</strong> unchanged.
+            All Substack interactions happen on Substack's domain; no
+            embed, no pixel, no script added to this site.
           </li>
         </ul>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="font-display text-2xl sm:text-3xl tracking-tight">
+          Phase 2 — public /newsletter page
+        </h2>
+        <p class="text-sm leading-relaxed text-foreground/85">
+          Trigger: 2–3 published issues. When fired, a build-time script
+          fetches the RSS feed, renders the latest issues at{" "}
+          <code>/newsletter</code> (public, indexable), and adds a header
+          nav entry. Subscribers continue to live on Substack — this
+          site only mirrors the archive. Pattern modeled on{" "}
+          <a
+            href="https://dfolloni.substack.com/archive"
+            rel="noopener"
+            class="underline hover:text-foreground"
+            >dfolloni.substack.com/archive</a
+          >.
+        </p>
       </section>
 
       <footer
         class="border-t border-border/60 pt-8 text-xs text-muted-foreground/80 leading-relaxed"
       >
         <p>
-          When live, the public route <code>/newsletter</code> renders the
-          archive from RSS; this admin route can be repurposed for
-          subscriber-only analytics or drafting metadata if needed.
+          When Phase 2 ships, this admin page can be repurposed for
+          drafting metadata, subscriber-list audit, or campaign-tagged
+          link generation — currently it just states facts.
         </p>
       </footer>
     </div>
