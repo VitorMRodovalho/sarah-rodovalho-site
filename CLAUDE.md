@@ -46,3 +46,11 @@
 
 - Vitor's own site (`vitormr.dev`) — separate repo, separate decisions, deferred until Sarah MVP ships.
 - Orenu integration — eventual publish-gated feed pattern (per ADR-023 §D5); v1 = manual MDX content drops only.
+
+## Portfolio PMO (knowledge loop)
+
+- This repo lives under Vitor's portfolio PMO at `~/projects` (the parent
+  `CLAUDE.md` there governs PMO mode; machine-global skills at
+  `~/.claude/skills/`, SSOT = `AI-PMO-Framework/skills/`).
+- It carries a standing `[LL]` lessons-learned-intake issue; log reusable
+  lessons there so the PMO can harvest them (`pmo-sync.sh harvest`).
