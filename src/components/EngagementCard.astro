@@ -7,6 +7,10 @@ import anatomyImg from "../assets/speaking/anatomy-of-a-data-center.png";
 import arccPresentingImg from "../assets/speaking/arcc-2025-sarah-presenting.jpg";
 import careerTimelineImg from "../assets/speaking/how-i-ended-up-in-data-centers-timeline.png";
 import physicalBackboneImg from "../assets/speaking/physical-backbone-digital-world.png";
+import aia26PresentingImg from "../assets/speaking/aia26-sarah-presenting-wide.jpg";
+import aia26SpeakersListImg from "../assets/speaking/aia26-speakers-list.jpg";
+import aia26WelcomeImg from "../assets/speaking/aia26-welcome-forum.jpg";
+import aia26CommunityHubImg from "../assets/speaking/aia26-community-hub.jpg";
 
 /**
  * Single card for /speaking — renders one engagement (talk / panel /
@@ -43,6 +47,10 @@ const HERO_IMAGES: Record<
     src: arccPresentingImg,
     alt: "Sarah Rodovalho presenting her ARCC 2025 conference poster 'Integrating Comprehensive Wellbeing and Net-Zero Energy in Healthcare Design' at University of Maryland, College Park — gesturing toward the poster's healthcare-facility renderings and diagrams while in conversation with another attendee in the conference hall",
   },
+  "aia26-cca-open-forum": {
+    src: aia26PresentingImg,
+    alt: "Sarah Rodovalho presenting at the AIA Construction Contract Administration (CCA) Open Forum during AIA26, the AIA Conference on Architecture & Design, in the glass-roofed Community Hub of the San Diego Convention Center — standing at left with a microphone addressing a seated audience, co-presenter Tyler Schaffer (AIA, AECOM) at center, and the on-screen 'Speakers List' slide naming both presenters",
+  },
 };
 
 const DECK_IMAGES: Record<
@@ -75,11 +83,38 @@ const DECK_IMAGES: Record<
         "Anatomy of a Data Center · from substation to racks — power · cooling · network · IT infrastructure · facility support.",
     },
   ],
+  "aia26-cca-open-forum": [
+    {
+      src: aia26SpeakersListImg,
+      alt: "Close-up of Sarah Rodovalho speaking into a microphone at right while co-presenter Tyler Schaffer (AIA, AECOM) stands at left, the AIA26 'Speakers List' slide on the screen behind them listing both presenters' names and credentials",
+      caption:
+        "The forum's 'Speakers List' — Tyler Schaffer (AIA, AECOM) and Sarah Rodovalho (Intl. Assoc. AIA, PMP, LEED GA), the two CCA Knowledge Community presenters.",
+    },
+    {
+      src: aia26WelcomeImg,
+      alt: "Sarah Rodovalho (right, cream blazer) on stage as the CCA Open Forum opens, a co-presenter speaking into a microphone at center, the 'Construction Contract Administration Open Forum — Welcome!' slide on screen",
+      caption:
+        "Opening the Construction Contract Administration Open Forum at the AIA26 Community Hub.",
+    },
+    {
+      src: aia26CommunityHubImg,
+      alt: "Wide view of the AIA26 Community Hub 'DEMO' stage in the glass-roofed Sails Pavilion of the San Diego Convention Center, with the CCA Open Forum panel on stage and attendees seated on white benches",
+      caption:
+        "The AIA26 Community Hub stage, Sails Pavilion · San Diego Convention Center.",
+    },
+  ],
+};
+
+// Per-engagement label for the image gallery beneath the hero. Talks show
+// slide excerpts ("From the talk deck"); event panels show on-site photos.
+const GALLERY_LABELS: Record<string, string> = {
+  "aia26-cca-open-forum": "From the forum",
 };
 
 const slug = e.id.replace(/\.mdx$/, "");
 const hero = HERO_IMAGES[slug];
 const deck = DECK_IMAGES[slug];
+const galleryLabel = GALLERY_LABELS[slug] ?? "From the talk deck";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -155,7 +190,7 @@ const jsonLd = {
   </p>
   {deck && (
     <div class="pt-3 space-y-4">
-      <p class="eyebrow !text-[10px]">From the talk deck</p>
+      <p class="eyebrow !text-[10px]">{galleryLabel}</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {deck.map((img) => (
           <figure class="space-y-2">
