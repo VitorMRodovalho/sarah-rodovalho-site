@@ -1,6 +1,6 @@
 # Registro de verificação — Orenu → site
 
-**Última verificação:** 2026-08-18
+**Última verificação:** 2026-08-19
 
 Cada linha abaixo é uma execução do sync Orenu → site. É gerada por
 `scripts/write_sync_ledger.py`, a partir do relatório dos próprios scripts de
@@ -53,6 +53,7 @@ colapsar os dois.
 
 | Data (UTC) | Fontes conferidas | Divergências | Resultado | Execução |
 |---|---|---|---|---|
+| 2026-08-19 | **29** (publications 3 · engagements 8 · credentials 7 · awards 11) | **2** — engagements: drift 1 · awards: stubs 1 | ⚠️ divergência para revisar | [log](https://github.com/VitorMRodovalho/sarah-rodovalho-site/actions/runs/32222090067) |
 | 2026-08-18 | **29** (publications 3 · engagements 8 · credentials 7 · awards 11) | **2** — engagements: drift 1 · awards: stubs 1 | ⚠️ divergência para revisar | [log](https://github.com/VitorMRodovalho/sarah-rodovalho-site/actions/runs/32105560783) |
 | 2026-08-17 | **29** (publications 3 · engagements 8 · credentials 7 · awards 11) | **2** — engagements: drift 1 · awards: stubs 1 | ⚠️ divergência para revisar | [log](https://github.com/VitorMRodovalho/sarah-rodovalho-site/actions/runs/32000478854) |
 | 2026-08-16 | **29** (publications 3 · engagements 8 · credentials 7 · awards 11) | **2** — engagements: drift 1 · awards: stubs 1 | ⚠️ divergência para revisar | [log](https://github.com/VitorMRodovalho/sarah-rodovalho-site/actions/runs/31930604290) |
